@@ -63,6 +63,7 @@ MIDDLEWARE = [
 
 CORS_ORIGIN_WHITELIST = (
     'http://13.209.91.209:9500',
+    'http://13.209.91.209',
     'http://localhost:9500',
     'http://0.0.0.0:9500',
     'http://humanwater.insoo:9500',
