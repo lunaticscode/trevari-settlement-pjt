@@ -1,11 +1,3 @@
-from django.shortcuts import render
-from rest_framework import generics
-from rest_framework.decorators import api_view
-
-from rest_framework import permissions
-from rest_framework import viewsets
-from rest_framework.decorators import action
-# Create your views here.
 
 from .models import Post
 from rest_framework.views import APIView
@@ -31,10 +23,6 @@ class PostView(APIView):
             if post_serializer.is_valid():
                 post_serializer.save()
                 return Response(post_serializer.data, status=status.HTTP_201_CREATED)
-        # if post_serializer.is_valid():
-
-        # else:
-        #     return Response(post_serializer.error, status=status.HTTP_400_BAD_REQUEST)
 
     """
     GET /post
@@ -70,37 +58,3 @@ class PostView(APIView):
             }
             return Response(content, status=status.HTTP_200_OK)
 
-# class PostView(viewsets.ModelViewSet):
-#     queryset = Post.objects.all()
-#     serializer_class = PostSerializer
-#
-#     def perform_create(self, serializer):
-#         serializer.save()
-
-# class ListPost(generics.ListCreateAPIView):
-#     queryset = Post.objects.all()
-#     serializer_class = PostSerializer
-#
-# class DetailPost(generics.RetrieveUpdateDestroyAPIView):
-#     queryset = Post.objects.all()
-#     serializer_class = PostSerializer
-#
-# class UpdatePost(generics.UpdateAPIView):
-#     queryset = Post.objects.all()
-#     serializer_class = PostSerializer
-#
-# class DeletePost(generics.DestroyAPIView):
-#     queryset = Post.objects.all()
-#     serializer_class = PostSerializer
-
-
-   # receive_content = post_serializer.data.content
-   #          try:
-   #              check_content = Post.objects.get(content=receive_content)
-   #          except Exception as e:
-   #              check_content = None
-   #          check_result = {
-   #              'result': 'success',
-   #              'data': "not exist" if check_content is None else "already exist"
-   #          }
-   #          return Response(check_result)

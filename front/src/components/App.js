@@ -9,7 +9,7 @@ class App extends React.Component {
     }
     async componentDidMount() {
         try {
-            const res = await fetch('http://localhost:9501/api/posts/');
+            const res = await fetch('http://13.209.91.209:9501/api/posts/');
             const posts = await res.json();
             this.setState({postData:posts});
             console.log(posts);
@@ -19,7 +19,7 @@ class App extends React.Component {
     }
 
     deletePost() {
-        fetch('http://localhost:9501/api/posts/'+11+'/', {
+        fetch('http://13.209.91.209:9501/api/posts/'+11+'/', {
             method:"DELETE",
             headers: {
                 'content-type' : 'application/json'
@@ -34,7 +34,7 @@ class App extends React.Component {
             title:'assasddasd',
             content:'tweleveasd',
         };
-        fetch('http://localhost:9501/api/posts/', {
+        fetch('http://13.209.91.209:9501/api/posts/', {
             method: "POST",
             headers:{
                 'content-type':'application/json'
