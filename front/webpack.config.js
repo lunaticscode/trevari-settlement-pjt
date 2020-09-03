@@ -1,6 +1,17 @@
 const webpack = require('webpack');
+const WebpackPwaManifest = require('webpack-pwa-manifest');
+const { InjectManifest } = require('workbox-webpack-plugin');
+const manifest = require('./public/manifest.json');
+
+const pwaPlugin = new WebpackPwaManifest(manifest);
+
+const workboxPlugin = new InjectManifest({
+    swSrc: './src/sw.js',
+    swDest: 'sw.js',
+});
 
 module.exports = {
+
     entry: './src/index.js',
     output: {
         path: __dirname + '/public',
@@ -12,6 +23,7 @@ module.exports = {
         host: 'humanwater.insoo',
         port: 9500,
         contentBase: __dirname + '/public/',
+        historyApiFallback: true,
     },
     module: {
         rules: [
@@ -43,5 +55,5 @@ module.exports = {
         modules: ['node_modules'],
         extensions: ['.js', '.json', '.jsx', '.css'],
     },
-    plugins: [new webpack.HotModuleReplacementPlugin() ]
+    plugins: [ new webpack.HotModuleReplacementPlugin(), pwaPlugin, workboxPlugin]
 };

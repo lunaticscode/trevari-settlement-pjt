@@ -1,0 +1,9 @@
+{
+  "name": "settlment-pwa",
+  "short_name": "pwa",
+  "description": "react todo list app with pwa",
+  "background_color": "black",
+  "crossorigin": "use-credentials",
+  "theme_color": "#eeeeee",
+  "filename": "manifest.json"
+}
