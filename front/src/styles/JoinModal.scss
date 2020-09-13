@@ -1,0 +1,40 @@
+@import "extend";
+
+#JoinModalLayout{
+  animation-name: fade-in;
+  animation-duration: 2s;
+  animation-fill-mode: backwards;
+  position: absolute;
+  background: linear-gradient(90deg, rgba(198,198,198,0.23322832550989148) 0%, rgba(185,185,185,1) 100%);;
+  background: #3E3C42;
+  //background: #26272b;
+  //border: 3px solid white;
+  margin-top:30px; border-radius: 10px;
+  opacity: 0.9;
+}
+
+@media screen and (min-width: 361px) {
+  #JoinModalLayout{ width:80%; margin-left: 10%; }
+}
+
+@media screen and (min-width: 300px) and (max-width: 360px){
+  #JoinModalLayout{ width:95%; margin-left:2.5%;}
+}
+
+#JoinModalContent{ padding:10px; }
+
+#title{ font-size:18px; margin-left:10px; margin-top:15px; margin-bottom:15px; font-weight: 600; }
+
+.JoinInput{ width:90%; font-size:17px; color:white; font-weight: 500;
+  margin-bottom:20px; margin-left:4%; outline: none;
+  background: none; border: none; border-bottom: 1px solid white; }
+.JoinInput:nth-child(1) {
+  margin-top:30px;
+}
+
+#registBtn{
+  background: lightslategray;
+  width:90%;  margin:15px 5%; border-radius: 5px; height:40px; line-height: 40px;
+  text-align: center; font-size:16px; font-weight: 600;
+
+}

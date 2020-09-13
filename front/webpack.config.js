@@ -1,14 +1,14 @@
 const webpack = require('webpack');
-const WebpackPwaManifest = require('webpack-pwa-manifest');
-const { InjectManifest } = require('workbox-webpack-plugin');
-const manifest = require('./public/manifest.json');
 
-const pwaPlugin = new WebpackPwaManifest(manifest);
+//const WebpackPwaManifest = require('webpack-pwa-manifest');
+//const { InjectManifest } = require('workbox-webpack-plugin');
+// const manifest = require('./public/manifest.json');
+// const pwaPlugin = new WebpackPwaManifest(manifest);
 
-const workboxPlugin = new InjectManifest({
-    swSrc: './src/sw.js',
-    swDest: 'sw.js',
-});
+// const workboxPlugin = new InjectManifest({
+//     swSrc: './src/sw.js',
+//     swDest: 'sw.js',
+// });
 
 module.exports = {
 
@@ -20,7 +20,8 @@ module.exports = {
     devServer: {
         hot: true,
         inline: true,
-        host: 'humanwater.insoo',
+        //host: 'humanwater.insoo',
+        host: '0.0.0.0',
         port: 9500,
         contentBase: __dirname + '/public/',
         historyApiFallback: true,
@@ -55,5 +56,6 @@ module.exports = {
         modules: ['node_modules'],
         extensions: ['.js', '.json', '.jsx', '.css'],
     },
-    plugins: [ new webpack.HotModuleReplacementPlugin(), pwaPlugin, workboxPlugin]
+    plugins: [ new webpack.HotModuleReplacementPlugin(), ]
+    //pwaPlugin, workboxPlugin
 };

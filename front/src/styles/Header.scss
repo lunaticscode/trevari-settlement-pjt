@@ -1,37 +1,50 @@
 @import 'extend';
+
 #TopSection{
  margin-top:25px;
 }
+
 #MainLogo{
   display: inline-block;
-  margin-left:25px; padding:5px 15px;
-  border: 2px solid $main-line-color; border-radius: 5px;
-  font-size:18px; font-weight: 600; text-align: center; color:$main-line-color;
+  //background: rgb(220,26,223);
+  background: $logo-background2;
+  width:100px; margin-left:25px; padding:5px 15px;
+  border-radius: 5px;
+  font-size:18px; font-weight: 500; text-align: center; color:white;
+}
+
+#AppLogo{
+  animation-name: spinnig;
+  animation-duration: 3s;
+  width:30%;
 }
 
 #LoginBtn{
   float: right; margin-right:25px;
-  padding:5px 15px; border-radius: 10px;
-  background: #17bfb5; font-weight: 600; font-size: 17px;
+  padding:5px 15px; border-radius: 5px;
+  background: none; font-weight: 500; font-size: 17px;
+  color: $main-line-color; font-weight: 600;
+  border:2px solid $main-line-color;
   display: inline-block;
 }
 
 #tabMenuSection{
   margin-top:35px;
 }
-
 .tabMenu{
   display: inline-block;
-  float: left; margin:5px 10px;
-  min-width: 50px; text-align: center;
-  color:white; font-weight: 600;
+  float: left; margin:5px 5px;
+  min-width: 40px; text-align: center;
+  color:gray; font-weight: 600;
   width:auto; padding:5px 5px;
-  border-bottom: 2px solid silver;
-}.tabMenu:first-child{
-   @extend .tabMenu;
-   margin-left: 25px;
- }
+  border-bottom: 3px solid #26272b;
+}
+
  .tabMenu:active{
-   color:$main-line-color;
    border-bottom-color: $main-line-color;
+   color:$main-line-color;
+ }
+ .tabMenu:hover{
+   border-bottom-color: $main-line-color;
+   color:$main-line-color;
  }

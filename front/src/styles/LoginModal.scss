@@ -1,0 +1,58 @@
+@import "extend";
+
+@keyframes fade-in { from{opacity: 0;}  to{opacity:1;} }
+
+#LoginModalLayout{
+  animation-name: fade-in;
+  animation-duration: 2s;
+  animation-fill-mode: backwards;
+  position: absolute;
+  background: linear-gradient(90deg, rgba(198,198,198,0.23322832550989148) 0%, rgba(185,185,185,1) 100%);;
+  background: #3E3C42;
+  margin-top:30px; border-radius: 10px;
+  opacity: 0.9;
+}
+
+@media screen and (min-width: 361px) {
+  #LoginModalLayout{ width:80%; margin-left: 10%; }
+}
+
+@media screen and (min-width: 300px) and (max-width: 360px){
+  #LoginModalLayout{ width:95%; margin-left:2.5%;}
+}
+
+#LoginModalContent{ padding:10px; }
+
+#title{ font-size:18px; margin-left:10px; margin-top:15px; margin-bottom:15px; font-weight: 600; }
+
+.LoginInput{ width:90%; font-size:17px; color:white; font-weight: 500;
+            margin-bottom:20px; margin-left:4%; outline: none;
+            background: none; border: none; border-bottom: 1px solid white; }
+.LoginInput:nth-child(1) {
+  margin-top:30px;
+}
+
+//#SNSLoginContent{
+//  text-align: center;
+//}
+//
+//.SNSLoginBtn{  height:45px; width:100%;}
+//.SNSLoginBox{ width:90%; }
+
+#actionBtnLayout{
+  position: absolute; left:0px; bottom:0px;
+  width: 100%; margin-top:20px;
+}
+.actionBtn{
+  display: inline-block;
+  text-align: center;
+  height: 50px;
+  width:50%;
+  line-height: 50px;
+}
+#joinBtn{
+  background: lightslategray; color:white; border-bottom-left-radius: 10px;
+}
+#loginBtn{
+ background: $logo-background2; border-bottom-right-radius: 10px;
+}
