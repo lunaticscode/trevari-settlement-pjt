@@ -4,6 +4,7 @@ body{
 $logo-background : linear-gradient(90deg, rgba(142,240,244,1) 0%, rgba(35,195,224,1) 100%);
 $logo-background2: linear-gradient(90deg, rgba(142,240,244,1) 0%, rgba(47,165,171,1) 45%, rgba(33,164,187,1) 100%);
 $main-background : linear-gradient(90deg, rgba(82,208,183,1) 0%, rgba(95,212,191,1) 31%, rgba(157,228,216,1) 55%, rgba(219,244,243,1) 100%);
+$main-background2 :linear-gradient(90deg, rgba(38,38,38,1) 0%, rgba(69,77,77,1) 100%);
 $main-line-color : rgb(70,236,231);
 
 font.bold{
@@ -23,7 +24,7 @@ font.bold{
   width: 17px; height:17px;
 }
 
-@keyframes expanding-bottom { from{height:0px; opacity: 0;} to{height:140px; opacity: 1;} }
+@keyframes expanding-bottom { from{height:0px; opacity: 0;} to{height:120px; opacity: 1;} }
 
 @keyframes expanding {
   from{width: 0px; opacity: 0; margin-left:50%; margin-top:10%; height:0px; }

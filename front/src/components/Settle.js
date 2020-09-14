@@ -53,33 +53,33 @@ export default class Settle extends React.Component {
                              <option>5차</option><option>6차</option>
                          </select>
                      </div>
-                        <br/>
-
-                     <div id="SettleDetailForm_layout">
-                         {this.state.settleContentArray.map( (elem, index) => {
-                             return <div key={index} className="settleInputForm" id={"Form_"+index}>
-                                        <div className="inputFormContent">
-                                            <div>
-                                                {this.state.settleFormTitle} &nbsp;<font className="bold">[</font>{index+1}차<font className="bold">]</font>
-                                                <div className="iconBox-right"><img className="small-icon" src="/img/down-arrow.png"/></div>
-                                                <div className="innerForm-box">
-                                                    <div className="innerForm-index">장소</div>
-                                                    <input className="inner-inputForm"/>
-                                                </div>
-                                                <div className="innerForm-box">
-                                                    <div className="innerForm-index">총 금액</div>
-                                                    <input className="inner-inputForm"/>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                         })}
-                     </div>
-
                  </div>
+
+              </div>
+
+              <div id="SettleDetailForm_layout">
+                  {this.state.settleContentArray.map( (elem, index) => {
+                      return <div key={index} className="settleInputForm" id={"Form_"+index}>
+                          <div className="inputFormContent">
+                              <div>
+                                  <div className="innerForm-title">{this.state.settleFormTitle}&nbsp;&nbsp;[{index+1}차]&nbsp;&nbsp;</div>
+                                  <div className="iconBox-right"><img className="small-icon" src="/img/down-arrow.png"/></div>
+                                  <div className="innerForm-box">
+                                      <div className="innerForm-index">장소</div>
+                                      <input className="inner-inputForm"/>
+                                  </div>
+                                  <div className="innerForm-box">
+                                      <div className="innerForm-index">총 금액</div>
+                                      <input className="inner-inputForm"/>
+                                  </div>
+
+                              </div>
+                          </div>
+                      </div>
+                  })}
               </div>
           </div>
+
         );
     }
 }

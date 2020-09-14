@@ -29,7 +29,7 @@
 }
 
 #tabMenuSection{
-  margin-top:35px;
+  margin-top:15px;
 }
 .tabMenu{
   display: inline-block;
@@ -37,7 +37,7 @@
   min-width: 40px; text-align: center;
   color:gray; font-weight: 600;
   width:auto; padding:5px 5px;
-  border-bottom: 3px solid #26272b;
+  //border-bottom: 0px solid none;
 }
 
  .tabMenu:active{
