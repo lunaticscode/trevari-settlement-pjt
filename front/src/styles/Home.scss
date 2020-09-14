@@ -22,8 +22,9 @@
 
 #welcomeText{
   animation-name: fade-in;
-  animation-fill-mode: forwards;
-  animation-duration: 2s;
+  animation-fill-mode: backwards;
+  animation-duration: 1s; animation-delay: 1s;
+
 }
 
 #userNameBox{

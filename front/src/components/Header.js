@@ -1,5 +1,5 @@
 import React from 'react';
-import '../styles/Header.scss'
+import '../styles/Header.scss';
 import { Link } from 'react-router-dom';
 import Home from "./Home";
 export default class Header extends React.Component {
@@ -7,7 +7,8 @@ export default class Header extends React.Component {
         super(props);
         this.state = {
             tabMenuArray : ['홈', '정산하기', '히스토리', '계좌관리'],
-        };
+            tabPathArray : ['/', '/settle', '/history', '/account'],
+    };
         this.tabMenuClick = this.tabMenuClick.bind(this);
     }
 
@@ -16,6 +17,7 @@ export default class Header extends React.Component {
         let tabMenu_doc = document.getElementsByClassName("tabMenu");
         let clickTab_text = e.target.innerText;
         let tabIndex = tabText_array.indexOf(clickTab_text);
+
         tabText_array.forEach((elem, index) => {
         if(tabIndex == index){
             tabMenu_doc[tabIndex].style.color = "rgb(70, 236, 231)";
@@ -27,13 +29,17 @@ export default class Header extends React.Component {
         });
     }
 
+    componentDidMount() {
+        if(this.state.tabPathArray.indexOf(window.location.pathname) !==  -1){
+            let nowTabIndex = this.state.tabPathArray.indexOf(window.location.pathname);
+            let nowTabElem = document.getElementById("tab_"+nowTabIndex);
+            nowTabElem.style.color = "rgb(70,236,231)";
+            nowTabElem.style.borderBottom = "3px solid rgb(70,236,231)";
+        }
+    }
 
     render() {
-        let first_tabMenu = {
-            marginLeft:"15px",
-            borderBottom:  "3px solid rgb(70, 236, 231)",
-            color: "rgb(70, 236, 231)",
-        };
+
         return (
             <div id="HeaderLayout">
                 <div id="TopSection">
@@ -46,18 +52,11 @@ export default class Header extends React.Component {
                     </div>
 
                 <div id="tabMenuSection">
-                        <Link to="/">
-                            <div style={first_tabMenu} onClick={this.tabMenuClick} className="tabMenu">홈</div>
-                        </Link>
-                        <Link to="/settle">
-                            <div onClick={this.tabMenuClick} className="tabMenu">정산하기</div>
-                        </Link>
-                        <Link to="/history">
-                            <div onClick={this.tabMenuClick} className="tabMenu">히스토리</div>
-                        </Link>
-                        <Link to="/account">
-                            <div onClick={this.tabMenuClick} className="tabMenu">계좌관리</div>
-                        </Link>
+                    {this.state.tabMenuArray.map((elem, index) => {
+                        return <Link key={index} to={this.state.tabPathArray[index]}>
+                                    <div id={"tab_"+index} onClick={this.tabMenuClick} className="tabMenu">{elem}</div>
+                               </Link>
+                    })}
                </div>
             </div>
         );

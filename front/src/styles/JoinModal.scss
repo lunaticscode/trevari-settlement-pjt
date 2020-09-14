@@ -25,9 +25,11 @@
 
 #title{ font-size:18px; margin-left:10px; margin-top:15px; margin-bottom:15px; font-weight: 600; }
 
-.JoinInput{ width:90%; font-size:17px; color:white; font-weight: 500;
+.JoinInput{
+  width:90%; font-size:17px; color:white; font-weight: 500;
   margin-bottom:20px; margin-left:4%; outline: none;
   background: none; border: none; border-bottom: 1px solid white; }
+
 .JoinInput:nth-child(1) {
   margin-top:30px;
 }
