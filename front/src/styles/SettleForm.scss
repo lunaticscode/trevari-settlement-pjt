@@ -1,0 +1,34 @@
+@import "extend";
+
+.innerForm_indexBox{
+  display: inline-block; padding:2px 2px; border-radius: 5px;
+  background: gray; color:white; margin-top:2px; margin-bottom: 2px;
+  margin-right:5px;
+  font-size:11px;
+}
+
+.innerForm_title{
+  margin-left:10px; margin-top:10px;
+  display: inline-block; max-width:80%;
+  background: #383a3f; border-radius: 5px;
+  padding:3px 6px; color:#eeeeee;
+  font-size:13px;
+}
+
+.innerForm_personListBox{
+  margin:10px 0px 15px 10px;
+}
+.innerForm_personName{
+  display: inline-block;
+  margin-right:5px; margin-bottom:5px; padding:3px 6px;
+  border-radius: 5px; border: 2px solid gray;
+  font-size:12px; color:gray; text-align: center; font-width: 600;
+
+}
+
+
+.innerForm_inputPrice{
+  display: inline-block;
+  outline: none; border:none; border-bottom : 2px solid gray;
+  background: none;
+}

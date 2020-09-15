@@ -10,9 +10,12 @@
   #SettleLayout{ width:90%; margin-left: 5%; }
 }
 
+@keyframes expanding-bottom { from{height:0px; opacity: 0;} to{height:191px; opacity: 1;} }
+
 @keyframes form-expanding {
   from{width:0px; height:auto; } to{width:90%; height:auto;}
 }
+
 @keyframes fade-in-2 {
   from{opacity: 0;} to{opacity: 1;}
 }
@@ -47,6 +50,43 @@
   }
 }
 
+@media screen and (min-width: 601px){
+  #SettleDetailForm_layout{
+    width:98%;
+    position: absolute; left:1%;
+    display: inline-flex; flex-wrap: wrap;
+    flex-direction: row;
+    height:auto; max-height: 400px; margin: 15px 0px; padding:15px 0px;
+    overflow-y: scroll;
+  }
+
+  .settleInputForm{
+    animation-name: fade-in-2;
+    animation-duration: 1s;
+    animation-fill-mode: backwards;
+    flex: 250px;
+    color:gray;
+    width:48%; margin-right:1%;
+    //background: #686868;
+    background:white;  border-radius: 5px;
+    margin-bottom:15px;
+  }
+}
+#personName_Layout{
+  margin:15px 10px; padding-top:5px;
+  display: inline-flex; flex-direction: row; justify-content: left; flex-wrap: wrap;
+}
+.personName_box{
+  background: gray;
+  margin-right:5px; margin-bottom:5px;
+  display: inline-block; border-radius: 5px; ;
+   color:white; text-align: center; padding:3px 6px;
+}
+.personName_box_small{
+  @extend .personName_box;
+  font-size:13px;
+}
+
 #SettleDetailForm_layout{
   width:95%;
   position: absolute; left:2.5%;
@@ -60,7 +100,10 @@
   animation-fill-mode: backwards;
 
   width:100%; //margin-left:2.5%;
-  background: #686868; border-radius: 5px;
+  //background: #686868;
+  background: white;
+  color:gray;
+  border-radius: 5px;
   margin-bottom:15px;
 }
 
@@ -80,7 +123,6 @@
   border-radius: 5px;
 }
 
-
 .inputTitle{
   display: inline-block;
   color: white; font-weight: 500; font-size:16px; margin:0px 15px;
@@ -89,30 +131,11 @@
 .inputForm{
   background: none; border:none; outline: none; border-bottom: 2px solid $main-line-color;
   width:40%; min-width: 150px; margin-left:10px;
-  color: silver; font-weight: 600; font-size:17px; text-align: left;
+  color: silver; font-weight: 600; font-size:15px; text-align: left;
 }
 
-.innerForm-title{
-  color: black; font-weight: 600; text-align: center;
-  font-size:14px;
-  display: inline-flex;
-  padding:2px 3px;
-  background: white; border-radius: 5px;
+.inputForm_title{
+ @extend .inputForm; width:65%; max-width:220px;
 }
 
-.innerForm-box{
-  padding-left:10px;
-  margin:15px 0px;
-}
 
-.innerForm-index{
-  display: inline-block;
-  width:20%;
-  font-size:13px;
-}
-
-.inner-inputForm{
-  @extend .inputForm;
-  color:white;
-  font-size:13px;
-}

@@ -10,6 +10,11 @@
   #HomeLayout{ width:95%; margin-left: 2.5%; }
 }
 
+@keyframes expanding {
+  from{width: 0px; opacity: 0; margin-left:50%; margin-top:10%; height:0px; }
+  to{width:100%; opacity: 0.9;  margin-left:0px; margin-top:0px; height:100px; }
+}
+
 #welcomeContent{
   text-indent: 10px;
   padding-top:10px;

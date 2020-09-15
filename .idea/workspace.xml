@@ -2,7 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d705290a-45af-48a7-819a-81e714c9e8da" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/front/webpack.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/front/webpack.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/src/components/Header.js" beforeDir="false" afterPath="$PROJECT_DIR$/front/src/components/Header.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/src/components/Settle.js" beforeDir="false" afterPath="$PROJECT_DIR$/front/src/components/Settle.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/src/styles/App.scss" beforeDir="false" afterPath="$PROJECT_DIR$/front/src/styles/App.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/src/styles/Header.scss" beforeDir="false" afterPath="$PROJECT_DIR$/front/src/styles/Header.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/src/styles/Settle.scss" beforeDir="false" afterPath="$PROJECT_DIR$/front/src/styles/Settle.scss" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -27,7 +32,7 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../blog-pjt-insoo/wmv-pjt/front" />
     <property name="nodejs_package_manager_path" value="npm" />
   </component>
   <component name="RecentsManager">
@@ -61,7 +66,7 @@
       <workItem from="1598701147754" duration="1221000" />
       <workItem from="1599004017460" duration="14522000" />
       <workItem from="1599967508957" duration="39303000" />
-      <workItem from="1600073188123" duration="4034000" />
+      <workItem from="1600073188123" duration="10575000" />
     </task>
     <servers />
   </component>

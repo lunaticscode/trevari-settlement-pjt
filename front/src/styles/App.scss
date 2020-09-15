@@ -1,7 +1,9 @@
 @import "extend";
+@import url(//fonts.googleapis.com/earlyaccess/notosanskr.css);
+
 body {
   background-color: #eeeeee;
-
+  font-family: "Noto Sans KR", sans-serif !important;
 }
 a{
   text-decoration: none;
@@ -11,7 +13,7 @@ a:active{
      color:$main-line-color;
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 800px) {
   #AppLayout{
     z-index: -1;
     min-width:320px;
@@ -23,14 +25,14 @@ a:active{
   }
 }
 
-@media only screen and (min-width: 601px) {
+@media only screen and (min-width: 801px) {
   #AppLayout{
     z-index: -1;
     position: absolute; left:0px; top:0px;
-    width:600px; height: max-content;
+    width:800px; height: max-content;
     padding-bottom:15px;
     border-bottom-right-radius: 20px; border-bottom-left-radius: 20px;
     background: $main-background2;
-    margin-left: calc( 50% - 300px );
+    margin-left: calc( 50% - 400px );
   }
 }

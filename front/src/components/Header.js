@@ -45,6 +45,7 @@ export default class Header extends React.Component {
                 <div id="TopSection">
                     <div id="MainLogo">
                         <img id="AppLogo" src={"/img/AppLogo.png"}/>
+                        <div id="AppLogo_text">모두의 정산</div>
                     </div>
                     <Link to={"/login"}>
                         <div id="LoginBtn">로그인</div>
