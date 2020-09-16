@@ -26,15 +26,32 @@ export default class Settle extends React.Component {
         let titleText = e.target.value;
         this.setState({ settleFormTitle: titleText, });
         this.state.settleFormInfo['title'] = titleText;
-        //console.log(this.state.settleFormInfo);
     }
 
+    foldUpDown(e) {
+        console.log('click fold icon');
+        let MainSettleForm = document.getElementById("SettleFormLayout");
+        let nowForm_state = MainSettleForm.classList.value;
+
+        if( nowForm_state === '' ){ MainSettleForm.classList.add('moveUp'); }
+        else{ MainSettleForm.classList.remove('moveUp'); }
+
+        if(e.target.classList.value === '' || e.target.classList.value==='rotate_2'){
+            e.target.classList.remove('rotate_2');
+            e.target.classList.add('rotate_1');
+        }else{
+            e.target.classList.remove('rotate_1');
+            e.target.classList.add('rotate_2');
+        }
+    }
 
     selectMeetCnt(e) {
         let selectedMeetCntIndex = e.target.selectedIndex;
         this.setState({ selectedMeetCnt: selectedMeetCntIndex, });
         this.state.settleFormInfo['formCnt'] = selectedMeetCntIndex;
-        //console.log(this.state.settleFormInfo);
+        localStorage.setItem("formInfo", JSON.stringify(this.state.settleFormInfo));
+        document.getElementById("SettleFormLayout").classList.add('moveUp');
+        document.getElementById("arrow_icon_img").classList.add('rotate_1');
     }
 
     inputPersonName_change(e) {
@@ -52,10 +69,8 @@ export default class Settle extends React.Component {
                     this.setState({settleContent_personName_Text : '',});
                     e.target.value = '';
                     this.state.settleFormInfo['personList'] = this.state.settleContent_people_Array;
-                    //console.log(this.state.settleFormInfo);
                 }
             }
-
     }
 
     personName_pop(e) {
@@ -72,10 +87,19 @@ export default class Settle extends React.Component {
     }
 
     componentDidMount() {
+        let savedInfo = null;
+        ( localStorage.getItem("formInfo") )  ? savedInfo = JSON.parse( localStorage.getItem("formInfo") ) : savedInfo = null;
 
+        if(savedInfo) {
+            this.setState({
+                settleFormTitle : savedInfo['title'],  settleContent_people_Array : savedInfo['personList'],
+                settleFormInfo : savedInfo,
+            });
+        }
     }
 
     render() {
+
         return (
           <div id="SettleLayout">
               <div id="SettleFormLayout">
@@ -83,11 +107,12 @@ export default class Settle extends React.Component {
                      <div>
                          <div className="inputTitle">모임 이름</div>
                          <input  placeholder="15자 이내" onChange={this.inputFormTitle} className="inputForm_title" />
+                         <img id="arrow_icon_img" onClick={this.foldUpDown} src="/img/arrow_icon.png" />
                      </div>
                      <br/>
                      <div>
                          <div className="inputTitle">참석자 이름</div>
-                         <input className="inputForm" onChange={this.inputPersonName_change} onKeyUp={this.inputPersonName_keyup} placeholder="이름 입력 후 Enter" />
+                         <input className="inputForm_personName" onChange={this.inputPersonName_change} onKeyUp={this.inputPersonName_keyup} placeholder="이름 입력 후 Enter" />
                          <br/>
                          <div id="personName_Layout">
                              {

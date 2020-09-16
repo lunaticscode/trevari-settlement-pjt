@@ -20,7 +20,6 @@ export default class SettleForm extends Component {
     render() {
         let form_cnt = this.props.FormInfo['formCnt'];
         let formInfo_array = new Array(form_cnt).fill(this.props.FormInfo);
-        console.log(form_cnt);
         return (
             <div>
                 {formInfo_array.map((elem, index) => {
@@ -41,5 +40,5 @@ export default class SettleForm extends Component {
 }
 
 SettleForm.defaultProps = {
-    FormInfo : {},
+    FormInfo : ( localStorage.getItem("formInfo") ) ? JSON.parse( localStorage.getItem("formInfo") ) : {},
 };
