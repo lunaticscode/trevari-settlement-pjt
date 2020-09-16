@@ -25,7 +25,11 @@ font.bold{
 .small-icon{
   width: 17px; height:17px;
 }
-
+.settle_icon{
+  display: inline-block; position: relative; float: right;
+  width: 20px; height: 20px;
+  margin-right:15px;
+}
 
 
 @keyframes spinnig {

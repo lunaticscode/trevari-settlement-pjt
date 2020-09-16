@@ -1,5 +1,7 @@
 @import "extend";
 
+
+
 .innerForm_indexBox{
   display: inline-block; padding:3px 6px; border-radius: 10px;
   background: #383a3f; margin-top:2px; margin-bottom: 2px;
@@ -9,9 +11,16 @@
   font-size:11px;
 }
 
+
+
+.innerFormContent{
+
+}
+
 .innerForm_title{
   margin-left:10px; margin-top:10px;
-  display: inline-block; max-width:80%;
+  display: inline-block; width:95%;
+  //max-width: 500px;
   border-radius: 5px;
   padding:5px 10px; color:#eeeeee;
   font-size:13px;
@@ -22,7 +31,7 @@
 .innerForm_personName{
   display: inline-block;
   margin-right:5px; margin-bottom:5px; padding:3px 6px;
-  border-radius: 5px; border: 2px solid gray;
+  border-radius: 5px; border: 1px solid gray;
   font-size:12px; color:gray; text-align: center; font-width: 600;
 
 }

@@ -51,6 +51,7 @@ export default class Settle extends React.Component {
         this.state.settleFormInfo['formCnt'] = selectedMeetCntIndex;
         localStorage.setItem("formInfo", JSON.stringify(this.state.settleFormInfo));
         document.getElementById("SettleFormLayout").classList.add('moveUp');
+        document.getElementById("arrow_icon_img").classList.remove('rotate_2');
         document.getElementById("arrow_icon_img").classList.add('rotate_1');
     }
 
