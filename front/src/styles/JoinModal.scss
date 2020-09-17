@@ -1,35 +1,105 @@
 @import "extend";
 
+
 #JoinModalLayout{
   animation-name: fade-in;
   animation-duration: 2s;
   animation-fill-mode: backwards;
   position: absolute;
   background: linear-gradient(90deg, rgba(198,198,198,0.23322832550989148) 0%, rgba(185,185,185,1) 100%);;
-  background: #3E3C42;
+  background: $main-background2;
   //background: #26272b;
   //border: 3px solid white;
-  margin-top:30px; border-radius: 10px;
-  opacity: 0.9;
+  margin-top:30px; border-radius: 15px;
+  opacity: 1;
 }
 
-#JoinModalLayout{ width:95%; margin-left:2.5%;}
-#JoinModalContent{ padding:10px; }
+
+
+#JoinModalLayout{ width:94%; margin-left:2%;
+  box-shadow: 6px 6px 6px dimgray;
+}
+
+@media screen and (min-width: 550px) {
+  #JoinModalLayout{
+    width:550px; margin-left: calc( 50% - 275px );
+  }
+}
+
+
+@keyframes slide-from-left {
+  from{position:relative; left:0px; opacity: 1;} to{position:relative; left:-100%; opacity: 0;}
+}
+
+@keyframes slide-from-right {
+  from{position:relative; left:100%; opacity: 0;} to{position:relative; left:0px; opacity: 1;}
+}
+
+#JoinModalContent{
+  animation-name: fade-in; animation-duration: 1s; animation-fill-mode: forwards;
+  padding:10px;
+}
+
+#JoinModalContent.slide-left{
+  animation-name: slide-from-left; animation-fill-mode: forwards;  animation-duration: 1s;
+}
+#JoinModalContent.slide-right{
+  animation-name: slide-from-right; animation-fill-mode: forwards;  animation-duration: 1s;
+}
 
 #title{ font-size:18px; margin-left:10px; margin-top:15px; margin-bottom:15px; font-weight: 600; }
 
 .JoinInput{
-  width:90%; font-size:17px; color:white; font-weight: 500;
+  width:90%; font-size:20px; color:white; font-weight: 500;
   margin-bottom:20px; margin-left:4%; outline: none;
   background: none; border: none; border-bottom: 2px solid silver;
 }
 .JoinInput:nth-child(1) {
   margin-top:30px;
 }
+.JoinInput::placeholder{
+  font-size:16px;
+}
+
+#JoinProgressStatus_layout{
+  margin-top:-15px;
+  width:95%; margin-left:2.5%;
+  text-align: center;
+}
+.ProgressBar{
+  background: #eeeeee; opacity: 0.3;
+  display: inline-block;
+  width:31%; height:5px;
+}
+.ProgressBar:nth-child(1){
+  border-top-left-radius: 5px; border-bottom-left-radius: 5px;
+}
+.ProgressBar:nth-child(2){
+  margin:0px 1.5%;
+}
+.ProgressBar:nth-child(3){
+  border-top-right-radius: 5px; border-bottom-right-radius: 5px;
+}
+
+#JoinGuide_layout{
+  margin-left:20px; margin-bottom:50px;
+
+}
+#main_ment{
+  margin-bottom:15px; font-size:23px;
+}
+#sub_ment{
+  font-size:14px; color:gray;
+}
+
+#JoinNextStep_btn{
+  text-align: center; font-weight: 600;
+  width:85%; margin-left:7.5%; padding:5px 0px; margin-bottom:10px; margin-top:20px;
+  background: $logo-background2; border-radius: 10px;
+}
 
 #registBtn{
-  background: lightslategray;
   width:90%;  margin:15px 5%; border-radius: 5px; height:40px; line-height: 40px;
   text-align: center; font-size:16px; font-weight: 600;
-
+  background: $logo-background2;
 }

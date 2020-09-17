@@ -5,4 +5,6 @@ from user import views
 urlpatterns = [
     path('users/', views.JoinView.as_view()),
     path('users/login', views.LoginView.as_view()),
+    path('users/check/email', views.CheckEmailView.as_view()),
+    path('users/check/name', views.CheckNicknameView.as_view()),
 ]

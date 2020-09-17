@@ -12,27 +12,18 @@ a{
 a:active{
      color:$main-line-color;
 }
+#AppLayout{
+  z-index: -1;
+  position: absolute; left:0px; top:0px;
+  padding-bottom:15px;
+  border-bottom-right-radius: 20px; border-bottom-left-radius: 20px;
+  background: $main-background2;
+}
 
 @media only screen and (max-width: 800px) {
-  #AppLayout{
-    z-index: -1;
-    min-width:320px;
-    position: absolute; left:0px; top:0px;
-    width:100%; height: max-content;
-    padding-bottom:15px;
-    border-bottom-right-radius: 20px; border-bottom-left-radius: 20px;
-    background: $main-background2;
-  }
+  #AppLayout{ width:100%; height: max-content; min-width:320px;}
 }
 
 @media only screen and (min-width: 801px) {
-  #AppLayout{
-    z-index: -1;
-    position: absolute; left:0px; top:0px;
-    width:800px; height: max-content;
-    padding-bottom:15px;
-    border-bottom-right-radius: 20px; border-bottom-left-radius: 20px;
-    background: $main-background2;
-    margin-left: calc( 50% - 400px );
-  }
+  #AppLayout{ width:800px; height: max-content; margin-left: calc( 50% - 400px ); }
 }

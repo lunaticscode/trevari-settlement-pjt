@@ -3,7 +3,35 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializers import UserSerializer
 from rest_framework import status
-import bcrypt
+
+
+class CheckEmailView(APIView):
+    """
+    POST /api/check/email
+    """
+    def post(self, request):
+        if User.objects.filter(email=request.data['email']):
+            content = {'sign': 'revoke', 'message': '(!) This Email is already exist'}
+            return Response(content, status=status.HTTP_200_OK)
+
+        else:
+            content = {'sign': 'grant', 'message': 'grant'}
+            return Response(content, status=status.HTTP_200_OK)
+
+
+class CheckNicknameView(APIView):
+    """
+    POST /api/check/name
+    """
+    def post(self, request):
+        if User.objects.filter(name=request.data['name']):
+            content = {'sign': 'revoke', 'message': '(!) This Nickname is already exist'}
+            return Response(content, status=status.HTTP_200_OK)
+
+        else:
+            content = {'sign': 'grant', 'message': 'grant'}
+            return Response(content, status=status.HTTP_200_OK)
+
 
 class JoinView(APIView):
     """
@@ -21,10 +49,14 @@ class JoinView(APIView):
 
         else:
             if post_serializer.is_valid():
-                post_serializer.save()
+                user = post_serializer.save()
                 content = {'userName': request.data['name'], 'message': 'success'}
-                return Response(content, status=status.HTTP_201_CREATED)
+                if user:
+                    return Response(content, status=status.HTTP_201_CREATED)
 
+            else:
+                content = {'message': 'grant'}
+                return Response(content, status=status.HTTP_200_OK)
 
 
 class LoginView(APIView):
