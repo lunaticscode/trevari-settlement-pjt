@@ -2,13 +2,17 @@ import React from 'react';
 import "../styles/JoinModal.scss";
 import crypto from '../CryptoInfo';
 import Fetch from "../Fetch";
+import { connect } from 'react-redux';
+import { modal_open, modal_close } from '../actions';
 
-export default class JoinModal extends React.Component {
+class JoinModal extends React.Component {
     constructor(props){
         super(props);
         this.state = {
             joinFlagArray : new Array(4).fill(false),
-            joinEmail : '', joinNickname: '', joinPw: '',
+            joinEmail : '',
+            joinNickname: '',
+            joinPw: '',
             joinStatus : -1,
             JoinNextStepBtn_color : 'silver',
         };
@@ -51,7 +55,6 @@ export default class JoinModal extends React.Component {
         ( inputNickname_flag ) ? e.target.style.borderBottom = "2px solid rgb(70,236,231)" : e.target.style.borderBottom = "2px solid rgb(255, 124, 140)";
         ( inputNickname_flag ) ? this.setState({joinNickname: e.target.value}) : this.setState({joinNickname : ''});
         ( inputNickname_flag ) ? this.state.JoinNextStepBtn_color = '' : this.state.JoinNextStepBtn_color = 'silver';
-        // console.log(this.state.joinFlagArray);
     }
 
     inputJoinPassword(e){
@@ -88,7 +91,6 @@ export default class JoinModal extends React.Component {
         ( inputPwConfirm_flag ) ? this.state.joinFlagArray[3] = true : this.state.joinFlagArray[3] = false;
         ( inputPwConfirm_flag ) ? this.state.joinPw = pw_confirm_value : this.state.joinPw = '';
         ( inputPwConfirm_flag ) ? e.target.style.borderBottom = "2px solid rgb(70,236,231)" : e.target.style.borderBottom = "2px solid rgb(255, 124, 140)";
-
     }
 
 
@@ -114,12 +116,21 @@ export default class JoinModal extends React.Component {
                  check_result.then(res=> {
                      console.log(res);
                      //* API 서버 off 상태일 경우, 서버 에러 Modal 오픈.
-                     if(res.toString().trim().indexOf('Error') !== -1 ){ console.log( '(!) SERVER Error '); return; }
+                     if(res.toString().trim().indexOf('Error') !== -1 ){
+                         console.log( '(!) SERVER Error ');
+                         return;
+                     }
 
                      if(res['sign'] === 'grant') { this.setState({joinStatus : now_joinStep, JoinNextStepBtn_color:'silver'}); }
                      else{
                          //* 중복일 경우,
                          console.log('revoke => Alert Modal open...');
+                        let dupleIndex_kor = ( api_dir === 'email' ) ? '이메일' : '닉네임';
+                        let AlertText = '(!) 이미 등록된 '+ dupleIndex_kor + '입니다.';
+                        let topPosition = window.innerHeight;
+                         this.props.modalOpen(AlertText, topPosition);
+                             //document.getElementById("AlertModal_layout").classList.remove("slide-from-left");
+                             //document.getElementById("AlertModal_layout").classList.add("fadeout");
                          ( api_dir === 'email' ) ? this.setState({joinEmail : ''}) : this.setState({joinNickname : ''});
                         this.setState({JoinNextStepBtn_color:'silver'});
                         document.getElementById("input_"+joinTitleArray[now_joinStep]).style.borderBottomColor = 'rgb(255, 124, 140)';
@@ -165,6 +176,7 @@ export default class JoinModal extends React.Component {
 
                 //* API 서버 off 상태일 경우, 서버 에러 Modal 오픈.
                 if(res.toString().trim().indexOf('Error') !== -1 ){
+
                     console.log( '(!) SERVER Error '); return;
                 }
 
@@ -227,16 +239,19 @@ export default class JoinModal extends React.Component {
 
         let JoinInputElems = document.getElementsByClassName("JoinInput");
 
+
         if(this.state.joinStatus === -1 || this.state.joinStatus === 0 ){
             for(var i = 0; i<JoinInputElems.length; i++){
                 if( i == (this.state.joinStatus+1) ){ JoinInputElems[i].style.display = 'block'; }
                 else{ JoinInputElems[i].style.display = 'none'; }
             }
         }else{
-            for(var i = 0; i<JoinInputElems.length; i++){
-                if( i == 2 || i == 3 ){ JoinInputElems[i].style.display = 'block'; }
-                else{ JoinInputElems[i].style.display = 'none'; }
-            }
+            setTimeout(function() {
+                for(var i = 0; i<JoinInputElems.length; i++){
+                    if( i == 2 || i == 3 ){ JoinInputElems[i].style.display = 'block'; }
+                    else{ JoinInputElems[i].style.display = 'none'; }
+                }
+            }, 1000);
         }
 
     }
@@ -282,3 +297,13 @@ export default class JoinModal extends React.Component {
         );
     }
 }
+
+let mapDispatchToProps = (dispatch) => {
+    return {
+        modalOpen: (text, topPosition) => dispatch(modal_open(text, topPosition)),
+        modalClose: () => dispatch(modal_close())
+    }
+}
+JoinModal = connect(undefined, mapDispatchToProps)(JoinModal);
+
+export default JoinModal

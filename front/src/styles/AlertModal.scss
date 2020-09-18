@@ -1,0 +1,23 @@
+@import 'extend';
+
+@keyframes modal-open-1 {
+  from{margin-left:-100%;} to{margin-left:5%;}
+}
+@keyframes modal-fadeout {
+  from{opacity: 1} to{opacity: 0; display: none;}
+}
+
+#AlertModal_layout{
+  width:90%; margin-left:5%; text-align: center;
+  color:white; font-weight: 600; font-size:15px; padding:15px 0px;
+  position: absolute;
+  border-radius: 10px;
+  background: $alert-modal-background;
+}
+#AlertModal_layout.slide-from-left{
+  animation-name: modal-open-1; animation-fill-mode: forwards; animation-duration: 500ms;
+}
+
+#AlertModal_layout.slide-from-left.fadeout{
+  animation-name: modal-fadeout; animation-duration: 1s; animation-fill-mode: forwards; animation-delay: 1500ms;
+}

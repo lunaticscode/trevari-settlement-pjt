@@ -8,7 +8,10 @@ import Home from "./Home";
 import LoginModal from "./LoginModal";
 import JoinModal from "./JoinModal";
 import Account from "./Account";
-class App extends React.Component {
+import AlertModal from './AlertModal';
+
+
+export default class App extends React.Component {
     render() {
         return (
             <Router>
@@ -23,11 +26,13 @@ class App extends React.Component {
                         <Route exact={true} path="/login" component={LoginModal}/>
                         <Route exact={true} path="/join" component={JoinModal}/>
                     </Switch>
-
+                    <AlertModal/>
             </div>
             </Router>
         );
     }
 }
 
-export default App;
+
+
+
