@@ -12,7 +12,7 @@ const webpack = require('webpack');
 
 module.exports = {
 
-    entry: './src/todos.js',
+    entry: './src/index.js',
     output: {
         path: __dirname + '/public',
         filename: 'bundle.js'

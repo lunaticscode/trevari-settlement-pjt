@@ -12,6 +12,13 @@ import AlertModal from './AlertModal';
 
 
 export default class App extends React.Component {
+    componentDidMount() {
+        console.log(localStorage);
+        console.log(localStorage.length);
+        let AccessToken = localStorage.getItem('AccessToken');
+        ( AccessToken ) ? console.log('need to connect Token API ..... ') : console.log('no token');
+
+    }
     render() {
         return (
             <Router>

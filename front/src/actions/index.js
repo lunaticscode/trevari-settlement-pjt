@@ -10,6 +10,6 @@ export function modal_open(text, topPosition) {
 
 export function modal_close() {
     return {
-        type: ModalClose
+        type: ModalClose,
     };
 }

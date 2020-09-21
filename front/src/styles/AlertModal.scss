@@ -13,11 +13,12 @@
   position: absolute;
   border-radius: 10px;
   background: $alert-modal-background;
+
 }
 #AlertModal_layout.slide-from-left{
-  animation-name: modal-open-1; animation-fill-mode: forwards; animation-duration: 500ms;
+  animation-name: modal-open-1;  animation-fill-mode: forwards; animation-duration: 300ms;
 }
 
-#AlertModal_layout.slide-from-left.fadeout{
-  animation-name: modal-fadeout; animation-duration: 1s; animation-fill-mode: forwards; animation-delay: 1500ms;
+#AlertModal_layout.fadeout{
+  animation-name: modal-fadeout; animation-duration: 500ms; animation-fill-mode: forwards;
 }

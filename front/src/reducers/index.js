@@ -10,18 +10,17 @@ const counterInitialState = {
 
 const modal = (state = counterInitialState, action) => {
     switch(action.type) {
-
         case ModalOpen:
             return Object.assign({}, state, {
                 displayStatus: 'block',
                 text : action.text,
                 topPosition: action.topPosition,
-                addClass : action.addClass,
+                animationClass : 'slide-from-left',
             });
-
         case ModalClose:
             return Object.assign({}, state, {
-                displayStatus: 'none',
+                displayStatus: 'block',
+                animationClass: 'fadeout',
             });
         default:
             return state;

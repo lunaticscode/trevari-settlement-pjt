@@ -3,6 +3,24 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializers import UserSerializer
 from rest_framework import status
+import jwt
+import os, json
+from pathlib import Path
+from django.core.exceptions import ImproperlyConfigured
+BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
+
+secret_file = os.path.join(BASE_DIR, 'secrets.json')
+
+with open(secret_file) as f:
+    secrets = json.loads(f.read())
+
+def get_secret(setting, secrets=secrets):
+    try:
+        return secrets[setting]
+    except KeyError:
+        error_msg = "Set the {} environment variable".format(setting)
+        raise ImproperlyConfigured
+
 
 
 class CheckEmailView(APIView):
@@ -58,6 +76,8 @@ class JoinView(APIView):
                 content = {'message': 'grant'}
                 return Response(content, status=status.HTTP_200_OK)
 
+SECRET_KEY = get_secret("SECRET_KEY")
+JWT_ALGORITHM = get_secret("JWT_ALGORITHM")
 
 class LoginView(APIView):
     """
@@ -66,7 +86,13 @@ class LoginView(APIView):
     def post(self, request):
         if User.objects.filter(email=request.data['email']):
             if User.objects.filter(password=request.data['password']):
-                content = {"sign": "grant", "message": "success to login"}
+
+                # --- JWT Token Generating section --- #
+                UserName = User.objects.get(email=request.data['email']).name
+                token = jwt.encode(request.data, SECRET_KEY, JWT_ALGORITHM)
+                token_str = token.decode('utf-8')
+                print(jwt.decode(token_str, SECRET_KEY, JWT_ALGORITHM))
+                content = {"sign": "grant", "UserName": UserName, "message": "success to login", "token": token}
                 return Response(content, status=status.HTTP_200_OK)
 
             else:

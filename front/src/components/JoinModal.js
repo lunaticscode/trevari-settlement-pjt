@@ -4,6 +4,7 @@ import crypto from '../CryptoInfo';
 import Fetch from "../Fetch";
 import { connect } from 'react-redux';
 import { modal_open, modal_close } from '../actions';
+import Sleep from "../Sleep";
 
 class JoinModal extends React.Component {
     constructor(props){
@@ -98,6 +99,7 @@ class JoinModal extends React.Component {
         if(this.state.joinStatus === 1){
             let final_flag = this.state.joinFlagArray.every(elem => elem === true);
             ( final_flag ) ? console.log('go regist function....') : console.log('revoke');
+            this.regist();
             return;
         }
         let now_joinStep = this.state.joinStatus + 1;
@@ -112,25 +114,28 @@ class JoinModal extends React.Component {
                  let api_dir = (now_joinStep === 0) ? "email" : "name";
                  let post_data = (now_joinStep === 0) ? {email: this.state.joinEmail} : {name: this.state.joinNickname};
 
-                 let check_result = Fetch.fetch_api('users/check/'+api_dir, 'POST', post_data );
+                 let check_result = Fetch.fetch_api('users/check/'+api_dir, 'POST', post_data);
                  check_result.then(res=> {
                      console.log(res);
                      //* API 서버 off 상태일 경우, 서버 에러 Modal 오픈.
                      if(res.toString().trim().indexOf('Error') !== -1 ){
                          console.log( '(!) SERVER Error ');
+                         let AlertText = '(!) 서버에 오류가 발생했습니다.<br/>관리자에게 문의해주세요.';
+                         let topPosition = window.innerHeight;
+                         this.props.modalOpen(AlertText, topPosition);
                          return;
                      }
 
                      if(res['sign'] === 'grant') { this.setState({joinStatus : now_joinStep, JoinNextStepBtn_color:'silver'}); }
                      else{
-                         //* 중복일 경우,
-                         console.log('revoke => Alert Modal open...');
+                        //* 중복일 경우,
+                        console.log('revoke => Alert Modal open...');
                         let dupleIndex_kor = ( api_dir === 'email' ) ? '이메일' : '닉네임';
                         let AlertText = '(!) 이미 등록된 '+ dupleIndex_kor + '입니다.';
                         let topPosition = window.innerHeight;
-                         this.props.modalOpen(AlertText, topPosition);
-                             //document.getElementById("AlertModal_layout").classList.remove("slide-from-left");
-                             //document.getElementById("AlertModal_layout").classList.add("fadeout");
+                        this.props.modalOpen(AlertText, topPosition);
+
+                        Sleep.sleep_func(1500).then(() => this.props.modalClose());
                          ( api_dir === 'email' ) ? this.setState({joinEmail : ''}) : this.setState({joinNickname : ''});
                         this.setState({JoinNextStepBtn_color:'silver'});
                         document.getElementById("input_"+joinTitleArray[now_joinStep]).style.borderBottomColor = 'rgb(255, 124, 140)';
@@ -141,7 +146,6 @@ class JoinModal extends React.Component {
              else{
                  //* 비밀번호, 비밀번호 확인 진행.
              }
-
         }
 
         else{
@@ -176,7 +180,6 @@ class JoinModal extends React.Component {
 
                 //* API 서버 off 상태일 경우, 서버 에러 Modal 오픈.
                 if(res.toString().trim().indexOf('Error') !== -1 ){
-
                     console.log( '(!) SERVER Error '); return;
                 }
 
