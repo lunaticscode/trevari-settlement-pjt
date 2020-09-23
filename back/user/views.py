@@ -22,7 +22,6 @@ def get_secret(setting, secrets=secrets):
         raise ImproperlyConfigured
 
 
-
 class CheckEmailView(APIView):
     """
     POST /api/check/email
@@ -76,8 +75,10 @@ class JoinView(APIView):
                 content = {'message': 'grant'}
                 return Response(content, status=status.HTTP_200_OK)
 
+
 SECRET_KEY = get_secret("SECRET_KEY")
 JWT_ALGORITHM = get_secret("JWT_ALGORITHM")
+
 
 class LoginView(APIView):
     """
@@ -89,9 +90,10 @@ class LoginView(APIView):
 
                 # --- JWT Token Generating section --- #
                 UserName = User.objects.get(email=request.data['email']).name
-                token = jwt.encode(request.data, SECRET_KEY, JWT_ALGORITHM)
-                token_str = token.decode('utf-8')
-                print(jwt.decode(token_str, SECRET_KEY, JWT_ALGORITHM))
+                #UserEmail = request.data['email']
+                token = jwt.encode({"user_email": request.data['email']}, SECRET_KEY, JWT_ALGORITHM)
+                #token_str = token.decode('utf-8')
+                #print(jwt.decode(token_str, SECRET_KEY, JWT_ALGORITHM))
                 content = {"sign": "grant", "UserName": UserName, "message": "success to login", "token": token}
                 return Response(content, status=status.HTTP_200_OK)
 
@@ -102,3 +104,28 @@ class LoginView(APIView):
             content = {"sign": "revoke", "revoke_index": "email", "message": "(!) 존재하지 않는 이메일입니다."}
             return Response(content, status=status.HTTP_200_OK)
 
+
+# class PasswordChange(APIView):
+#        """
+#        PUT /api/users/changepassword
+#        """
+#        def put(self, request):
+#             token = request.data['token']
+#             userName = request.data['token']
+
+
+class TokenAuthView(APIView):
+       """
+       POST /api/token/auth
+       """
+       def post(self, request):
+           token = request.data['token']
+           userName = request.data['userName']
+           decodeToken = jwt.decode(token, SECRET_KEY, JWT_ALGORITHM)
+           AuthUserName = User.objects.get(email=decodeToken['user_email']).name
+           if userName == AuthUserName:
+               content = {"auth_result": "grant", "user_email": decodeToken['user_email'], "message": "유저 인증 성공"}
+               return Response(content, status=status.HTTP_200_OK)
+           else:
+               content = {"auth_result": "revoke", "message": "(!) 다시 로그인해주세요."}
+               return Response(content, status=status.HTTP_200_OK)

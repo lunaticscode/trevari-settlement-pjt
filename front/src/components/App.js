@@ -9,31 +9,94 @@ import LoginModal from "./LoginModal";
 import JoinModal from "./JoinModal";
 import Account from "./Account";
 import AlertModal from './AlertModal';
-
+import Cookie from "../Cookie";
+import Fetch from "../Fetch";
+import Mypage from "./Mypage";
 
 export default class App extends React.Component {
-    componentDidMount() {
-        console.log(localStorage);
-        console.log(localStorage.length);
-        let AccessToken = localStorage.getItem('AccessToken');
-        ( AccessToken ) ? console.log('need to connect Token API ..... ') : console.log('no token');
+    constructor(props){
+        super(props);
+        this.state = {
+            appWidth: window.innerWidth,
+            userName: '',
+            movingTouch_X : -1,
+            startTouch_X : -1, endTouch_X : -1,
+        };
+        let auth_data = { 'token': Cookie.get_cookie("AccessToken"), 'userName': Cookie.get_cookie("UserName") };
+        let LoginStatus = ( Cookie.get_cookie('AccessToken') ) ? true : false;
+        if(LoginStatus) {
+            //console.log('Ready to start Token-Auth work....');
+
+            Fetch.fetch_api('token/auth', 'POST', auth_data)
+                .then(res => {
+                    if(res.toString().trim().indexOf('Error') !== -1 ){
+                        console.log('(!) 서버 에러 발생');
+                        return;
+                    }
+                    if(res['auth_result'] === 'grant'){
+                        this.setState({userName: Cookie.get_cookie('UserName')})
+                    }
+                });
+        }
+
+        this.AppTouchStart = this.AppTouchStart.bind(this);
+        this.AppTouchEnd = this.AppTouchEnd.bind(this);
+        this.AppTouchMove = this.AppTouchMove.bind(this);
+    }
+
+    componentDidUpdate(prevProps, prevState) {
 
     }
+    componentDidMount() {
+
+    }
+
+    AppTouchStart(e) {
+        //console.log(window.innerWidth);
+        //console.log('touch Start');
+        this.setState({startTouch_X : e.touches[0].clientX});
+    }
+    AppTouchEnd(e){
+        //console.log('touch End');
+        let now_appWidth = window.innerWidth;
+        //console.log(now_appWidth);
+        let endTouch_X = this.state.movingTouch_X;
+        this.setState({endTouch_X : endTouch_X});
+        console.log(this.state.startTouch_X, endTouch_X);
+
+        let userSlide_result = Math.abs( this.state.startTouch_X - endTouch_X );
+        ( parseInt( userSlide_result ) >  ( now_appWidth / 3 ) ) ? console.log('change nextPage ~ !') : console.log('just slide....');
+
+    }
+    AppTouchMove(e){
+        this.setState({movingTouch_X : e.touches[0].clientX});
+    }
+
     render() {
+
         return (
             <Router>
-            <div id="AppLayout">
-                <Header></Header>
-                    <br/><br/><br/>
-                    <Switch>
-                        <Route exact={true} path="/" component={Home} />
-                        <Route exact={true} path="/settle" component={Settle} />
-                        <Route exact={true} path="/history" component={History} />
-                        <Route exact={true} path="/account" component={Account} />
-                        <Route exact={true} path="/login" component={LoginModal}/>
-                        <Route exact={true} path="/join" component={JoinModal}/>
-                    </Switch>
-                    <AlertModal/>
+            <div id="AppLayout"
+                 onTouchStart={this.AppTouchStart}
+                 onTouchEnd={this.AppTouchEnd}
+                 onTouchMove={this.AppTouchMove}
+            >
+                    <Header
+                        LoginUserName={this.state.userName}
+                    />
+                        <br/><br/><br/>
+                        <Switch>
+                            <Route exact={true} path="/" render={()=> <Home userName={this.state.userName} />} />
+                            <Route exact={true} path="/settle" component={Settle} />
+                            <Route exact={true} path="/history" component={History} />
+                            <Route exact={true} path="/account" component={Account} />
+                            <Route exact={true} path="/mypage" component={Mypage} />
+                            <Route exact={true} path="/login" component={LoginModal}/>
+                            <Route exact={true} path="/join" component={JoinModal}/>
+                        </Switch>
+
+                        <AlertModal/>
+
             </div>
             </Router>
         );

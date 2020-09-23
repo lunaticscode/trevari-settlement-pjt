@@ -4,19 +4,7 @@ import "../styles/AlertModal.scss";
 class AlertModal extends React.Component {
 
     componentDidUpdate(prevProps, prevState) {
-        console.log(prevProps);
-
-        // let animationClass_status = document.getElementById("AlertModal_layout").classList;
-        // if(animationClass_status.value == 'slide-from-left'){
-        //     setTimeout(function() {
-        //             animationClass_status.remove('slide-from-left');
-        //             animationClass_status.add('fadeout');
-        //     }, 1000);
-        // }else{
-        //     console.log('asd');
-        //     animationClass_status.remove('fadeout');
-        //     animationClass_status.add('slide-from-left');
-        // }
+        //console.log(prevProps);
     }
 
     render() {
@@ -34,7 +22,7 @@ class AlertModal extends React.Component {
 }
 
 let mapStateToProps = (state) => {
-    console.log(state);
+    //console.log(state);
     return {
         displayStatus: state.modal.displayStatus,
         text: state.modal.text,

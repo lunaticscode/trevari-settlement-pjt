@@ -1,0 +1,46 @@
+@import 'extend';
+
+@keyframes slide-from-bottom {
+    from{position: absolute; bottom:-100%; opacity: 0;} to{position: absolute; bottom:0px; opacity: 1;}
+}
+
+@keyframes slide-from-left {
+  from{position: absolute; left:-100%; opacity: 0;} to{position: absolute; left: 20px; opacity: 1;}
+
+}
+
+#Mypage_layout{
+
+}
+
+#MypageContent_layout{
+  animation-name: slide-from-bottom; animation-fill-mode: forwards; animation-duration: 750ms;
+  height:calc( 100% - 140px); width:100%; left:0px; background: linear-gradient(90deg, rgba(48,48,48,1) 0%, rgba(101,101,101,1) 100%);
+  border-top-right-radius: 75px;
+
+}
+
+#userInfo_layout{
+  margin-top:20px; opacity: 0;
+  animation-name: slide-from-left; animation-delay: 500ms; animation-duration: 1s; animation-fill-mode: forwards;
+}
+
+#userName{
+  font-size:35px; margin-bottom:10px; font-weight: 500;
+}
+#userEmail{
+  font-size:17px; margin-left:2px; font-weight: 400;
+}
+
+.ActionBtn{
+  background: $main-background2;
+  margin-top:20px; border-radius: 5px; width:130px; padding:5px 10px;
+  color:#eeeeee; text-align: center;
+  box-shadow: 2px 2px 5px black;
+}
+#Logout_btn{
+  margin-top:40px;
+}
+#passwordChange_btn{
+
+}

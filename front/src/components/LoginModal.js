@@ -6,6 +6,7 @@ import { modal_open, modal_close } from '../actions';
 import Sleep from "../Sleep";
 import Fetch from "../Fetch";
 import crypto from "../CryptoInfo";
+import Cookie from "../Cookie";
 
 class LoginModal extends React.Component {
 
@@ -39,6 +40,9 @@ class LoginModal extends React.Component {
     componentDidUpdate(prevProps, prevState) {
 
     }
+    componentDidMount(){
+
+    }
 
     Login() {
         let LoginFlag_array = [this.state.LoginEmail_flag, this.state.LoginPassword_flag];
@@ -58,7 +62,14 @@ class LoginModal extends React.Component {
             Fetch.fetch_api('users/login', 'POST',  LoginData)
                 .then(res=> {
                     //console.log(res);
-
+                    if(res.toString().trim().indexOf('Error') !== -1 ){
+                        let AlertText = '(!) 서버에 오류가 발생했습니다.<br/>관리자에게 문의해주세요.';
+                        let topPosition = window.innerHeight;
+                        this.props.modalOpen( AlertText, ( topPosition-30 ) );
+                        Sleep.sleep_func(1000).then(()=> this.props.modalClose());
+                        console.log( '(!) SERVER Error ');
+                        return;
+                    }
                     if(res['sign'] ==='grant') {
                         this.receiveToken(res);
                     }
@@ -83,10 +94,16 @@ class LoginModal extends React.Component {
 
     }
 
+    //* 로그인 성공 후, JWT 쿠키 저장 이벤트.
     receiveToken(api_result) {
         console.log('** Success to receive JWT-Token from Login API **');
-        console.log(api_result, api_result['token']);
+        //console.log(api_result, api_result['token']);
+        let user_name = api_result['UserName'], user_email = api_result['UserEmail'];
         let user_token = api_result['token'];
+        Cookie.set_cookie("UserName", user_name, 30);
+        Cookie.set_cookie("AccessToken", user_token, 30);
+        location.href='/';
+
     }
 
 
@@ -135,6 +152,7 @@ let mapDispatchToProps = (dispatch) => {
         modalClose: () => dispatch(modal_close())
     }
 }
+
 
 LoginModal = connect(undefined, mapDispatchToProps)(LoginModal);
 

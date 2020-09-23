@@ -25,13 +25,18 @@
   vertical-align: super;
 }
 
-#LoginBtn{
+#ActionBtn{
   float: right; margin-right:25px;
   padding:5px 15px; border-radius: 5px;
   background: none; font-weight: 500; font-size: 17px;
   color: $main-line-color; font-weight: 600;
   border:2px solid $main-line-color;
   display: inline-block;
+}
+#ActionBtn.mypage{
+  @extend #ActionBtn;
+  padding:3px 12px; border-color: silver;
+  color:silver;
 }
 
 #tabMenuSection{

@@ -40,6 +40,8 @@ export default class Header extends React.Component {
 
     render() {
 
+        let actionBtn_class = (this.props.LoginUserName) ? 'mypage' : ' ';
+
         return (
             <div id="HeaderLayout">
                 <div id="TopSection">
@@ -47,8 +49,8 @@ export default class Header extends React.Component {
                         <img id="AppLogo" src={"/img/AppLogo.png"}/>
                         <div id="AppLogo_text">모두의 정산</div>
                     </div>
-                    <Link to={"/login"}>
-                        <div id="LoginBtn">로그인</div>
+                    <Link to={ (this.props.LoginUserName) ?  "/mypage"  : "/login"}>
+                        <div id="ActionBtn" className={actionBtn_class}>{ (this.props.LoginUserName) ? '내 정보' : '로그인' }</div>
                     </Link>
                     </div>
 
@@ -62,4 +64,8 @@ export default class Header extends React.Component {
             </div>
         );
     }
+}
+
+Header.defaultProps = {
+    LoginUserName : null,
 }

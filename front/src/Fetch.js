@@ -15,7 +15,6 @@ export default class FetchUtil {
                  return result;
              }
              catch(e) {
-                 //console.log( e.toString() );
                  //* API 서버 off 상태일 경우, 'Type Error ~ ' 뱉어냄.
                  return e.toString();
              }
