@@ -2,7 +2,10 @@ import React from 'react';
 import '../styles/Header.scss';
 import { Link } from 'react-router-dom';
 import Home from "./Home";
-export default class Header extends React.Component {
+import {click_link} from "../actions";
+import {connect} from "react-redux";
+import App from "./App";
+class Header extends React.Component {
     constructor(props){
         super(props);
         this.state = {
@@ -27,6 +30,7 @@ export default class Header extends React.Component {
             tabMenu_doc[index].style.borderBottom = "0px solid gray";
         }
         });
+        this.props.clickLink(window.location.pathname);
     }
 
     componentDidMount() {
@@ -66,6 +70,17 @@ export default class Header extends React.Component {
     }
 }
 
+
 Header.defaultProps = {
     LoginUserName : null,
-}
+};
+
+let mapDispatchToProps = (dispatch) => {
+    return {
+        clickLink: (nowPage) => dispatch(click_link(nowPage))
+    }
+};
+
+Header = connect(undefined, mapDispatchToProps)(Header);
+
+export default Header;

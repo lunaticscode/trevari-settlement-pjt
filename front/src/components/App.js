@@ -12,8 +12,11 @@ import AlertModal from './AlertModal';
 import Cookie from "../Cookie";
 import Fetch from "../Fetch";
 import Mypage from "./Mypage";
+import {left_swipe, modal_close, modal_open, right_swipe} from "../actions";
+import {connect} from "react-redux";
 
-export default class App extends React.Component {
+
+class App extends React.Component {
     constructor(props){
         super(props);
         this.state = {
@@ -22,6 +25,8 @@ export default class App extends React.Component {
             movingTouch_X : -1,
             startTouch_X : -1, endTouch_X : -1,
         };
+        //location.href= this.state.pageStack[0];
+
         let auth_data = { 'token': Cookie.get_cookie("AccessToken"), 'userName': Cookie.get_cookie("UserName") };
         let LoginStatus = ( Cookie.get_cookie('AccessToken') ) ? true : false;
         if(LoginStatus) {
@@ -47,40 +52,49 @@ export default class App extends React.Component {
     componentDidUpdate(prevProps, prevState) {
 
     }
+
     componentDidMount() {
 
     }
 
     AppTouchStart(e) {
-        //console.log(window.innerWidth);
-        //console.log('touch Start');
         this.setState({startTouch_X : e.touches[0].clientX});
     }
+
     AppTouchEnd(e){
-        //console.log('touch End');
         let now_appWidth = window.innerWidth;
-        //console.log(now_appWidth);
         let endTouch_X = this.state.movingTouch_X;
         this.setState({endTouch_X : endTouch_X});
-        console.log(this.state.startTouch_X, endTouch_X);
 
+        let userSlide_direction = ( this.state.startTouch_X - endTouch_X > 0 ) ? 'right' : 'left';
         let userSlide_result = Math.abs( this.state.startTouch_X - endTouch_X );
-        ( parseInt( userSlide_result ) >  ( now_appWidth / 3 ) ) ? console.log('change nextPage ~ !') : console.log('just slide....');
+        let nowPage_path = window.location.pathname;
 
+        if( userSlide_result  >  ( now_appWidth / 3 ) && this.state.movingTouch_X !== -1 ) {
+            if(userSlide_direction === 'right') {
+                this.props.rightSwipe(nowPage_path);
+            }
+            else if(userSlide_direction === 'left'){
+                this.props.leftSwipe(nowPage_path);
+            }
+        }
+        //this.state.movingTouch_X = -1; this.state.startTouch_X = -1; this.state.endTouch_X = -1;
+        this.setState({movingTouch_X : -1, startTouch_X : -1, endTouch_X : -1,});
     }
-    AppTouchMove(e){
-        this.setState({movingTouch_X : e.touches[0].clientX});
-    }
+
+    AppTouchMove(e){ this.setState({movingTouch_X : e.touches[0].clientX}); }
 
     render() {
 
         return (
             <Router>
+
             <div id="AppLayout"
                  onTouchStart={this.AppTouchStart}
                  onTouchEnd={this.AppTouchEnd}
                  onTouchMove={this.AppTouchMove}
             >
+
                     <Header
                         LoginUserName={this.state.userName}
                     />
@@ -103,6 +117,14 @@ export default class App extends React.Component {
     }
 }
 
+let mapDispatchToProps = (dispatch) => {
+    return {
+        leftSwipe: (nowPage) => dispatch(left_swipe(nowPage)),
+        rightSwipe: (nowPage) => dispatch((right_swipe(nowPage)))
+    }
+};
 
+App = connect(undefined, mapDispatchToProps)(App);
 
+export default App;
 

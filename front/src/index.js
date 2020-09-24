@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Routes from "./Routes";
 import App from "./components/App";
+import PageStack from "./components/PageStack";
 import counterApp from "./reducers";
 import {Provider} from "react-redux";
 import {createStore} from "redux";
@@ -11,7 +12,8 @@ const store = createStore(counterApp);
 const rootElement = document.getElementById("root");
 ReactDOM.render(
     <Provider store={store}>
-                <App/>
+        <PageStack/>
+        <App/>
     </Provider>
                 , rootElement);
 

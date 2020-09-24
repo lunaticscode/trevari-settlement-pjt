@@ -1,4 +1,5 @@
-import { ModalOpen, ModalClose } from '../actions';
+import {ModalOpen, ModalClose, ClickLink} from '../actions';
+import { LeftSwipe, RightSwipe } from "../actions";
 import { combineReducers } from 'redux';
 
 const counterInitialState = {
@@ -6,6 +7,11 @@ const counterInitialState = {
     text : '',
     topPosition: -100,
     addClass: '',
+};
+
+const pageStackInitialState = {
+    direction: null,
+    nowPage : '/',
 };
 
 const modal = (state = counterInitialState, action) => {
@@ -27,6 +33,32 @@ const modal = (state = counterInitialState, action) => {
     }
 };
 
+const pageChange = (state = pageStackInitialState, action) => {
+    switch (action.type) {
+        case LeftSwipe:
+            //console.log(state);
+            return Object.assign({}, state, {
+                direction: 'left',
+                nowPage : action.nowPage,
+            });
+        case RightSwipe:
+            //console.log(state);
+            return Object.assign( {}, state,  {
+                direction: 'right',
+                nowPage : action.nowPage,
+            });
+
+        case ClickLink:
+            return Object.assign({}, state, {
+                direction: 'click',
+                nowPage: action.nowPage,
+            });
+
+        default:
+            return state;
+    }
+};
+
 
 // const extra = (state = { value: 'this_is_extra_reducer' }, action) => {
 //     switch(action.type) {
@@ -36,7 +68,7 @@ const modal = (state = counterInitialState, action) => {
 // };
 
 const counterApp = combineReducers({
-    modal,
+    modal, pageChange,
     //extra
 });
 
