@@ -27,11 +27,10 @@ class App extends React.Component {
         };
         //location.href= this.state.pageStack[0];
 
-        let auth_data = { 'token': Cookie.get_cookie("AccessToken"), 'userName': Cookie.get_cookie("UserName") };
         let LoginStatus = ( Cookie.get_cookie('AccessToken') ) ? true : false;
         if(LoginStatus) {
+            let auth_data = { 'token': Cookie.get_cookie("AccessToken"), 'userName': Cookie.get_cookie("UserName") };
             //console.log('Ready to start Token-Auth work....');
-
             Fetch.fetch_api('token/auth', 'POST', auth_data)
                 .then(res => {
                     if(res.toString().trim().indexOf('Error') !== -1 ){

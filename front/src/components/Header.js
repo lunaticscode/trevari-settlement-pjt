@@ -43,6 +43,7 @@ class Header extends React.Component {
         }
     }
 
+
     componentDidMount() {
         let now_tabIndex = this.state.tabPathArray.indexOf(this.props.appMoveInfo['nowPage']);
         document.getElementById("tab_"+now_tabIndex).classList.add('clicked');
@@ -50,6 +51,15 @@ class Header extends React.Component {
     }
 
     render() {
+        //* history.back() 이벤트 때,
+        //* window 실제 경로와 PageStack에서 관리중인 경로 불일치 시,
+        //* window 실제 경로로 다시 PageStack 재구성.
+        window.addEventListener('popstate',() => {
+            let now_pageStack = localStorage.getItem("PageStack").split(',');
+            if(now_pageStack[0] !== window.location.pathname) {
+                this.props.clickLink(window.location.pathname);
+            }
+        });
 
         let actionBtn_class = (this.props.LoginUserName) ? 'mypage' : ' ';
         return (
@@ -79,6 +89,7 @@ class Header extends React.Component {
     }
 }
 
+
 Header.defaultProps = {
     LoginUserName : null,
 };
@@ -91,6 +102,8 @@ const mapStateToProps = (state) => {
       appMoveInfo : state['pageChange'],
     }
 };
+
+
 
 let mapDispatchToProps = (dispatch) => {
     return {
