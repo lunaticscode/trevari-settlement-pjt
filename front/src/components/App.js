@@ -14,7 +14,7 @@ import Fetch from "../Fetch";
 import Mypage from "./Mypage";
 import {left_swipe, modal_close, modal_open, right_swipe} from "../actions";
 import {connect} from "react-redux";
-
+import PageStack from "./PageStack";
 
 class App extends React.Component {
     constructor(props){
@@ -43,10 +43,13 @@ class App extends React.Component {
                     }
                 });
         }
-
         this.AppTouchStart = this.AppTouchStart.bind(this);
         this.AppTouchEnd = this.AppTouchEnd.bind(this);
         this.AppTouchMove = this.AppTouchMove.bind(this);
+    }
+
+    componentWillReceiveProps(props){
+        console.log(props);
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -68,48 +71,53 @@ class App extends React.Component {
 
         let userSlide_direction = ( this.state.startTouch_X - endTouch_X > 0 ) ? 'right' : 'left';
         let userSlide_result = Math.abs( this.state.startTouch_X - endTouch_X );
-        let nowPage_path = window.location.pathname;
+        let prevChange_path = window.location.pathname;
 
-        if( userSlide_result  >  ( now_appWidth / 3 ) && this.state.movingTouch_X !== -1 ) {
+        if( userSlide_result > ( now_appWidth / 3 ) && this.state.movingTouch_X !== -1 ) {
+            let now_PageStackArray = ( localStorage.getItem("PageStack") )
+                                    ? localStorage.getItem("PageStack").split(',') : ['/', '/settle', '/history', '/account'];
+
             if(userSlide_direction === 'right') {
-                this.props.rightSwipe(nowPage_path);
+                let shiftElem = now_PageStackArray.shift(); now_PageStackArray.push(shiftElem);
+                let afterChange_path = now_PageStackArray[0];
+                this.props.rightSwipe(afterChange_path);
             }
             else if(userSlide_direction === 'left'){
-                this.props.leftSwipe(nowPage_path);
+                let popElem = now_PageStackArray.pop(); now_PageStackArray.unshift(popElem);
+                let afterChange_path = now_PageStackArray[0];
+                this.props.leftSwipe(afterChange_path);
             }
         }
-        //this.state.movingTouch_X = -1; this.state.startTouch_X = -1; this.state.endTouch_X = -1;
         this.setState({movingTouch_X : -1, startTouch_X : -1, endTouch_X : -1,});
     }
 
     AppTouchMove(e){ this.setState({movingTouch_X : e.touches[0].clientX}); }
 
     render() {
-
         return (
             <Router>
-
-            <div id="AppLayout"
-                 onTouchStart={this.AppTouchStart}
-                 onTouchEnd={this.AppTouchEnd}
-                 onTouchMove={this.AppTouchMove}
-            >
-
+                <div id="AppLayout"
+                     onTouchStart={this.AppTouchStart}
+                     onTouchEnd={this.AppTouchEnd}
+                     onTouchMove={this.AppTouchMove}
+                >
+                    <PageStack/>
                     <Header
                         LoginUserName={this.state.userName}
                     />
                         <br/><br/><br/>
                         <Switch>
                             <Route exact={true} path="/" render={()=> <Home userName={this.state.userName} />} />
-                            <Route exact={true} path="/settle" component={Settle} />
+                            <Route exact={true} path="/settle" component={Settle}/>
                             <Route exact={true} path="/history" component={History} />
                             <Route exact={true} path="/account" component={Account} />
                             <Route exact={true} path="/mypage" component={Mypage} />
                             <Route exact={true} path="/login" component={LoginModal}/>
                             <Route exact={true} path="/join" component={JoinModal}/>
+
                         </Switch>
 
-                        <AlertModal/>
+                    <AlertModal/>
 
             </div>
             </Router>
@@ -123,6 +131,7 @@ let mapDispatchToProps = (dispatch) => {
         rightSwipe: (nowPage) => dispatch((right_swipe(nowPage)))
     }
 };
+
 
 App = connect(undefined, mapDispatchToProps)(App);
 

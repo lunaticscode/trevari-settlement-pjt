@@ -11,7 +11,7 @@ const counterInitialState = {
 
 const pageStackInitialState = {
     direction: null,
-    nowPage : '/',
+    nowPage : ( localStorage.getItem("PageStack") ) ? localStorage.getItem("PageStack").split(',')[0] : '/',
 };
 
 const modal = (state = counterInitialState, action) => {

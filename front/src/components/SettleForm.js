@@ -13,7 +13,7 @@ export default class SettleForm extends Component {
 
     settleEdit(e) {
         let settleFormIndex = parseInt( e.target.id );
-        console.log(settleFormIndex, typeof(settleFormIndex));
+        //console.log(settleFormIndex, typeof(settleFormIndex));
         this.setState({nowEditIndex : settleFormIndex});
 
     }

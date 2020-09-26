@@ -53,11 +53,17 @@
 
 }
 
- .tabMenu:active{
-   border-bottom-color: $main-line-color;
-   color:$main-line-color;
- }
- .tabMenu:hover{
-   border-bottom-color: $main-line-color;
-   color:$main-line-color;
- }
+@keyframes border-expanding {
+  from{width:0px;opacity: 0; } to{width:100%; opacity: 1;}
+}
+.tabMenuBorder{
+  display: block; background: $main-line-color;
+  width: 0px; margin-top:3px;
+  height:2px;
+}
+.clicked{ color:$main-line-color; }
+
+.clickedBorder{
+  animation-name: border-expanding;
+  animation-duration: 750ms; animation-fill-mode: forwards;
+}

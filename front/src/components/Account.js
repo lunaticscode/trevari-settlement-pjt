@@ -1,10 +1,11 @@
-import React, {Component} from 'react';
+import React from 'react';
+import '../styles/Account.scss';
 
-export default class Account extends Component {
+export default class Account extends React.Component {
     render() {
         return (
-            <div>
-
+            <div id="AccountLayout">
+                [ ACCOUNT ]
             </div>
         );
     }

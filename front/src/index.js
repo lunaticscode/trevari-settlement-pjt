@@ -9,13 +9,15 @@ import {createStore} from "redux";
 
 const store = createStore(counterApp);
 
+
+
+//store.subscribe(handleChange);
 const rootElement = document.getElementById("root");
 ReactDOM.render(
     <Provider store={store}>
-        <PageStack/>
-        <App/>
+         <App/>
     </Provider>
-                , rootElement);
+    , rootElement);
 
 // if ('serviceWorker' in navigator) {
 //     window.addEventListener('load', () => {

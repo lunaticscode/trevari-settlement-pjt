@@ -10,12 +10,13 @@ export default class SettleEdit extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        ( prevProps.editIndex !== this.props.editIndex ) ? this.setState({displayStatus: 'block'}) : console.log('none');
+        ( prevProps.editIndex !== this.props.editIndex ) ? this.setState({displayStatus: 'block'}) : '';
     }
 
     componentDidMount() {
-        console.log('SettleEdit-component,  Mount', this.props.editIndex);
+        //console.log('SettleEdit-component,  Mount', this.props.editIndex);
     }
+
     render() {
         let modalMask_style = {
             display: this.state.displayStatus, height: window.innerHeight+'px',

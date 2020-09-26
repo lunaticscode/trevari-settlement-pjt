@@ -10,8 +10,6 @@ class Mypage extends React.Component {
             userEmail: '',
         };
 
-
-
         let auth_data = { 'token': Cookie.get_cookie("AccessToken"), 'userName': Cookie.get_cookie("UserName") };
         let LoginStatus = ( Cookie.get_cookie('AccessToken') ) ? true : false;
 
@@ -64,11 +62,8 @@ class Mypage extends React.Component {
                         <div id="userEmail">{this.state.userEmail}</div>
                         <div id="Logout_btn" className="ActionBtn" onClick={this.Logout}>로그아웃</div>
                         <div id="passwordChange_btn" className="ActionBtn" onClick={this.PasswordChange}>비밀번호 변경</div>
-
                     </div>
-
                 </div>
-
             </div>
         );
     }
