@@ -75,7 +75,8 @@ export default class Settle extends React.Component {
     }
 
     personName_pop(e) {
-        let personName_text = e.target.innerHTML;
+        let personName_text = e.target.getAttribute("value");
+        console.log(personName_text);
         let modified_array = this.state.settleContent_people_Array.filter(elem => elem !== personName_text);
         this.setState({settleContent_people_Array: modified_array,});
         this.state.settleFormInfo['personList'] = modified_array;
@@ -101,6 +102,20 @@ export default class Settle extends React.Component {
 
     render() {
 
+        window.addEventListener('scroll', function(e) {
+            // let scroll_position_Y  = document.documentElement.scrollTop;
+            // if(scroll_position_Y > 100 &&  document.getElementById("SettleFormLayout").classList.value === ''){
+            //     document.getElementById("SettleFormLayout").classList.add('moveUp');
+            //     document.getElementById("arrow_icon_img").classList.remove('rotate_2');
+            //     document.getElementById("arrow_icon_img").classList.add('rotate_1');
+            // }else if(scroll_position_Y < 10 && document.getElementById("SettleFormLayout").classList.value === 'moveUp'){
+            //     document.getElementById("SettleFormLayout").classList.remove('moveUp');
+            //     document.getElementById("arrow_icon_img").classList.remove('rotate_1');
+            //     document.getElementById("arrow_icon_img").classList.add('rotate_2');
+            // }
+        });
+
+        let settleDetailForm_style = { height: window.innerHeight + 'px'};
         return (
           <div id="SettleLayout">
               <div id="SettleFormLayout">
@@ -118,9 +133,11 @@ export default class Settle extends React.Component {
                          <div id="personName_Layout">
                              {
                                  this.state.settleContent_people_Array.map((elem, index) => {
-                                 return <div key={"person_"+index} onClick={this.personName_pop} className="personName_box">
+                                 return <div key={"person_"+index} onClick={this.personName_pop} value={elem} className="personName_box">
+                                        <img key={"person_"+index} onClick={this.personName_pop} value={elem} src="/img/delete_icon_white.png" className="iconBox-right small"/>
                                             {elem}
-                                        </div>;
+                                        </div>
+
                                  })
                              }
                          </div>
@@ -136,7 +153,7 @@ export default class Settle extends React.Component {
                  </div>
               </div>
 
-              <div id="SettleDetailForm_layout">
+              <div id="SettleDetailForm_layout" style={settleDetailForm_style}>
                     <SettleForm
                         FormInfo={this.state.settleFormInfo}
                     />

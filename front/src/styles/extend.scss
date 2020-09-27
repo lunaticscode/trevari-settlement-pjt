@@ -24,6 +24,9 @@ font.bold{
   margin-top:2px; display: inline-block;
   width:17px; height:17px;
   position: relative; float: right;
+  &.small{
+    width:8px; height:8px; margin-left:5px;
+  }
 }
 
 .small-icon{

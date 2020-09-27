@@ -79,7 +79,7 @@ class Header extends React.Component {
                         return <Link key={index} to={this.state.tabPathArray[index]}>
                                     <div id={"tab_"+index} onClick={this.tabMenuClick} className="tabMenu">
                                         {elem}
-                                        <div id={"tabBorder_"+index} className="tabMenuBorder"></div>
+                                        <div id={"tabBorder_"+index}  className="tabMenuBorder"></div>
                                     </div>
                                </Link>
                     })}

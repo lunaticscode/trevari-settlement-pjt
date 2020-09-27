@@ -1,15 +1,80 @@
 @import 'extend';
 
 @keyframes expanding-from-top { from{height:0px;} to{height: 100%;}}
-
+//@keyframes slide-from-left {
+//  from{margin-left:-100%;} to{margin-left:0px;}
+//}
 #SettleEditMask{
-  animation-name: expanding-from-top; animation-delay: 500ms; animation-duration: 500ms; animation-fill-mode: backwards;
+  animation-name: expanding-from-top; animation-delay: 500ms; animation-duration: 500ms; animation-fill-mode: forwards;
   position: absolute; top:10px; left:0px;
   background: $main-background2;
   width:100%; height:100%;
   border-radius: 10px;
 }
 #SettleEditLayout{
-//  position: absolute; width:95%; left:2.5%; top:50px; background: black; opacity: 0.9;
-
+  background: $main-background2;
+  //animation-name: slide-from-left; animation-fill-mode: backwards; animation-duration: 500ms;
+  height: 100%;
+  padding:0px 15px;
 }
+
+.EditForm_contentBox{
+  margin-bottom:25px;
+}
+
+.EditForm_titleBox{
+  display: inline-block; padding: 4px 8px;
+  background: #383a3f;
+  margin-top: 2px; margin-right: 10px; margin-bottom: 2px;
+  box-shadow: 1px 1px 5px black; border-radius: 10px;
+  color: white; font-size: 14px; font-weight: 200;
+  &.settleCase{
+    margin-top:10px;
+  }
+}
+
+.select_settleCase{
+  display: inline-block;
+  font-size:14px; color:silver;
+  margin:0px 5px; padding:3px 6px; min-width:50px;
+  text-align: center; color:white;
+  background: gray; border-radius: 5px;
+  &.uncheck{
+    border: 1px solid gray;
+    background: none;
+    color: silver;
+  }
+}
+
+.EditForm_title{
+  display: inline-block;
+}
+
+.EditForm_input{
+  display: inline-block; vertical-align: middle;
+  margin-left:15px; color:white; font-size: 15px; padding-bottom: 5px;
+  background: none; border: none; outline: none;
+  border-bottom: 1px solid $main-line-color;
+  &::placeholder{
+    font-size:13px; color:gray;
+  }
+}
+
+
+#EditForm_personList{
+  margin-top:10px; margin-bottom:20px;
+}
+
+.EditForm_personBox{
+  display: inline-block; font-size:14px;
+  margin-right:10px; padding:3px 8px; background: gray;
+  border:1px solid gray; border-radius: 5px;
+  &.uncheck{
+    color:silver; background: none; border: 1px solid gray;
+  }
+}
+
+.EditForm_personSettle{
+  margin-bottom:15px;
+}
+

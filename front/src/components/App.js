@@ -15,6 +15,7 @@ import Mypage from "./Mypage";
 import {left_swipe, modal_close, modal_open, right_swipe} from "../actions";
 import {connect} from "react-redux";
 import PageStack from "./PageStack";
+import SettleEdit from "./SettleEdit";
 
 class App extends React.Component {
     constructor(props){
@@ -108,6 +109,7 @@ class App extends React.Component {
                         <Switch>
                             <Route exact={true} path="/" render={()=> <Home userName={this.state.userName} />} />
                             <Route exact={true} path="/settle" component={Settle}/>
+                            <Route exact={true} path="/settleEdit/:id" component={SettleEdit} />
                             <Route exact={true} path="/history" component={History} />
                             <Route exact={true} path="/account" component={Account} />
                             <Route exact={true} path="/mypage" component={Mypage} />

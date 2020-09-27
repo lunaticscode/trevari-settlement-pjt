@@ -36,23 +36,25 @@
   animation-name: expanding-bottom;
   //animation-name: fold-up;
   animation-fill-mode: backwards;
-  animation-duration: 1s;
+  //animation-duration: 250ms;
   //background: #182734;
   background: rgba(0, 0, 0, 0.15);
   width:100%; height:auto; max-height: 470px;
   border-radius: 15px;
+  margin-top:-15px;
 }
 
 #SettleFormLayout.moveUp{
   animation-name : fold-up;
   animation-fill-mode: forwards;
-  animation-duration: 1s;
+  animation-duration: 250ms;
+
 }
 
 #SettleFormLayout.moveDown{
   animation-name : fold-down;
   animation-fill-mode: forwards;
-  animation-duration: 1s;
+  animation-duration: 250ms;
 }
 
 #arrow_icon_img{
