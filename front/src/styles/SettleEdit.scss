@@ -20,6 +20,9 @@
 
 .EditForm_contentBox{
   margin-bottom:25px;
+  &:nth-child(3){
+    margin-bottom:35px;
+  }
 }
 
 .EditForm_titleBox{
@@ -37,14 +40,23 @@
   display: inline-block;
   font-size:14px; color:silver;
   margin:0px 5px; padding:3px 6px; min-width:50px;
-  text-align: center; color:white;
-  background: gray; border-radius: 5px;
+  text-align: center; color:white; font-weight: 500;
+  border: none;
+  background: $main-background2; box-shadow:1px 1px 3px $main-line-color;
+  border-radius: 5px;
   &.uncheck{
+    box-shadow: none;
     border: 1px solid gray;
     background: none;
-    color: silver;
+    font-weight: 200;
+    color: gray;
   }
 }
+
+.minUnit_option{
+  color:black;
+}
+
 
 .EditForm_title{
   display: inline-block;
@@ -59,6 +71,9 @@
     font-size:13px; color:gray;
   }
 }
+.EditForm_input2{
+ @extend .EditForm_input;
+}
 
 
 #EditForm_personList{
@@ -67,10 +82,14 @@
 
 .EditForm_personBox{
   display: inline-block; font-size:14px;
-  margin-right:10px; padding:3px 8px; background: gray;
-  border:1px solid gray; border-radius: 5px;
+  margin-right:10px; padding:3px 8px; background: $main-background2;
+  border:1px solid gray; border-radius: 5px; font-weight: 500;
+  border: none;
+  box-shadow: 1px 1px 3px $main-line-color;
   &.uncheck{
-    color:silver; background: none; border: 1px solid gray;
+    box-shadow: none;
+    font-weight: 200;
+    color:gray; background: none; border: 1px solid gray;
   }
 }
 
@@ -78,3 +97,30 @@
   margin-bottom:15px;
 }
 
+#EditForm_selectBox{
+  outline: none; background: none; border-radius: 5px; min-width: 140px; margin-left:30px;
+  border:2px solid gray; color:white;
+  padding:3px 0px;
+}
+#garbageSettle_title{
+  color:silver;
+}
+#garbageSettle{
+  color:rgb(255, 124, 140); margin-left:15px;
+}
+
+#SettleEditCom_btn{
+  background: none;
+  width:90%;
+  margin:30px 5%; padding:10px 0px; margin-top:50px;
+  border: 2px solid gray; border-radius: 10px;
+  text-align: center; color: gray;
+  &.grant{
+    border:none; color:white;
+    background: #383a3f; box-shadow: 1px 1px 10px $main-line-color;
+  }
+}
+
+#SettlePerson_input_layout{
+  margin-left:10px;
+}
