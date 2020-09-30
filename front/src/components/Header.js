@@ -103,8 +103,6 @@ const mapStateToProps = (state) => {
     }
 };
 
-
-
 let mapDispatchToProps = (dispatch) => {
     return {
         clickLink: (nowPage) => dispatch(click_link(nowPage))

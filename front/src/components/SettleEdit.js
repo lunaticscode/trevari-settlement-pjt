@@ -1,7 +1,9 @@
 import React from 'react';
 import "../styles/SettleEdit.scss"
-
-export default class SettleEdit extends React.Component {
+import {mask_open, mask_close, infomodal_open} from "../actions";
+import {connect} from "react-redux";
+import Sleep from "../Sleep";
+class SettleEdit extends React.Component {
     constructor(props) {
         super(props);
         const { params } = this.props.match;
@@ -139,19 +141,36 @@ export default class SettleEdit extends React.Component {
                 return;
             }
         }
+
+        window.scroll(0, 0);
         let EditForm_allCnt = this.state.settleInfoObj.formCnt;
         let now_EidtForm_index = parseInt( this.state.settleIndex );
         let settleSum = this.state.settle_sum, settleResult_value = this.state.settleResultNoti;
         let settle_Shopname = this.state.settleShopname;
         let settlePerson_nameArray = this.state.selectedPersonList;
         let settlePerson_settleInfo = this.state.person_settleInfo_obj;
-
+        let settleCase = parseInt( this.state.settleCase );
+        let settleMinUnit = parseInt(this.state.settleMinUnit);
         console.log(EditForm_allCnt, now_EidtForm_index);
+        console.log('정산 방식', (settleCase));
+        console.log('정산 최소단위', settleMinUnit);
         console.log('모임 장소', settle_Shopname);
         console.log('모임 인원', settlePerson_nameArray);
         console.log('인원별 정산 금액', settlePerson_settleInfo);
         console.log('초기 정산 금액:', settleSum);
         console.log('정산 결과 금액: ', settleResult_value);
+        let settleInfo_obj = {
+            modalInfo_case : 0,
+            title: ( now_EidtForm_index+1 )+"차 정산내용",
+            settleLocation : ( this.state.settleShopname.toString().length > 0 ) ? this.state.settleShopname : '미입력',
+            settleAllCnt: EditForm_allCnt, settleIndex : now_EidtForm_index,
+            settleSum : settleSum, settleCase : settleCase, settleMinUnit : settleMinUnit,
+            settleValueInfo: settlePerson_settleInfo,
+            settleResult: settleResult_value,
+        };
+        this.props.maskOpen();
+        Sleep.sleep_func(250).then(() => this.props.infomodalOpen(settleInfo_obj));
+
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -257,3 +276,14 @@ export default class SettleEdit extends React.Component {
     }
 }
 
+let mapDispatchToProps = (dispatch) => {
+    return {
+        maskOpen: () => dispatch(mask_open()),
+        maskClose: () => dispatch(mask_close()),
+        infomodalOpen: (modalInfo) => dispatch(infomodal_open(modalInfo)),
+    }
+};
+
+SettleEdit = connect(undefined, mapDispatchToProps)(SettleEdit);
+
+export default SettleEdit;

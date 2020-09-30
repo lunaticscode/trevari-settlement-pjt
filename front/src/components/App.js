@@ -16,6 +16,8 @@ import {left_swipe, modal_close, modal_open, right_swipe} from "../actions";
 import {connect} from "react-redux";
 import PageStack from "./PageStack";
 import SettleEdit from "./SettleEdit";
+import InfoModal from "./InfoModal";
+import Mask from "./Mask";
 
 class App extends React.Component {
     constructor(props){
@@ -101,6 +103,7 @@ class App extends React.Component {
                      onTouchEnd={this.AppTouchEnd}
                      onTouchMove={this.AppTouchMove}
                 >
+
                     <PageStack/>
                     <Header
                         LoginUserName={this.state.userName}
@@ -117,8 +120,9 @@ class App extends React.Component {
                             <Route exact={true} path="/join" component={JoinModal}/>
 
                         </Switch>
-
+                    <InfoModal/>
                     <AlertModal/>
+                    <Mask/>
 
             </div>
             </Router>

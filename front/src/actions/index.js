@@ -5,6 +5,13 @@ export const LeftSwipe = 'LeftSwipe';
 export const RightSwipe = 'RightSwipe';
 export const ClickLink = 'ClickLink';
 
+export const MaskOpen = 'MaskOpen';
+export const MaskClose = 'MaskClose';
+
+export const InfoModalOpen = 'InfoModalOpen';
+export const InfoModalClose = 'InfoModalClose';
+
+
 export function modal_open(text, topPosition) {
     return {
         type: ModalOpen,
@@ -37,5 +44,29 @@ export function click_link(nowPage) {
     return {
         type: ClickLink,
         nowPage,
+    }
+}
+
+export function mask_open() {
+    return {
+        type: MaskOpen,
+    }
+}
+export function mask_close() {
+    return {
+        type: MaskClose,
+    }
+}
+
+
+export function infomodal_open(info) {
+    return {
+        type: InfoModalOpen,
+        info,
+    }
+}
+export function infomodal_close() {
+    return {
+        type: InfoModalClose,
     }
 }

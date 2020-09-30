@@ -1,0 +1,9 @@
+@keyframes fade-in-mask {
+  from{opacity: 0;} to{opacity: 0.5;}
+}
+
+#Mask_layout{
+  animation-fill-mode: forwards; animation-name: fade-in-mask; animation-duration: 500ms;
+  position: absolute; top: 0px; left: 0px; display: none;
+  background: black; opacity: 0.5; width: 100%; height:100%;
+};

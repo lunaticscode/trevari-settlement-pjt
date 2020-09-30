@@ -1,5 +1,9 @@
+
 import {ModalOpen, ModalClose, ClickLink} from '../actions';
 import { LeftSwipe, RightSwipe } from "../actions";
+import {MaskOpen, MaskClose} from "../actions"
+import {InfoModalOpen, InfoModalClose} from "../actions";
+
 import { combineReducers } from 'redux';
 
 const counterInitialState = {
@@ -12,6 +16,15 @@ const counterInitialState = {
 const pageStackInitialState = {
     direction: null,
     nowPage : ( localStorage.getItem("PageStack") ) ? localStorage.getItem("PageStack").split(',')[0] : '/',
+};
+
+const maskInitialState = {
+    maskStatus: 'none',
+};
+
+const infoModalInitialState = {
+    displayStatus: 'none',
+    modalInfo: {},
 };
 
 const modal = (state = counterInitialState, action) => {
@@ -59,6 +72,36 @@ const pageChange = (state = pageStackInitialState, action) => {
     }
 };
 
+const mask = (state = maskInitialState, action ) => {
+    switch (action.type) {
+        case MaskOpen:
+            return Object.assign({}, state, {
+                maskStatus : 'block',
+            });
+        case MaskClose:
+            return Object.assign({}, state, {
+                maskStatus: 'none',
+            });
+        default:
+            return state;
+    }
+};
+
+const infomodal = (state = infoModalInitialState, action) => {
+    switch(action.type) {
+        case InfoModalOpen:
+            return Object.assign({}, state, {
+                displayStatus: 'block',
+                info: action.info,
+            });
+        case InfoModalClose:
+            return Object.assign({}, state, {
+                displayStatus: 'none',
+            });
+        default:
+            return state;
+    }
+};
 
 // const extra = (state = { value: 'this_is_extra_reducer' }, action) => {
 //     switch(action.type) {
@@ -68,7 +111,7 @@ const pageChange = (state = pageStackInitialState, action) => {
 // };
 
 const counterApp = combineReducers({
-    modal, pageChange,
+    modal, pageChange, mask, infomodal,
     //extra
 });
 

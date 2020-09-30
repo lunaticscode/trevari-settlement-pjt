@@ -1,0 +1,73 @@
+@import 'extend';
+
+@keyframes slide-from-left-infomodal {
+  from{margin-left:-100%; position: absolute;} to{margin-left:5%; position: absolute;}
+}
+
+#InfoModal_layout{
+  animation-name: slide-from-left-infomodal; animation-duration: 500ms; animation-fill-mode: forwards;
+  z-index: 100000;
+  position: absolute; top:90px;
+  width:90%; margin-left:5%; display: none;
+  background: linear-gradient(90deg, rgba(38,38,38,1) 0%, rgba(69,77,77,1) 100%);
+  box-shadow: 0px 0px 7px cyan;
+  border-radius: 10px; height:auto;
+  padding-bottom:50px;
+}
+
+#InfoModal_contentLayout{
+  padding:15px 15px;
+}
+
+#settleInfoBorder_line{
+  width: 100%; margin-top:10px; height:1px; background: $main-line-color;
+}
+.content_line {
+  margin-bottom:10px; font-size: 14px;
+}
+.content_title{
+  display: inline-block; background: #383a3f; padding:3px 10px; border-radius: 5px; margin-right:5px;
+  box-shadow: 0px 0px 7px black;
+}
+
+.settlePrice_infoLine{
+  margin-left:15px; margin-top:3px; width:90%;
+
+  &:nth-child(1){
+    margin-top:15px;
+  }
+  &.result{
+    margin-top:2px; padding-top:2px;
+    border-top:1px solid gray;
+  }
+}
+
+.settlePrice{
+  position: relative;float: right;
+  display: inline-block;
+  text-align: right; font-weight: 300;
+}
+
+#InfoModal_btnLine{
+  width: 100%;
+}
+
+.InfoModal_actionBtn{
+  position: absolute; bottom:0px;
+  width: 50%; height: 40px; line-height: 40px;
+  text-align: center;
+}
+
+#InfoModal_cancelBtn{
+  @extend .InfoModal_actionBtn;
+  left:0px;
+  background: $main-background2;
+  border-bottom-left-radius: 10px;
+}
+
+#InfoModal_confirmBtn{
+  @extend .InfoModal_actionBtn;
+  right:0px;
+  background: $logo-background;
+  border-bottom-right-radius: 10px;
+}
