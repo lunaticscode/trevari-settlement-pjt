@@ -75,6 +75,10 @@
  @extend .EditForm_input;
 }
 
+.EditForm_unitText{
+  margin-left:-15px;
+  font-size:13px; font-weight: 200;
+}
 
 #EditForm_personList{
   margin-top:10px; margin-bottom:20px;

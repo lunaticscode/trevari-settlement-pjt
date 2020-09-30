@@ -13,6 +13,8 @@ export default class SettleEdit extends React.Component {
             settleCase : 0,
             settleMinUnit : 1,
             settleResultNoti : '',
+            settleEditCom_flag : false,
+            settleShopname : '',
         };
         this.selectPerson_box = this.selectPerson_box.bind(this);
         this.settleSum_input = this.settleSum_input.bind(this);
@@ -20,6 +22,13 @@ export default class SettleEdit extends React.Component {
         this.personSettle_input = this.personSettle_input.bind(this);
         this.SettleEditCom = this.SettleEditCom.bind(this);
         this.select_settleMinUnit = this.select_settleMinUnit.bind(this);
+        this.input_Shopname = this.input_Shopname.bind(this);
+
+    }
+
+    input_Shopname(e) {
+        let shopName = e.target.value;
+        this.setState({settleShopname : shopName});
     }
 
     selectPerson_box(e){
@@ -41,8 +50,7 @@ export default class SettleEdit extends React.Component {
             tmp_array.push(selectPersonName);
         }
         this.setState({selectedPersonList : tmp_array});
-
-        console.log(tmp_array);
+        //console.log(tmp_array);
     }
 
     settleSum_input(e){
@@ -50,7 +58,14 @@ export default class SettleEdit extends React.Component {
         input_value = input_value.replace(/,/g,'');
         e.target.value = input_value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         this.setState({settle_sum : ( input_value.toString().length > 0 ) ? parseInt( input_value.toString().replace(/,/g, '') ) : 0});
-
+        if( this.state.settleCase == 0 && this.state.selectedPersonList.length > 0 ) {
+            let now_selectedPersonList = this.state.selectedPersonList;
+            let now_settleSum = parseInt( input_value );
+            let now_selectedMinUnit = this.state.settleMinUnit;
+            this.setState({settleResultNoti: ( now_selectedPersonList.length > 0 )
+                    ? Math.floor( now_settleSum / now_selectedPersonList.length / now_selectedMinUnit ) * now_selectedMinUnit * now_selectedPersonList.length
+                    : now_settleSum });
+        }
     }
 
     select_SettleCase(e){
@@ -63,19 +78,37 @@ export default class SettleEdit extends React.Component {
             if(personSettle_inputLayout.length > 0){
                 for(let i = 0; i<personSettle_inputLayout.length; i++){
                     let personSettle_value = personSettle_inputLayout[i].value.toString().replace(/,/g, '');
-                    console.log(personSettle_value);
+                    //console.log(personSettle_value);
                     tmp_obj[ this.state.selectedPersonList[i] ] = parseInt( personSettle_value );
                 }
                 this.setState({person_settleInfo_obj : tmp_obj});
                 this.setState({ settleResultNoti: ( Object.keys(tmp_obj).length > 0) ? Object.values(tmp_obj).reduce( ( acc, cur ) => acc+cur ) : 0 });
             }
         }
+        else if(settleCase_index == '0'){
+            let now_selectedPersonList = this.state.selectedPersonList;
+            let now_settleSum = this.state.settle_sum;
+            let now_selectedMinUnit = this.state.settleMinUnit;
+            this.setState({settleResultNoti: ( now_selectedPersonList.length > 0 )
+                        ? Math.floor( now_settleSum / now_selectedPersonList.length / now_selectedMinUnit ) * now_selectedMinUnit * now_selectedPersonList.length
+                        : now_settleSum });
+            let tmp_obj = this.state.person_settleInfo_obj;
+            if(this.state.selectedPersonList.length > 0){
+                for(let i = 0; i<this.state.selectedPersonList.length; i++){
+                    tmp_obj[ this.state.selectedPersonList[i] ] = Math.floor( now_settleSum / now_selectedPersonList.length / now_selectedMinUnit ) * now_selectedMinUnit;
+                }
+            }
+        }
     }
 
     select_settleMinUnit(e) {
         let minUnit_value = parseInt( e.target.value.toString().split("원")[0].replace(/,/g, '') );
-        console.log(minUnit_value);
+        //console.log(minUnit_value);
         this.setState({settleMinUnit : minUnit_value});
+        if(parseInt( this.state.settleCase ) == 0) {
+            let resultNoti_value = Math.floor( this.state.settle_sum / this.state.selectedPersonList.length / minUnit_value ) * minUnit_value * this.state.selectedPersonList.length;
+            this.setState({settleResultNoti : resultNoti_value});
+        }
     }
 
     //* 개인별 정산 금액 직접 입력 이벤트,
@@ -88,12 +121,37 @@ export default class SettleEdit extends React.Component {
         let tmp_obj = Object.assign(this.state.person_settleInfo_obj, {
                             [person_Name] : parseInt( input_value ),
                         });
-        this.setState({person_settleInfo_obj : tmp_obj});
-        this.setState({ settleResultNoti: Object.values(tmp_obj).reduce( ( acc, cur ) => acc+cur ) });
+        this.setState({ person_settleInfo_obj : tmp_obj});
+        this.setState({ settleResultNoti : Object.values(tmp_obj).reduce( ( acc, cur ) => acc+cur ) });
     }
 
-    SettleEditCom() {
+    SettleEditCom(e) {
+        if(parseInt( this.state.settle_sum ) < 0 || !Number(this.state.settle_sum) ){
+            console.log('모임 비용을 입력해주세요.');
+            return;
+        }
+        if(parseInt( this.state.settleCase ) == 0){ document.getElementById("settleCase0").click(); }
+        if(this.state.settle_sum < this.state.settleResultNoti || this.state.settleResultNoti <= 0 || this.state.selectedPersonList.length === 0){
+            if( parseInt( this.state.settleCase ) == 0 && this.state.selectedPersonList.length > 0 ){
+                document.getElementById("settleCase0").click();
+            }else{
+                console.log('다시 확인');
+                return;
+            }
+        }
+        let EditForm_allCnt = this.state.settleInfoObj.formCnt;
+        let now_EidtForm_index = parseInt( this.state.settleIndex );
+        let settleSum = this.state.settle_sum, settleResult_value = this.state.settleResultNoti;
+        let settle_Shopname = this.state.settleShopname;
+        let settlePerson_nameArray = this.state.selectedPersonList;
+        let settlePerson_settleInfo = this.state.person_settleInfo_obj;
 
+        console.log(EditForm_allCnt, now_EidtForm_index);
+        console.log('모임 장소', settle_Shopname);
+        console.log('모임 인원', settlePerson_nameArray);
+        console.log('인원별 정산 금액', settlePerson_settleInfo);
+        console.log('초기 정산 금액:', settleSum);
+        console.log('정산 결과 금액: ', settleResult_value);
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -105,7 +163,6 @@ export default class SettleEdit extends React.Component {
     }
 
     render() {
-
         let settleCase_btns = document.getElementsByClassName("select_settleCase");
         for(var i = 0; i<settleCase_btns.length; i++){
             if(parseInt( this.state.settleCase ) === i ){
@@ -122,7 +179,7 @@ export default class SettleEdit extends React.Component {
 
         let settleResult_textValue = this.state.settleResultNoti.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         if( parseInt( this.state.settleCase ) == 0 ) {
-            console.log("settle case ==>  n/1 ");
+            //console.log("settle case ==>  n/1 ");
             settleResult_textValue = parseInt( N1_PersonSettle_inputValue.replace(/,/g, '') ) * this.state.selectedPersonList.length;
             settleResult_textValue = settleResult_textValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
@@ -134,6 +191,11 @@ export default class SettleEdit extends React.Component {
                         ? "rgb(255, 124, 140)" : "gray",
         };
 
+        let EditCom_flag = ( this.state.settle_sum >= this.state.settleResultNoti && this.state.settleResultNoti > 0 && this.state.selectedPersonList.length > 0 ) ? true : false;
+        if(this.state.settleCase === 0 && this.state.selectedPersonList.length > 0 && this.state.settle_sum > 0 ) {
+            EditCom_flag = true;
+        }
+
         return (
             <div id="SettleEditLayout" style={editLayout_style}>
                 <div className="EditForm_contentBox">
@@ -142,7 +204,7 @@ export default class SettleEdit extends React.Component {
                 </div>
                 <div className="EditForm_contentBox">
                     <div className="EditForm_titleBox">모임 장소</div>
-                    <input className="EditForm_input" placeholder="장소명 혹은 상호명 입력."/>
+                    <input className="EditForm_input" onChange={this.input_Shopname} placeholder="장소명 혹은 상호명 입력."/>
                 </div>
                 <div className="EditForm_contentBox">
                     <div className="EditForm_titleBox"><font className="bold">*</font>{parseInt( this.state.settleIndex ) + 1}차 참석 인원 선택</div><br/>
@@ -154,7 +216,7 @@ export default class SettleEdit extends React.Component {
                 </div>
                 <div className="EditForm_contentBox">
                     <div className="EditForm_titleBox"><font className="bold">*</font> 모임 비용</div>
-                    <input className="EditForm_input" onChange={this.settleSum_input} placeholder={ parseInt( this.state.settleIndex )+1 + "차 모임비용 입력."}/>원
+                    <input className="EditForm_input" onChange={this.settleSum_input} placeholder={ parseInt( this.state.settleIndex )+1 + "차 모임비용 입력."}/><span className="EditForm_unitText">원</span>
                         <br/>
                     <div className="EditForm_titleBox settleCase">정산방식 선택</div>
                     <div onClick={this.select_SettleCase} id="settleCase0" className="select_settleCase">N/1</div>
@@ -174,15 +236,18 @@ export default class SettleEdit extends React.Component {
                                 <div>
                                     {elem} <input id={index} onChange={this.personSettle_input}
                                                   className="EditForm_input2"
-                                                  value={ ( this.state.settleCase == 0 ) ? N1_PersonSettle_inputValue : this.value }
-                                            />&nbsp;&nbsp;원
+                                                  value={ ( this.state.settleCase == 0 ) ? N1_PersonSettle_inputValue : this.value}
+                                                  readOnly={ ( parseInt( this.state.settleCase ) == 0 ) ? true : false}
+                                            /><span className="EditForm_unitText">원</span>
                                 </div>
                            </div>
                 })}
                 </div>
 
                 <div id="SettleResult_noti_layout" style={settleResultNoti_style}>합계&nbsp;&nbsp; { ( this.state.settleResultNoti  ) ? settleResult_textValue+'원' : ''}</div>
-                <div id="SettleEditCom_btn" onClick={this.SettleEditCom}> 작성 완료 </div>
+                <div id="SettleEditCom_btn"
+                     className={ ( EditCom_flag ) ? "grant" : "" }
+                     onClick={this.SettleEditCom}> 작성 완료 </div>
 
             </div>
         );
