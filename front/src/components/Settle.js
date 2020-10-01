@@ -102,19 +102,6 @@ export default class Settle extends React.Component {
 
     render() {
 
-        window.addEventListener('scroll', function(e) {
-            // let scroll_position_Y  = document.documentElement.scrollTop;
-            // if(scroll_position_Y > 100 &&  document.getElementById("SettleFormLayout").classList.value === ''){
-            //     document.getElementById("SettleFormLayout").classList.add('moveUp');
-            //     document.getElementById("arrow_icon_img").classList.remove('rotate_2');
-            //     document.getElementById("arrow_icon_img").classList.add('rotate_1');
-            // }else if(scroll_position_Y < 10 && document.getElementById("SettleFormLayout").classList.value === 'moveUp'){
-            //     document.getElementById("SettleFormLayout").classList.remove('moveUp');
-            //     document.getElementById("arrow_icon_img").classList.remove('rotate_1');
-            //     document.getElementById("arrow_icon_img").classList.add('rotate_2');
-            // }
-        });
-
         let settleDetailForm_style = { height: window.innerHeight + 'px'};
         return (
           <div id="SettleLayout">

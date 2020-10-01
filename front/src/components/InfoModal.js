@@ -2,6 +2,7 @@ import React from 'react';
 import {connect} from "react-redux";
 import "../styles/InfoModal.scss"
 import {infomodal_close, mask_close, modal_close} from "../actions";
+import {Link} from "react-router-dom";
 
 class InfoModal extends React.Component {
 
@@ -13,10 +14,24 @@ class InfoModal extends React.Component {
         };
 
         this.infoModal_close = this.infoModal_close.bind(this);
-
+        this.infoModal_confirm = this.infoModal_confirm.bind(this);
+        this.infoModal_modify = this.infoModal_modify.bind(this);
     }
 
     infoModal_close(){
+        this.props.infomodalClose();
+        this.props.maskClose();
+    }
+
+    infoModal_confirm() {
+        localStorage.setItem("savedSettle_"+ ( this.props.info.settleIndex + 1), JSON.stringify( this.props.info ) );
+        this.props.infomodalClose();
+        this.props.maskClose();
+        document.getElementById("backToSettle_btn").click();
+    }
+
+    infoModal_modify(){
+        document.getElementById("modifySettle_btn").click();
         this.props.infomodalClose();
         this.props.maskClose();
     }
@@ -26,6 +41,11 @@ class InfoModal extends React.Component {
         let InfoModal_style = {
             display: this.props.displayStatus,
         };
+
+        let now_path = window.location.pathname;
+
+        let settleResult_value = ( this.props.info ) ? Object.values( this.props.info.settleValueInfo ).reduce((acc, cur) => acc+cur) : '';
+        console.log(settleResult_value);
         //modalInfo_case : 'settle',
         //             settleAllCnt: EditForm_allCnt, settleIndex : now_EidtForm_index,
         //             settleSum : settleSum, settleCase : settleCase, settleMinUnit : settleMinUnit,
@@ -44,7 +64,7 @@ class InfoModal extends React.Component {
                             ( this.props.info && this.props.info.modalInfo_case == 0 ) ?
                                 <div>
                                     <div className="content_line">
-                                        <div className="content_title">모임 장소</div> {this.props.info.settleLocation}
+                                        <div className="content_title">모임 장소</div>{this.props.info.settleLocation}
                                     </div>
                                     <div className="content_line">
                                         <div className="content_title">모임 비용</div>
@@ -56,7 +76,7 @@ class InfoModal extends React.Component {
                                     </div>
                                     <br/>
                                     <div className="content_line">
-                                        <div className="content_title">세부 내용</div><br/>
+                                        <div className="content_title settleDetail">정산 결과</div><br/>
                                         {
                                          Object.keys(this.props.info.settleValueInfo).map( (elem,index) => {
                                                 return <div className="settlePrice_infoLine" key={index}>
@@ -68,9 +88,23 @@ class InfoModal extends React.Component {
                                         <div className="settlePrice_infoLine result">
                                             <font className="bold">*</font>합계
                                             <div className="settlePrice">
-                                            { Object.values(this.props.info.settleValueInfo).reduce( (acc, cur) => acc+cur ).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"원" }
+                                            { settleResult_value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"원" }
                                             </div>
                                         </div>
+                                    </div>
+                                    <div className="content_line">
+                                        {
+                                            (  settleResult_value  <  this.props.info.settleSum  )
+                                                ? <div className="settlePrice_infoLine garbage">
+                                                    <font className="bold2">*</font>남는 금액 (모임비용 - 정산결과 금액)
+                                                    <div className="settlePrice">
+                                                      { ( this.props.info.settleSum - settleResult_value ).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"원" }
+                                                    </div>
+                                                  </div>
+
+                                                : ''
+
+                                        }
                                     </div>
 
                                 </div>
@@ -80,8 +114,15 @@ class InfoModal extends React.Component {
                 </div>
                 <div id="InfoModal_btnLine">
                     <div id="InfoModal_cancelBtn" onClick={this.infoModal_close} className="InfoModal_actionBtn">취소</div>
-                    <div id="InfoModal_confirmBtn" className="InfoModal_actionBtn">확인</div>
+                    {
+                        ( now_path == '/settle' )
+                            ? <div id="InfoModal_modifyBtn" onClick={this.infoModal_modify} className="InfoModal_actionBtn">수정</div>
+                            :<div id="InfoModal_confirmBtn" onClick={this.infoModal_confirm} className="InfoModal_actionBtn">확인</div>
+                    }
+
                 </div>
+                <Link id="backToSettle_btn" to='/settle'/>
+                { ( now_path == '/settle' && this.props.info ) ? <Link id="modifySettle_btn" to={"/settleEdit/" + this.props.info.settleIndex} /> : '' }
             </div>
         );
     }

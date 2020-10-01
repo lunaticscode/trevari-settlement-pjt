@@ -109,6 +109,7 @@
 #garbageSettle_title{
   color:silver;
 }
+
 #garbageSettle{
   color:rgb(255, 124, 140); margin-left:15px;
 }
@@ -116,12 +117,12 @@
 #SettleEditCom_btn{
   background: none;
   width:90%;
-  margin:30px 5%; padding:10px 0px; margin-top:50px;
+  margin:30px 5%; padding:10px 0px;
   border: 2px solid gray; border-radius: 10px;
   text-align: center; color: gray;
   &.grant{
     border:none; color:white;
-    background: #383a3f; box-shadow: 1px 1px 10px $main-line-color;
+    background: #383a3f; box-shadow: 0px 0px 10px $main-line-color;
   }
 }
 

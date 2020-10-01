@@ -9,7 +9,15 @@ class SettleEdit extends React.Component {
         const { params } = this.props.match;
         this.state = {
             settleIndex : ( params ) ? params['id'] : -1,
-            settleInfoObj : JSON.parse( localStorage.getItem("formInfo") ),
+
+            //* 전체 정산 정보가 이전에 등록 되어있는 경우, localStorage 값으로 대체.
+            common_settleInfoObj : ( localStorage.getItem("formInfo") )
+                                        ? JSON.parse( localStorage.getItem("formInfo") ) : '',
+
+            //* 현재 모임차수 정산 정보가 이전에 등록 되어있는 경우, localStorage 값으로 대체.
+            savedSettleInfo : ( localStorage.getItem("savedSettle_"+(parseInt( params['id']) +1)) )
+                                ? JSON.parse(localStorage.getItem("savedSettle_"+(parseInt( params['id'])+1) )) : null,
+
             selectedPersonList : [],
             settle_sum : 0, person_settleInfo_obj : {},
             settleCase : 0,
@@ -32,6 +40,7 @@ class SettleEdit extends React.Component {
         let shopName = e.target.value;
         this.setState({settleShopname : shopName});
     }
+
 
     selectPerson_box(e){
         let selectStatus = ( e.target.classList.toString().indexOf('uncheck') !== -1 ) ? false : true;
@@ -143,7 +152,7 @@ class SettleEdit extends React.Component {
         }
 
         window.scroll(0, 0);
-        let EditForm_allCnt = this.state.settleInfoObj.formCnt;
+        let EditForm_allCnt = this.state.common_settleInfoObj.formCnt;
         let now_EidtForm_index = parseInt( this.state.settleIndex );
         let settleSum = this.state.settle_sum, settleResult_value = this.state.settleResultNoti;
         let settle_Shopname = this.state.settleShopname;
@@ -151,14 +160,7 @@ class SettleEdit extends React.Component {
         let settlePerson_settleInfo = this.state.person_settleInfo_obj;
         let settleCase = parseInt( this.state.settleCase );
         let settleMinUnit = parseInt(this.state.settleMinUnit);
-        console.log(EditForm_allCnt, now_EidtForm_index);
-        console.log('정산 방식', (settleCase));
-        console.log('정산 최소단위', settleMinUnit);
-        console.log('모임 장소', settle_Shopname);
-        console.log('모임 인원', settlePerson_nameArray);
-        console.log('인원별 정산 금액', settlePerson_settleInfo);
-        console.log('초기 정산 금액:', settleSum);
-        console.log('정산 결과 금액: ', settleResult_value);
+
         let settleInfo_obj = {
             modalInfo_case : 0,
             title: ( now_EidtForm_index+1 )+"차 정산내용",
@@ -177,11 +179,32 @@ class SettleEdit extends React.Component {
 
     }
 
+
+
+
     componentDidMount() {
         this.setState({settleResultNoti : '0'});
+        let savedInfo =  ( this.state.savedSettleInfo ) ? this.state.savedSettleInfo : {};
+        let savedPersonList =  ( savedInfo ) ? Object.keys( savedInfo['settleValueInfo'] ) : [];
+        let savedSettleSum = ( savedInfo ) ? savedInfo['settleSum'] : 0;
+        let personBox_list = document.getElementsByClassName("EditForm_personBox");
+        //console.log(personBox_list, savedPersonList);
+        for(let i = 0; i<personBox_list.length; i++){
+            if( savedPersonList.indexOf(personBox_list[i].innerHTML) !== -1) {
+                personBox_list[i].classList.remove('uncheck');
+            }
+        }
+        this.setState({selectedPersonList: savedPersonList });
+        this.setState({settle_sum : savedSettleSum })
+
     }
 
+
+
+
     render() {
+
+
         let settleCase_btns = document.getElementsByClassName("select_settleCase");
         for(var i = 0; i<settleCase_btns.length; i++){
             if(parseInt( this.state.settleCase ) === i ){
@@ -219,23 +242,28 @@ class SettleEdit extends React.Component {
             <div id="SettleEditLayout" style={editLayout_style}>
                 <div className="EditForm_contentBox">
                     <div className="EditForm_titleBox"><font className="bold">#</font> {parseInt( this.state.settleIndex ) + 1}차</div>
-                    <div className="EditForm_title">{this.state.settleInfoObj['title']}</div>
+                    <div className="EditForm_title">{this.state.common_settleInfoObj['title']}</div>
                 </div>
                 <div className="EditForm_contentBox">
                     <div className="EditForm_titleBox">모임 장소</div>
-                    <input className="EditForm_input" onChange={this.input_Shopname} placeholder="장소명 혹은 상호명 입력."/>
+                    <input className="EditForm_input"
+                           defaultValue={ ( this.state.savedSettleInfo ) ? this.state.savedSettleInfo.settleLocation : '' }
+                           onChange={this.input_Shopname} placeholder="장소명 혹은 상호명 입력."/>
                 </div>
                 <div className="EditForm_contentBox">
                     <div className="EditForm_titleBox"><font className="bold">*</font>{parseInt( this.state.settleIndex ) + 1}차 참석 인원 선택</div><br/>
                     <div id="EditForm_personList">
-                    {this.state.settleInfoObj['personList'].map( (elem, index) => {
+                    {this.state.common_settleInfoObj['personList'].map( (elem, index) => {
                         return <div key={"person_"+index} onClick={this.selectPerson_box} className="EditForm_personBox uncheck">{elem}</div>
                     })}
                     </div>
                 </div>
                 <div className="EditForm_contentBox">
                     <div className="EditForm_titleBox"><font className="bold">*</font> 모임 비용</div>
-                    <input className="EditForm_input" onChange={this.settleSum_input} placeholder={ parseInt( this.state.settleIndex )+1 + "차 모임비용 입력."}/><span className="EditForm_unitText">원</span>
+                    <input className="EditForm_input"
+                           onChange={this.settleSum_input}
+                           defaultValue={ ( this.state.savedSettleInfo ) ? this.state.savedSettleInfo['settleSum'].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : '' }
+                           placeholder={ parseInt( this.state.settleIndex )+1 + "차 모임비용 입력."}/><span className="EditForm_unitText">원</span>
                         <br/>
                     <div className="EditForm_titleBox settleCase">정산방식 선택</div>
                     <div onClick={this.select_SettleCase} id="settleCase0" className="select_settleCase">N/1</div>

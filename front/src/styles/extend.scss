@@ -19,6 +19,10 @@ font.bold{
   margin:0px 1px;
   color:$main-line-color;
 }
+font.bold2{
+  @extend font.bold;
+  color:rgb(255, 124, 140);
+}
 
 .iconBox-right{
   margin-top:2px; display: inline-block;
