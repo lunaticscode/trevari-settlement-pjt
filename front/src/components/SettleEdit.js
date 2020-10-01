@@ -184,11 +184,11 @@ class SettleEdit extends React.Component {
 
     componentDidMount() {
         this.setState({settleResultNoti : '0'});
-        let savedInfo =  ( this.state.savedSettleInfo ) ? this.state.savedSettleInfo : {};
+        let savedInfo =  ( this.state.savedSettleInfo ) ? this.state.savedSettleInfo : null;
         let savedPersonList =  ( savedInfo ) ? Object.keys( savedInfo['settleValueInfo'] ) : [];
         let savedSettleSum = ( savedInfo ) ? savedInfo['settleSum'] : 0;
         let personBox_list = document.getElementsByClassName("EditForm_personBox");
-        //console.log(personBox_list, savedPersonList);
+        console.log(personBox_list, savedPersonList);
         for(let i = 0; i<personBox_list.length; i++){
             if( savedPersonList.indexOf(personBox_list[i].innerHTML) !== -1) {
                 personBox_list[i].classList.remove('uncheck');
