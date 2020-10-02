@@ -112,7 +112,6 @@
     width:48%; margin-right:1%; border-radius: 5px; margin-bottom:15px; padding-bottom:5px;
     //background: #686868;
     background:white;
-
   }
 }
 #personName_Layout{
@@ -139,8 +138,8 @@
 
 .settleInputForm{
   animation-name: form-expanding;
-  animation-duration: 1s;
-  animation-delay: 1s;
+  animation-duration: 500ms;
+  animation-delay: 500ms;
   animation-fill-mode: backwards;
   background: $main-background2; box-shadow: 5px 5px 5px gray;
   //background: #686868;
@@ -148,7 +147,6 @@
   width:96%; margin-left:1%; margin-bottom:15px; padding-bottom:5px;
   color:gray;
   border-radius: 5px;
-
 }
 
 .inputFormContent{
@@ -180,6 +178,9 @@
 
 .inputForm_title{
  @extend .inputForm; width:45%; max-width:220px;
+ &.name{
+   width:55%;
+ }
 }
 
 .inputForm_personName{

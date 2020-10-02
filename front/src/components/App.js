@@ -16,8 +16,9 @@ import {left_swipe, modal_close, modal_open, right_swipe} from "../actions";
 import {connect} from "react-redux";
 import PageStack from "./PageStack";
 import SettleEdit from "./SettleEdit";
-import InfoModal from "./InfoModal";
+import SettleDetailModal from "./SettleDetailModal";
 import Mask from "./Mask";
+import CommonModal from "./CommonModal";
 
 class App extends React.Component {
     constructor(props){
@@ -118,9 +119,9 @@ class App extends React.Component {
                             <Route exact={true} path="/mypage" component={Mypage} />
                             <Route exact={true} path="/login" component={LoginModal}/>
                             <Route exact={true} path="/join" component={JoinModal}/>
-
                         </Switch>
-                    <InfoModal/>
+                    <SettleDetailModal/>
+                    <CommonModal/>
                     <AlertModal/>
                     <Mask/>
 

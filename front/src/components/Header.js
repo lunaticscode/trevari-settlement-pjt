@@ -97,7 +97,7 @@ Header.defaultProps = {
 //* Redux Store에서 관리중인, state 값 변경 감지,
 //* ( 마우스 터치 슬라이드 혹은 클릭 이벤트 때, 탭메뉴 표시를 위해.. )
 const mapStateToProps = (state) => {
-    console.log('redux store - pageChangeInfo : ',state['pageChange']);
+    //console.log('redux store - pageChangeInfo : ',state['pageChange']);
     return{
       appMoveInfo : state['pageChange'],
     }

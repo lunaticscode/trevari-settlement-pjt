@@ -173,6 +173,7 @@ class SettleEdit extends React.Component {
         this.props.maskOpen();
         Sleep.sleep_func(250).then(() => this.props.infomodalOpen(settleInfo_obj));
 
+
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -180,26 +181,37 @@ class SettleEdit extends React.Component {
     }
 
 
-
-
     componentDidMount() {
         this.setState({settleResultNoti : '0'});
         let savedInfo =  ( this.state.savedSettleInfo ) ? this.state.savedSettleInfo : null;
+        let savedShopname = ( savedInfo ) ? savedInfo['settleLocation'] : '';
+        this.setState({settleShopname : savedShopname});
         let savedPersonList =  ( savedInfo ) ? Object.keys( savedInfo['settleValueInfo'] ) : [];
         let savedSettleSum = ( savedInfo ) ? savedInfo['settleSum'] : 0;
         let personBox_list = document.getElementsByClassName("EditForm_personBox");
-        console.log(personBox_list, savedPersonList);
+        //console.log(personBox_list, savedPersonList);
         for(let i = 0; i<personBox_list.length; i++){
             if( savedPersonList.indexOf(personBox_list[i].innerHTML) !== -1) {
                 personBox_list[i].classList.remove('uncheck');
             }
         }
         this.setState({selectedPersonList: savedPersonList });
-        this.setState({settle_sum : savedSettleSum })
+        this.setState({settle_sum : savedSettleSum });
 
+        let savedSettleCase = ( savedInfo ) ? savedInfo['settleCase'] : 0;
+        this.setState({settleCase : ( savedSettleCase) ? savedSettleCase : 0 });
+
+        let savedSettleMinUnit = ( savedInfo ) ? savedInfo['settleMinUnit'] : 1;
+        this.setState({settleMinUnit: ( savedSettleMinUnit ) ? savedSettleMinUnit : 1 });
+        let settleMinUnit_options = document.getElementsByClassName("minUnit_option");
+        Sleep.sleep_func(250).then(()=> {
+            for(let i = 0; i<settleMinUnit_options.length; i++ ){
+                if( settleMinUnit_options[i].innerHTML.toString().replace(/,/g, '') === savedSettleMinUnit + '원' ){
+                    settleMinUnit_options[i].setAttribute("selected", '');
+                    return;
+                }
+            } });
     }
-
-
 
 
     render() {
@@ -270,12 +282,14 @@ class SettleEdit extends React.Component {
                     <div onClick={this.select_SettleCase}  id="settleCase1" className="select_settleCase">직접 작성</div>
                     <br/>
                     <div className="EditForm_titleBox settleCase">최소 단위</div>
+
                     <select id="EditForm_selectBox" onChange={this.select_settleMinUnit}>
                         { new Array(   ( this.state.settle_sum.toString().length > 1 ) ? this.state.settle_sum.toString().length - 1 : this.state.settle_sum.toString().length )
                                     .fill("원").map( (elem,index) => {
                                 return <option className="minUnit_option" key={index}>{Math.pow(10, index).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+elem}</option>
                         })}
                     </select>
+
                 </div>
 
                 <div id="SettlePerson_input_layout">{this.state.selectedPersonList.map( (elem, index) => {

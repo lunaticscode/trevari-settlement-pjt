@@ -3,7 +3,11 @@ import "../styles/Settle.scss";
 import '../styles/App.scss';
 import {Link} from "react-router-dom";
 import SettleForm from "./SettleForm";
-export default class Settle extends React.Component {
+import {commonModal_open, mask_open} from "../actions";
+import {connect} from "react-redux";
+import Sleep from "../Sleep";
+
+class Settle extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -32,7 +36,6 @@ export default class Settle extends React.Component {
         console.log('click fold icon');
         let MainSettleForm = document.getElementById("SettleFormLayout");
         let nowForm_state = MainSettleForm.classList.value;
-
         if( nowForm_state === '' ){ MainSettleForm.classList.add('moveUp'); }
         else{ MainSettleForm.classList.remove('moveUp'); }
 
@@ -47,8 +50,11 @@ export default class Settle extends React.Component {
 
     selectMeetCnt(e) {
         let selectedMeetCntIndex = e.target.selectedIndex;
-        this.setState({ selectedMeetCnt: selectedMeetCntIndex, });
         this.state.settleFormInfo['formCnt'] = selectedMeetCntIndex;
+        let now_settleFormInfo = Object.assign(this.state.settleFormInfo, {
+            formCnt: selectedMeetCntIndex,
+        });
+        this.setState({ selectedMeetCnt: selectedMeetCntIndex, settleFormInfo :  now_settleFormInfo });
         localStorage.setItem("formInfo", JSON.stringify(this.state.settleFormInfo));
         document.getElementById("SettleFormLayout").classList.add('moveUp');
         document.getElementById("arrow_icon_img").classList.remove('rotate_2');
@@ -66,21 +72,49 @@ export default class Settle extends React.Component {
                     //* Alert Modal 추가 예정.
                     return;
                 }else{
-                    this.state.settleContent_people_Array.push(this.state.settleContent_personName_Text.toString().trim());
+                    //this.state.settleContent_people_Array.push(this.state.settleContent_personName_Text.toString().trim());
+                    const { settleContent_people_Array } = this.state;
+                    this.setState({
+                        settleContent_people_Array: settleContent_people_Array.concat(this.state.settleContent_personName_Text.toString().trim()),
+                    });
+
                     this.setState({settleContent_personName_Text : '',});
+
                     e.target.value = '';
+
                     this.state.settleFormInfo['personList'] = this.state.settleContent_people_Array;
+                    let tmp_obj = Object.assign(this.state.settleFormInfo, {
+                        personList: settleContent_people_Array.concat(this.state.settleContent_personName_Text.toString().trim()),
+                    });
+                    this.setState({settleFormInfo: tmp_obj});
                 }
             }
     }
 
     personName_pop(e) {
         let personName_text = e.target.getAttribute("value");
-        console.log(personName_text);
-        let modified_array = this.state.settleContent_people_Array.filter(elem => elem !== personName_text);
-        this.setState({settleContent_people_Array: modified_array,});
-        this.state.settleFormInfo['personList'] = modified_array;
-        //console.log(this.state.settleFormInfo);
+        let now_settleCheckPersons = document.getElementsByClassName("innerForm_personName selected");
+        let now_settleCheck_indexArray = [];
+
+        for(let i = 0; i<now_settleCheckPersons.length; i++) {
+            if(now_settleCheckPersons[i].innerHTML.toString().trim() === personName_text){
+                now_settleCheck_indexArray.push( parseInt( now_settleCheckPersons[i].getAttribute("value").split("settle_")[1] )+1+"차");
+            }
+        }
+        if(now_settleCheck_indexArray.length > 0) {
+            let already_settleCheck_index = now_settleCheck_indexArray.join(', ');
+            let modal_text = "선택하신 ["+personName_text+"] 님은 이미 작성된 " + already_settleCheck_index + " 정산 인원에 포함되어있습니다.그래도 삭제하시겠습니까?";
+            this.props.commonModalOpen(modal_text, "negative");
+            document.getElementById("Mask_layout").style.height = window.outerHeight +'px';
+            Sleep.sleep_func(250).then(()=>this.props.maskOpen());
+        }else{
+            console.log('just delete ~');
+        }
+
+        // console.log(personName_text);
+        // let modified_array = this.state.settleContent_people_Array.filter(elem => elem !== personName_text);
+        // this.setState({settleContent_people_Array: modified_array,});
+        // this.state.settleFormInfo['personList'] = modified_array;
     }
 
 
@@ -91,25 +125,35 @@ export default class Settle extends React.Component {
     componentDidMount() {
         let savedInfo = null;
         ( localStorage.getItem("formInfo") )  ? savedInfo = JSON.parse( localStorage.getItem("formInfo") ) : savedInfo = null;
-
         if(savedInfo) {
             this.setState({
                 settleFormTitle : savedInfo['title'],  settleContent_people_Array : savedInfo['personList'],
                 settleFormInfo : savedInfo,
             });
         }
+
+        let meetCnt_selectElem = document.getElementById("MeetCnt_select");
+        if( savedInfo && parseInt( savedInfo['formCnt'] ) > 0 ){
+            meetCnt_selectElem.children[parseInt( savedInfo['formCnt'] )].setAttribute("selected", '');
+            this.setState({selectedMeetCnt: savedInfo['formCnt']});
+        }
+
     }
 
     render() {
-
         let settleDetailForm_style = { height: window.innerHeight + 'px'};
+
         return (
           <div id="SettleLayout">
               <div id="SettleFormLayout">
                  <div id="SettleContentLayout">
                      <div>
                          <div className="inputTitle">모임 이름</div>
-                         <input  placeholder="15자 이내" onChange={this.inputFormTitle} className="inputForm_title" />
+                         <input  placeholder="15자 이내"
+                                 onChange={this.inputFormTitle}
+                                 className="inputForm_title name"
+                                 defaultValue={ ( localStorage.getItem("formInfo" ) )? JSON.parse( localStorage.getItem("formInfo") ).title : '' }
+                         />
                          <img id="arrow_icon_img" onClick={this.foldUpDown} src="/img/arrow_icon.png" />
                      </div>
                      <br/>
@@ -120,11 +164,10 @@ export default class Settle extends React.Component {
                          <div id="personName_Layout">
                              {
                                  this.state.settleContent_people_Array.map((elem, index) => {
-                                 return <div key={"person_"+index} onClick={this.personName_pop} value={elem} className="personName_box">
-                                        <img key={"person_"+index} onClick={this.personName_pop} value={elem} src="/img/delete_icon_white.png" className="iconBox-right small"/>
+                                 return <div key={"person_"+index}  value={elem} className="personName_box">
+                                            <img key={"person_"+index} onClick={this.personName_pop} value={elem} src="/img/delete_icon_white.png" className="iconBox-right small"/>
                                             {elem}
                                         </div>
-
                                  })
                              }
                          </div>
@@ -143,12 +186,24 @@ export default class Settle extends React.Component {
               <div id="SettleDetailForm_layout" style={settleDetailForm_style}>
                     <SettleForm
                         FormInfo={this.state.settleFormInfo}
+                        TestProps={this.state.settleFormInfo.formCnt}
+                        TestProps2={this.state.settleFormInfo.title}
+                        personList={this.state.settleContent_people_Array}
                     />
               </div>
-
           </div>
 
         );
     }
 }
 
+
+let mapDispatchToProps = (dispatch) => {
+    return {
+        commonModalOpen: (text, mood) => dispatch(commonModal_open(text, mood)),
+        maskOpen: () => dispatch(mask_open()),
+    }
+};
+Settle = connect(undefined, mapDispatchToProps)(Settle);
+
+export default Settle;

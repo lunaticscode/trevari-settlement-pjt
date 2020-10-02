@@ -1,7 +1,5 @@
 @import "extend";
 
-
-
 .innerForm_indexBox{
   display: inline-block; padding:3px 6px; border-radius: 10px;
   background: #383a3f; margin-top:2px; margin-bottom: 2px;
@@ -10,8 +8,6 @@
   color: #eeeeee;
   font-size:11px;
 }
-
-
 
 .innerFormContent{
 
@@ -52,5 +48,4 @@
   position: relative; float: right; margin-right:10px; padding:3px 5px;
   border-radius: 5px; color:silver; font-size:12px;
   background: $main-background2; box-shadow: 0px 0px 5px black;
-;
 }

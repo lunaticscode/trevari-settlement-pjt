@@ -1,11 +1,8 @@
 @import 'extend';
 
-@keyframes slide-from-left-infomodal {
-  from{margin-left:-100%; position: absolute;} to{margin-left:5%; position: absolute;}
-}
 
 #InfoModal_layout{
-  animation-name: slide-from-left-infomodal; animation-duration: 500ms; animation-fill-mode: forwards;
+  animation-name: slide-from-left-modal; animation-duration: 500ms; animation-fill-mode: forwards;
   z-index: 100000;
   position: absolute; top:90px;
   width:90%; margin-left:5%; display: none;

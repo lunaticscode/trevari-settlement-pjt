@@ -8,6 +8,9 @@ export const ClickLink = 'ClickLink';
 export const MaskOpen = 'MaskOpen';
 export const MaskClose = 'MaskClose';
 
+export const CommonModalOpen = "CommonModalOpen";
+export const CommonModalClose = "CommonModalClose";
+
 export const InfoModalOpen = 'InfoModalOpen';
 export const InfoModalClose = 'InfoModalClose';
 
@@ -55,6 +58,19 @@ export function mask_open() {
 export function mask_close() {
     return {
         type: MaskClose,
+    }
+}
+
+
+export function commonModal_open(text, mood) {
+    return{
+        type: CommonModalOpen,
+        text, mood,
+    }
+}
+export function commonModal_close() {
+    return{
+        type: CommonModalClose,
     }
 }
 

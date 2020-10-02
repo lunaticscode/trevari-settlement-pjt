@@ -1,0 +1,43 @@
+@import "extend";
+
+
+
+#CommonModal_layout{
+  animation-name: slide-from-left-modal; animation-fill-mode: forwards; animation-duration: 500ms;
+  position: absolute; z-index:100000; top:200px;
+  width:90%; margin-left:5%;
+  height:auto;
+  color:#eeeeee; font-weight: 400; font-size:14px;
+  background: $main-background2; border-radius: 5px; box-shadow: 0px 0px 7px silver;
+
+  &.negative{ box-shadow: 0px 0px 7px rgb(255, 124, 140); }
+  &.positive{ box-shadow: 0px 0px 7px cyan; }
+}
+
+
+#CommonModal_text{
+  width:90%; margin: 30px 5% 80px 5%; font-size:13px;
+}
+
+#CommonModal_actionBtn_layout{
+  position: absolute; bottom:0px; height:45px; width: 100%;
+}
+
+.CommonModal_actionBtn{
+  display: inline-block; line-height: 45px; text-align: center;
+  position: relative; width:50%;
+  &.cancel{
+    border-bottom-left-radius: 5px;
+    background: $main-background2;
+  }
+  &.confirm{
+    border-bottom-right-radius: 5px;
+    &.negative{ background: $alert-modal-background; }
+    &.positive{ background: $logo-background2; }
+  }
+  &.nomal{
+    border-bottom-left-radius: 5px; border-bottom-right-radius: 5px;
+    width:100%; background: $logo-background2;
+  }
+
+}

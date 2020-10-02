@@ -1,17 +1,14 @@
 import React from 'react';
 import {connect} from "react-redux";
-import "../styles/InfoModal.scss"
+import "../styles/SettleDetailModal.scss"
 import {infomodal_close, mask_close, modal_close} from "../actions";
 import {Link} from "react-router-dom";
 
-class InfoModal extends React.Component {
+class SettleDetailModal extends React.Component {
 
     constructor(props){
         super(props);
-
-        this.state = {
-
-        };
+        this.state = { };
 
         this.infoModal_close = this.infoModal_close.bind(this);
         this.infoModal_confirm = this.infoModal_confirm.bind(this);
@@ -46,17 +43,21 @@ class InfoModal extends React.Component {
 
         let settleResult_value = ( this.props.info ) ? Object.values( this.props.info.settleValueInfo ).reduce((acc, cur) => acc+cur) : '';
         console.log(settleResult_value);
-        //modalInfo_case : 'settle',
+        // modalInfo_case : 'settle',
         //             settleAllCnt: EditForm_allCnt, settleIndex : now_EidtForm_index,
         //             settleSum : settleSum, settleCase : settleCase, settleMinUnit : settleMinUnit,
         //             settleValueInfo: settlePerson_settleInfo,
         //             settleResult: settleResult_value,
+
+        // CommonInfo_case : 'common',
+        //
         return (
             <div id="InfoModal_layout" style={InfoModal_style}>
                 <div id="InfoModal_contentLayout">
-                    <div id="info_title">{(this.props.info && this.props.info.modalInfo_case == 0 ) ? <font className="bold">#</font> : ''}
-                                         { ( this.props.info ) ? this.props.info.title : '' }
-                        {(this.props.info && this.props.info.modalInfo_case == 0) ? <div id="settleInfoBorder_line"></div> : ''}
+                    <div id="info_title">
+                        {(this.props.info && this.props.info.modalInfo_case == 0 ) ? <font className="bold">#</font> : ''}
+                        { ( this.props.info ) ? this.props.info.title : '' }
+                        { (this.props.info && this.props.info.modalInfo_case == 0) ? <div id="settleInfoBorder_line"></div> : ''}
                     </div>
                     <br/>
                     <div id="info_content">
@@ -142,6 +143,6 @@ let mapDispatchToProps = (dispatch) => {
     }
 };
 
-InfoModal = connect(mapStateToProps, mapDispatchToProps)(InfoModal);
+SettleDetailModal = connect(mapStateToProps, mapDispatchToProps)(SettleDetailModal);
 
-export default InfoModal;
+export default SettleDetailModal;

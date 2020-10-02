@@ -2,6 +2,7 @@
 import {ModalOpen, ModalClose, ClickLink} from '../actions';
 import { LeftSwipe, RightSwipe } from "../actions";
 import {MaskOpen, MaskClose} from "../actions"
+import {CommonModalOpen, CommonModalClose} from "../actions";
 import {InfoModalOpen, InfoModalClose} from "../actions";
 
 import { combineReducers } from 'redux';
@@ -20,6 +21,12 @@ const pageStackInitialState = {
 
 const maskInitialState = {
     maskStatus: 'none',
+};
+
+const commonModalInitialState = {
+    displayStatus: 'none',
+    mood: '',
+    text: '',
 };
 
 const infoModalInitialState = {
@@ -49,13 +56,11 @@ const modal = (state = counterInitialState, action) => {
 const pageChange = (state = pageStackInitialState, action) => {
     switch (action.type) {
         case LeftSwipe:
-            //console.log(state);
             return Object.assign({}, state, {
                 direction: 'left',
                 nowPage : action.nowPage,
             });
         case RightSwipe:
-            //console.log(state);
             return Object.assign( {}, state,  {
                 direction: 'right',
                 nowPage : action.nowPage,
@@ -87,6 +92,23 @@ const mask = (state = maskInitialState, action ) => {
     }
 };
 
+const commonModal = (state = commonModalInitialState, action) => {
+    switch(action.type) {
+        case CommonModalOpen:
+            return Object.assign({}, state, {
+               displayStatus: 'block',
+               text: action.text,
+               mood: action.mood,
+            });
+        case CommonModalClose:
+            return Object.assign({}, state, {
+                displayStatus: 'none',
+            });
+        default:
+            return state;
+    }
+};
+
 const infomodal = (state = infoModalInitialState, action) => {
     switch(action.type) {
         case InfoModalOpen:
@@ -103,16 +125,9 @@ const infomodal = (state = infoModalInitialState, action) => {
     }
 };
 
-// const extra = (state = { value: 'this_is_extra_reducer' }, action) => {
-//     switch(action.type) {
-//         default:
-//             return state;
-//     }
-// };
-
 const counterApp = combineReducers({
-    modal, pageChange, mask, infomodal,
-    //extra
+    modal, pageChange,
+    mask, infomodal, commonModal,
 });
 
 export default counterApp;
