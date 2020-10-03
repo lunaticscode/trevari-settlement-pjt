@@ -17,6 +17,7 @@ class Settle extends React.Component {
             settleContent_sumAmount_Array : [],
             settleContent_people_Array : [],
             settleContent_personName_Text: '',
+            settleContent_deleteTarget_person: '',
             settleFormInfo : { title: '', formCnt: 0, personList: [], },
         };
         this.selectMeetCnt = this.selectMeetCnt.bind(this);
@@ -93,6 +94,7 @@ class Settle extends React.Component {
 
     personName_pop(e) {
         let personName_text = e.target.getAttribute("value");
+        this.setState({settleContent_deleteTarget_person: personName_text});
         let now_settleCheckPersons = document.getElementsByClassName("innerForm_personName selected");
         let now_settleCheck_indexArray = [];
 
@@ -104,22 +106,38 @@ class Settle extends React.Component {
         if(now_settleCheck_indexArray.length > 0) {
             let already_settleCheck_index = now_settleCheck_indexArray.join(', ');
             let modal_text = "선택하신 ["+personName_text+"] 님은 이미 작성된 " + already_settleCheck_index + " 정산 인원에 포함되어있습니다.그래도 삭제하시겠습니까?";
-            this.props.commonModalOpen(modal_text, "negative");
-            document.getElementById("Mask_layout").style.height = window.outerHeight +'px';
+
+            window.scroll(0,0); document.body.style.overflow = 'hidden';
+            this.props.commonModalOpen("personArray modify", modal_text, "negative");
+            document.getElementById("Mask_layout").style.height = window.innerHeight +'px';
             Sleep.sleep_func(250).then(()=>this.props.maskOpen());
         }else{
-            console.log('just delete ~');
+            let modified_array = this.state.settleContent_people_Array.filter(elem => elem !== personName_text);
+            this.setState({settleContent_people_Array: modified_array,});
+            let tmp_obj = Object.assign(this.state.settleFormInfo, {
+                personList: modified_array,
+            });
+            this.setState({settleFormInfo: tmp_obj});
         }
 
-        // console.log(personName_text);
-        // let modified_array = this.state.settleContent_people_Array.filter(elem => elem !== personName_text);
-        // this.setState({settleContent_people_Array: modified_array,});
-        // this.state.settleFormInfo['personList'] = modified_array;
     }
 
 
     componentDidUpdate(prevProps, prevState) {
-
+        if(prevProps.modalConfirm_result !== this.props.modalConfirm_result){
+            if(this.props.modalConfirm_result === 'exec') {
+                if(this.props.modalConfirm_title === 'personArray modify'){
+                    let delete_target = this.state.settleContent_deleteTarget_person;
+                    let modified_personArray = this.state.settleContent_people_Array.filter(elem => elem !== delete_target);
+                    this.setState({settleContent_people_Array : modified_personArray,
+                                   settleContent_deleteTarget_person : ''});
+                    let tmp_obj = Object.assign(this.state.settleFormInfo, {
+                        personList: modified_personArray,
+                    });
+                    this.setState({settleFormInfo: tmp_obj});
+                }
+            }
+        }
     }
 
     componentDidMount() {
@@ -197,13 +215,19 @@ class Settle extends React.Component {
     }
 }
 
+let mapStateToProps = (state) => {
+    return {
+        modalConfirm_title: state.commonModal.title,
+        modalConfirm_result : state.commonModal.resultSign,
+    }
+};
 
 let mapDispatchToProps = (dispatch) => {
     return {
-        commonModalOpen: (text, mood) => dispatch(commonModal_open(text, mood)),
+        commonModalOpen: (title, text, mood) => dispatch(commonModal_open(title, text, mood)),
         maskOpen: () => dispatch(mask_open()),
     }
 };
-Settle = connect(undefined, mapDispatchToProps)(Settle);
+Settle = connect(mapStateToProps, mapDispatchToProps)(Settle);
 
 export default Settle;

@@ -18,6 +18,7 @@ class SettleDetailModal extends React.Component {
     infoModal_close(){
         this.props.infomodalClose();
         this.props.maskClose();
+        document.body.style.overflow = 'auto';
     }
 
     infoModal_confirm() {
@@ -25,12 +26,14 @@ class SettleDetailModal extends React.Component {
         this.props.infomodalClose();
         this.props.maskClose();
         document.getElementById("backToSettle_btn").click();
+        document.body.style.overflow = 'auto';
     }
 
     infoModal_modify(){
         document.getElementById("modifySettle_btn").click();
         this.props.infomodalClose();
         this.props.maskClose();
+        document.body.style.overflow = 'auto';
     }
 
     render() {

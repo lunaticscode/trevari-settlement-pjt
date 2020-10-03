@@ -10,6 +10,7 @@ export const MaskClose = 'MaskClose';
 
 export const CommonModalOpen = "CommonModalOpen";
 export const CommonModalClose = "CommonModalClose";
+export const CommonModalAction = "CommonModalAction";
 
 export const InfoModalOpen = 'InfoModalOpen';
 export const InfoModalClose = 'InfoModalClose';
@@ -62,10 +63,10 @@ export function mask_close() {
 }
 
 
-export function commonModal_open(text, mood) {
+export function commonModal_open(title, text, mood) {
     return{
         type: CommonModalOpen,
-        text, mood,
+        title, text, mood,
     }
 }
 export function commonModal_close() {
@@ -73,6 +74,12 @@ export function commonModal_close() {
         type: CommonModalClose,
     }
 }
+export function commonModal_action() {
+    return{
+        type: CommonModalAction,
+    }
+}
+
 
 
 export function infomodal_open(info) {

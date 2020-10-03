@@ -2,7 +2,7 @@
 import {ModalOpen, ModalClose, ClickLink} from '../actions';
 import { LeftSwipe, RightSwipe } from "../actions";
 import {MaskOpen, MaskClose} from "../actions"
-import {CommonModalOpen, CommonModalClose} from "../actions";
+import {CommonModalOpen, CommonModalClose, CommonModalAction} from "../actions";
 import {InfoModalOpen, InfoModalClose} from "../actions";
 
 import { combineReducers } from 'redux';
@@ -25,8 +25,10 @@ const maskInitialState = {
 
 const commonModalInitialState = {
     displayStatus: 'none',
+    title: '',
     mood: '',
     text: '',
+    resultSign: '',
 };
 
 const infoModalInitialState = {
@@ -97,12 +99,21 @@ const commonModal = (state = commonModalInitialState, action) => {
         case CommonModalOpen:
             return Object.assign({}, state, {
                displayStatus: 'block',
+               title: action.title,
                text: action.text,
                mood: action.mood,
+               resultSign: '',
             });
         case CommonModalClose:
             return Object.assign({}, state, {
                 displayStatus: 'none',
+                title: '',
+                resultSign: '',
+            });
+        case CommonModalAction:
+            return Object.assign({}, state, {
+                displayStatus: 'none',
+                resultSign: 'exec',
             });
         default:
             return state;

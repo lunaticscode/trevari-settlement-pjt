@@ -30,6 +30,8 @@ class SettleForm extends Component {
     viewSettleInfo(e) {
         let settle_index = e.target.getAttribute("value");
         console.log(settle_index, typeof(settle_index));
+        window.scroll(0, 0); document.body.style.overflow = 'hidden';
+        document.getElementById("Mask_layout").style.height = window.innerHeight +'px';
         this.props.maskOpen();
         Sleep.sleep_func(250).then(() => this.props.infomodalOpen( JSON.parse( localStorage.getItem("savedSettle_"+settle_index) ) ) );
     }

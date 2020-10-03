@@ -31,7 +31,6 @@
   from { transform: rotate(180deg); }  to { transform: rotate(360deg); }
 }
 
-
 #SettleFormLayout{
   animation-name: expanding-bottom;
   //animation-name: fold-up;
@@ -48,7 +47,6 @@
   animation-name : fold-up;
   animation-fill-mode: forwards;
   animation-duration: 250ms;
-
 }
 
 #SettleFormLayout.moveDown{
@@ -58,7 +56,6 @@
 }
 
 #arrow_icon_img{
-
   position: relative;
   display: inline-block; float: right;
   width:18px; height: 18px; margin-right:10px;
@@ -80,8 +77,8 @@
 #SettleContentLayout{
     padding:20px 5px;
    animation-name: fade-in;
-  animation-fill-mode: backwards; animation-duration: 1s;
-  animation-delay: 1s;
+  animation-fill-mode: backwards; animation-duration: 500ms;
+  //animation-delay: 250ms;
 }
 #MeetCnt_select{
   width:100px; margin-left:5%; padding:5px 0px;

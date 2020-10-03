@@ -1,6 +1,6 @@
 import React from 'react';
 import '../styles/CommonModal.scss';
-import {mask_close, commonModal_close} from "../actions";
+import {mask_close, commonModal_close, commonModal_action} from "../actions";
 import {connect} from "react-redux";
 
 
@@ -11,11 +11,18 @@ class CommonModal extends React.Component {
         this.state={ };
 
         this.CommonModal_close = this.CommonModal_close.bind(this);
+        this.CommonModal_confirm = this.CommonModal_confirm.bind(this);
+    }
+    CommonModal_confirm(){
+        this.props.maskClose();
+        this.props.modalConfirm();
+        document.body.style.overflow = 'auto';
     }
 
     CommonModal_close() {
         this.props.modalClose();
         this.props.maskClose();
+        document.body.style.overflow = 'auto';
     }
 
     render() {
@@ -29,7 +36,7 @@ class CommonModal extends React.Component {
                     { ( this.props.mood === 'negative' || this.props.mood === 'positive' )
                         ? <div>
                             <div className="CommonModal_actionBtn cancel" onClick={this.CommonModal_close}>취소</div>
-                            <div className={"CommonModal_actionBtn confirm "+this.props.mood}>확인</div>
+                            <div className={"CommonModal_actionBtn confirm "+this.props.mood} onClick={this.CommonModal_confirm} >확인</div>
                           </div>
                         :
                         <div className="CommonModal_actionBtn nomal" onClick={this.CommonModal_close}>확인</div>
@@ -43,14 +50,17 @@ class CommonModal extends React.Component {
 let mapStateToProps = (state) => {
     return {
         displayStatus : state.commonModal.displayStatus,
+        title: state.commonModal.title,
         text : state.commonModal.text,
         mood : state.commonModal.mood,
+        resultSign: state.commonModal.resultSign,
     };
 };
 
 let mapDispatchToProps = (dispatch) => {
     return {
         modalClose : ()=> dispatch(commonModal_close()),
+        modalConfirm : ()=> dispatch(commonModal_action()),
         maskClose : ()=> dispatch(mask_close()),
     }
 };
@@ -59,8 +69,10 @@ CommonModal = connect(mapStateToProps, mapDispatchToProps)(CommonModal);
 
 CommonModal.defaultProps = {
     displayStatus: 'none',
+    title: '',
     text: '',
     mood: '',
+    resultSign:'',
 };
 
 export default CommonModal;
