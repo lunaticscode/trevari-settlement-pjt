@@ -290,11 +290,10 @@ class Settle extends React.Component {
 
     render() {
 
-
         //* 모임 차수가 1개 이상일때만, 최종 정산 버튼 visible 처리.
         let SettleFinal_submitBtn_style =
-            {display : ( JSON.parse( localStorage.getItem("formInfo") )['formCnt'] ) ? 'block' : 'none', };
-        let formCnt_allCnt = JSON.parse(localStorage.getItem("formInfo"))['formCnt'];
+            {display : ( localStorage.getItem("formInfo") && JSON.parse( localStorage.getItem("formInfo") )['formCnt'] ) ? 'block' : 'none', };
+        let formCnt_allCnt = ( localStorage.getItem("formInfo") ) ? JSON.parse(localStorage.getItem("formInfo"))['formCnt'] : -1 ;
         let now_completeFormCnt = Object.keys(localStorage).filter(elem => elem.toString().indexOf('savedSettle_') !== -1).length;
 
         return (
