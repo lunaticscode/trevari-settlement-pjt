@@ -28,6 +28,7 @@ const commonModalInitialState = {
     title: '',
     mood: '',
     text: '',
+    subText: '',
     resultSign: '',
 };
 
@@ -101,14 +102,14 @@ const commonModal = (state = commonModalInitialState, action) => {
                displayStatus: 'block',
                title: action.title,
                text: action.text,
+               subText: action.subText,
                mood: action.mood,
                resultSign: '',
             });
         case CommonModalClose:
             return Object.assign({}, state, {
                 displayStatus: 'none',
-                title: '',
-                resultSign: '',
+                resultSign: 'revoke',
             });
         case CommonModalAction:
             return Object.assign({}, state, {

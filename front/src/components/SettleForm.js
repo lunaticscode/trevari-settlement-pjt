@@ -24,12 +24,12 @@ class SettleForm extends Component {
     }
 
     componentDidUpdate(prevProps, prevState){
-        console.log('props change', prevProps, this.props);
+        //console.log('props change', prevProps, this.props);
     }
 
     viewSettleInfo(e) {
         let settle_index = e.target.getAttribute("value");
-        console.log(settle_index, typeof(settle_index));
+        //console.log(settle_index, typeof(settle_index));
         window.scroll(0, 0); document.body.style.overflow = 'hidden';
         document.getElementById("Mask_layout").style.height = window.innerHeight +'px';
         this.props.maskOpen();
@@ -41,7 +41,7 @@ class SettleForm extends Component {
     }
 
     render() {
-        console.log(this.props.personList);
+        //console.log(this.props.personList);
 
         let form_cnt = this.props.FormInfo['formCnt'];
         let formInfo_array = new Array(form_cnt).fill(this.props.FormInfo);

@@ -63,10 +63,10 @@ export function mask_close() {
 }
 
 
-export function commonModal_open(title, text, mood) {
+export function commonModal_open(title, text, subText, mood) {
     return{
         type: CommonModalOpen,
-        title, text, mood,
+        title, text, subText, mood,
     }
 }
 export function commonModal_close() {

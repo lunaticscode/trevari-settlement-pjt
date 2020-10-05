@@ -27,10 +27,15 @@ class CommonModal extends React.Component {
 
     render() {
         let CommonModal_style = {display: this.props.displayStatus, };
+        let emphasys_style = {color:  ( this.props.mood ) ?
+                                        ( this.props.mood =='positive' ) ? 'cyan' : 'rgb(255, 124, 140)' : ''};
         return (
             <div id="CommonModal_layout" className={this.props.mood} style={CommonModal_style}>
                 <div id="CommonModal_mask"></div>
-                <div id="CommonModal_text">{this.props.text}</div>
+                <div id="CommonModal_text">{this.props.text}
+                    <br/><br/>
+                    <font className="bold" style={emphasys_style}>*</font><div id="CommonModal_subText">{this.props.subText}</div>
+                </div>
 
                 <div id="CommonModal_actionBtn_layout">
                     { ( this.props.mood === 'negative' || this.props.mood === 'positive' )
@@ -52,6 +57,7 @@ let mapStateToProps = (state) => {
         displayStatus : state.commonModal.displayStatus,
         title: state.commonModal.title,
         text : state.commonModal.text,
+        subText: state.commonModal.subText,
         mood : state.commonModal.mood,
         resultSign: state.commonModal.resultSign,
     };
@@ -71,6 +77,7 @@ CommonModal.defaultProps = {
     displayStatus: 'none',
     title: '',
     text: '',
+    subText: '',
     mood: '',
     resultSign:'',
 };

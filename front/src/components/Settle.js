@@ -25,6 +25,7 @@ class Settle extends React.Component {
         this.inputPersonName_keyup = this.inputPersonName_keyup.bind(this);
         this.inputPersonName_change = this.inputPersonName_change.bind(this);
         this.personName_pop = this.personName_pop.bind(this);
+        this.settleFinalSubmit = this.settleFinalSubmit.bind(this);
     }
 
     inputFormTitle(e) {
@@ -58,9 +59,9 @@ class Settle extends React.Component {
         });
         this.setState({ selectedMeetCnt: selectedMeetCntIndex, settleFormInfo :  now_settleFormInfo });
         localStorage.setItem("formInfo", JSON.stringify(this.state.settleFormInfo));
-        document.getElementById("SettleFormLayout").classList.add('moveUp');
-        document.getElementById("arrow_icon_img").classList.remove('rotate_2');
-        document.getElementById("arrow_icon_img").classList.add('rotate_1');
+        // document.getElementById("SettleFormLayout").classList.add('moveUp');
+        // document.getElementById("arrow_icon_img").classList.remove('rotate_2');
+        // document.getElementById("arrow_icon_img").classList.add('rotate_1');
     }
 
     inputPersonName_change(e) {
@@ -108,9 +109,9 @@ class Settle extends React.Component {
         if(now_settleCheck_indexArray.length > 0) {
             let already_settleCheck_index = now_settleCheck_indexArray.join(', ');
             let modal_text = "선택하신 ["+personName_text+"] 님은 이미 작성된 " + already_settleCheck_index + " 정산 인원에 포함되어있습니다.그래도 삭제하시겠습니까?";
-
+            let modal_subText = "[확인] 을 클릭하면 작성된 정산정보의 참석 인원에서 해당 이름이 삭제됩니다.";
             window.scroll(0,0); document.body.style.overflow = 'hidden';
-            this.props.commonModalOpen("personArray modify", modal_text, "negative");
+            this.props.commonModalOpen("personArray modify", modal_text, modal_subText, "negative");
             document.getElementById("Mask_layout").style.height = window.innerHeight +'px';
             Sleep.sleep_func(250).then(()=>this.props.maskOpen());
             //* ----> CommonModal.js 모달 오픈.
@@ -127,6 +128,44 @@ class Settle extends React.Component {
 
     }
 
+    //* [최종정산] 버튼 클릭 이벤트.
+    settleFinalSubmit(){
+        let now_selectedMeetCnt = this.state.selectedMeetCnt;
+        let saved_formKeyArray = Object.keys( localStorage ).filter( elem => elem.toString().indexOf('savedSettle_') !== -1 )
+            .sort( ( a, b ) => a.toString().split('savedSettle_')[1] - b.toString().split('savedSettle_')[1] );
+        console.log('selectedMeetCnt: ',now_selectedMeetCnt, ' / saved_FormAllCnt : ', saved_formKeyArray.length);
+
+        //* 저장된 settleForm 개수보다 많은 모임차수가 선택되어있을 때, return.
+        if( parseInt( now_selectedMeetCnt ) > saved_formKeyArray.length ){ return; }
+
+        //* 저장된 settleForm이 남아있을 때, 모달 오픈.
+        if( parseInt( now_selectedMeetCnt ) < saved_formKeyArray.length ){
+            let restSettleForm_index_Array = saved_formKeyArray.slice( now_selectedMeetCnt );
+            let restSettleIndex_toString = restSettleForm_index_Array.map( elem => elem.split('savedSettle_')[1] + '차' ).join(', ');
+            let modal_text = '작성 완료된 ' + restSettleIndex_toString + ' 정산 내용이 있습니다. 불러오시겠습니까?';
+            let modal_subText = '[취소] 를 클릭하면 현재 선택된 '+now_selectedMeetCnt+'차 정산정보까지만 공유됩니다.';
+            console.log(modal_text);
+            window.scroll(0,0); document.body.style.overflow = 'hidden';
+            this.props.commonModalOpen("notify restSettleForm", modal_text, modal_subText, "positive");
+            document.getElementById("Mask_layout").style.height = window.innerHeight +'px';
+            Sleep.sleep_func(250).then(()=>this.props.maskOpen());
+            //* 모달 버튼 클릭 이벤트는 componentDidUpdate()에서 처리.
+        }
+
+        if( parseInt( now_selectedMeetCnt ) == saved_formKeyArray.length ){
+            let tmp_settleForm_allObj = {};
+
+            //* 최종 정산을 위한 각 모임차수별 정산정보 취합(---> obj)
+            saved_formKeyArray
+                .sort(( a, b ) => parseInt( a.toString().split('savedSettle_')[1] ) - parseInt(b.toString().split('savedSettle_')[1]) )
+                .forEach( ( elem, index ) => {
+                let settleForm_obj = JSON.parse( localStorage.getItem( elem.toString() ) );
+                tmp_settleForm_allObj[index] = settleForm_obj;
+            });
+            console.log(tmp_settleForm_allObj);
+            console.log(Object.keys(tmp_settleForm_allObj));
+        }
+    }
 
     componentDidUpdate(prevProps, prevState) {
         if(prevProps.modalConfirm_result !== this.props.modalConfirm_result){
@@ -150,21 +189,20 @@ class Settle extends React.Component {
                     localStorage.setItem("formInfo", JSON.stringify(this.state.settleFormInfo));
 
                     //* LocalStorage에 저장된 savedSettle_{index}의 ['settleValueInfo'] 수정.
+                    // (!) 복잡도 O(n^2) 부분 => array * for
                     Object.keys(localStorage).forEach( (elem, index) => {
                         if(elem.indexOf('savedSettle_') !== -1
                             && Object.keys( JSON.parse(localStorage.getItem(elem))['settleValueInfo'] ).indexOf(delete_target) !== -1 ) {
                                 let saveKey_name = elem.toString();
-                                //console.log(saveKey_name);
-
                                 let settleValueInfo_obj = JSON.parse(localStorage.getItem(elem))['settleValueInfo'];
-                                //console.log('init_settleValueInfo_obj', settleValueInfo_obj);
                                 let settleSum_value = JSON.parse(localStorage.getItem(elem))['settleSum'];
-                                //* 정산 공통 내용에서 선택한 인원(delete_target) 삭제.
-                                delete settleValueInfo_obj[delete_target];
 
-                                //console.log('settlveValueInfo_modifed_obj : ',settleValueInfo_obj);
+                                //* 정산 공통 내용에서 선택한 인원(delete_target), 현재 저장된 모임 차수별 정산정보 Object 에서도 삭제.
+                                delete settleValueInfo_obj[delete_target];
                                 let modified_obj_length = Object.keys(settleValueInfo_obj).length;
+
                                 if(modified_obj_length > 0){
+                                    //* 삭제한 인원에 대한 정산금액을 남은 인원에게 분배.
                                     for(let key in settleValueInfo_obj){
                                         settleValueInfo_obj[key] = Math.floor( settleSum_value / modified_obj_length );
                                     }
@@ -172,22 +210,60 @@ class Settle extends React.Component {
                                         settleValueInfo: settleValueInfo_obj,
                                         settleMinUnit : 1,
                                     });
-                                    console.log(tmp_obj);
-
+                                    //* 정산인원 삭제가 적용된 정보, 다시 localStorage 저장.
                                     localStorage.setItem(saveKey_name, JSON.stringify(tmp_obj));
                                 }
                                 else if(modified_obj_length === 0){
                                     //* 남아있는 정산 인원 없을 경우, 해당 아이템 삭제.
                                     localStorage.removeItem(saveKey_name);
                                 }
-
                         }
                     });
+                }
+                else if(this.props.modalConfirm_title === 'notify restSettleForm'){
+                    //* 남은 정산정보 불러오는 경우, 작성완료된 정산정보 폼 개수 취합.
+                    let savedSettleForm_cnt = Object.keys(localStorage).filter( elem => elem.toString().indexOf('savedSettle_') !== -1).length;
+                    console.log('savedSettleForm_cnt :', savedSettleForm_cnt);
+
+                    //* 모임차수 선택 select 박스, option 값 재조정.
+                    let selectMeetCnt_elem = document.getElementById("MeetCnt_select");
+                    selectMeetCnt_elem.children[this.state.selectedMeetCnt].removeAttribute("selected");
+                    selectMeetCnt_elem.children[savedSettleForm_cnt].setAttribute("selected", '');
+                    selectMeetCnt_elem.selectedIndex = savedSettleForm_cnt;
+
+                   let tmp_obj = Object.assign(this.state.settleFormInfo, {
+                       formCnt: savedSettleForm_cnt,
+                   });
+                   this.setState({selectedMeetCnt : savedSettleForm_cnt, settleFormInfo : tmp_obj, });
+
+                    //* 전체 정산정보( localStorage['formInfo'] ) 다시 재저장.
+                   let tmp_2_obj = Object.assign(JSON.parse( localStorage.getItem('formInfo') ), {
+                       formCnt: savedSettleForm_cnt,
+                   });
+                   localStorage.setItem('formInfo', JSON.stringify(tmp_2_obj));
+                }
 
 
+            }
 
-                    //* 각 모임차수 정산 내용 재저장.
+            //* CommonModal.js 에서 [취소] 버튼 클릭 시,
+            if(this.props.modalConfirm_result === 'revoke') {
 
+                if(this.props.modalConfirm_title === 'personArray modify'){
+                    console.log('personArray modify - [ Cancel ]');
+                }
+                else if(this.props.modalConfirm_title === 'notify restSettleForm'){
+                    console.log('notify restSettleForm - [ Cancel ]');
+                    let now_selectedMeetCnt = this.state.selectedMeetCnt;
+                    let savedSettleFormKey_array =
+                        Object.keys(localStorage).filter( elem => elem.toString().indexOf('savedSettle_') !== -1 )
+                                                 .sort( ( a, b ) => a.toString().split('savedSettle_')[1] - b.toString().split('savedSettle_')[1] );
+                    let sliced_settleFormKey_Array = savedSettleFormKey_array.slice( 0, now_selectedMeetCnt );
+                    let submit_settleForm_obj = {};
+                    sliced_settleFormKey_Array.forEach( (elem, index) => {
+                        submit_settleForm_obj[index] = JSON.parse( localStorage.getItem(elem.toString()) );
+                    });
+                    console.log(submit_settleForm_obj);
                 }
             }
         }
@@ -215,9 +291,7 @@ class Settle extends React.Component {
     render() {
 
 
-
         //* 모임 차수가 1개 이상일때만, 최종 정산 버튼 visible 처리.
-
         let SettleFinal_submitBtn_style =
             {display : ( JSON.parse( localStorage.getItem("formInfo") )['formCnt'] ) ? 'block' : 'none', };
         let formCnt_allCnt = JSON.parse(localStorage.getItem("formInfo"))['formCnt'];
@@ -254,7 +328,10 @@ class Settle extends React.Component {
                      </div>
                      <div>
                          <div className="inputTitle">모임 차수 선택</div>
-                         <select onChange={this.selectMeetCnt} id="MeetCnt_select">
+                         <select onChange={this.selectMeetCnt}
+                                 id="MeetCnt_select"
+
+                         >
                              <option>선택</option>
                              <option>1차</option><option>2차</option><option>3차</option>
                              <option>4차</option><option>5차</option><option>6차</option>
@@ -271,6 +348,7 @@ class Settle extends React.Component {
                         personList={this.state.settleContent_people_Array}
                     />
                     <div id="SettleFinal_submit_btn"
+                         onClick={this.settleFinalSubmit}
                          className={ (formCnt_allCnt <= now_completeFormCnt) ? "grant" : ""}
                          style={SettleFinal_submitBtn_style}>
                         최종정산
@@ -292,7 +370,7 @@ let mapStateToProps = (state) => {
 
 let mapDispatchToProps = (dispatch) => {
     return {
-        commonModalOpen: (title, text, mood) => dispatch(commonModal_open(title, text, mood)),
+        commonModalOpen: (title, text, subText, mood) => dispatch(commonModal_open(title, text, subText, mood)),
         maskOpen: () => dispatch(mask_open()),
     }
 };

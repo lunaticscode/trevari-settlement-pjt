@@ -37,7 +37,7 @@ class SettleDetailModal extends React.Component {
     }
 
     render() {
-        console.log(this.props.info);
+        //console.log(this.props.info);
         let InfoModal_style = {
             display: this.props.displayStatus,
         };
@@ -45,7 +45,7 @@ class SettleDetailModal extends React.Component {
         let now_path = window.location.pathname;
 
         let settleResult_value = ( this.props.info ) ? Object.values( this.props.info.settleValueInfo ).reduce((acc, cur) => acc+cur) : '';
-        console.log(settleResult_value);
+        //console.log(settleResult_value);
         // modalInfo_case : 'settle',
         //             settleAllCnt: EditForm_allCnt, settleIndex : now_EidtForm_index,
         //             settleSum : settleSum, settleCase : settleCase, settleMinUnit : settleMinUnit,

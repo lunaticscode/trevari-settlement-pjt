@@ -41,13 +41,12 @@ class PageStack extends React.Component {
         if(prevState.pageStackArray[0] !== this.state.pageStackArray[0]) {
             //location.href = this.state.pageStackArray[0];
             document.getElementById("PageStackBtn").click();
-            console.log('PageStack.js Link-btn Click.');
+            //console.log('PageStack.js Link-btn Click.');
         }
     }
 
     render( ) {
-
-        console.log('PageStack.js - now Path : ', this.state.pageStackArray[0]);
+        //console.log('PageStack.js - now Path : ', this.state.pageStackArray[0]);
         return (
             <div>
                 <Link id="PageStackBtn" to={this.state.pageStackArray[0]}></Link>
