@@ -31,6 +31,7 @@ class Settle extends React.Component {
         let titleText = e.target.value;
         this.setState({ settleFormTitle: titleText, });
         this.state.settleFormInfo['title'] = titleText;
+        localStorage.setItem("formInfo", JSON.stringify(this.state.settleFormInfo));
     }
 
     foldUpDown(e) {
@@ -88,6 +89,7 @@ class Settle extends React.Component {
                         personList: settleContent_people_Array.concat(this.state.settleContent_personName_Text.toString().trim()),
                     });
                     this.setState({settleFormInfo: tmp_obj});
+                    localStorage.setItem("formInfo", JSON.stringify(this.state.settleFormInfo));
                 }
             }
     }
@@ -111,6 +113,8 @@ class Settle extends React.Component {
             this.props.commonModalOpen("personArray modify", modal_text, "negative");
             document.getElementById("Mask_layout").style.height = window.innerHeight +'px';
             Sleep.sleep_func(250).then(()=>this.props.maskOpen());
+            //* ----> CommonModal.js 모달 오픈.
+            //* [확인] 버튼 클릭 시, 현재 Settle.js props 업데이트 ---> componentDidUpdate() 에서 정산인원 조정 로직 실행.
         }else{
             let modified_array = this.state.settleContent_people_Array.filter(elem => elem !== personName_text);
             this.setState({settleContent_people_Array: modified_array,});
@@ -118,6 +122,7 @@ class Settle extends React.Component {
                 personList: modified_array,
             });
             this.setState({settleFormInfo: tmp_obj});
+            localStorage.setItem("formInfo", JSON.stringify(this.state.settleFormInfo));
         }
 
     }
@@ -125,8 +130,13 @@ class Settle extends React.Component {
 
     componentDidUpdate(prevProps, prevState) {
         if(prevProps.modalConfirm_result !== this.props.modalConfirm_result){
+
+            //* CommonModal.js 에서 [확인] 버튼 클릭 시,
             if(this.props.modalConfirm_result === 'exec') {
+                //* 모달 케이스가 정산 인원 수정일 경우,
                 if(this.props.modalConfirm_title === 'personArray modify'){
+
+                    //* 정산 공통내용 settleFormInfo 내용 수정.
                     let delete_target = this.state.settleContent_deleteTarget_person;
                     let modified_personArray = this.state.settleContent_people_Array.filter(elem => elem !== delete_target);
                     this.setState({settleContent_people_Array : modified_personArray,
@@ -135,12 +145,56 @@ class Settle extends React.Component {
                         personList: modified_personArray,
                     });
                     this.setState({settleFormInfo: tmp_obj});
+
+                    //* 정산 공통 정보 내용 재저장.
+                    localStorage.setItem("formInfo", JSON.stringify(this.state.settleFormInfo));
+
+                    //* LocalStorage에 저장된 savedSettle_{index}의 ['settleValueInfo'] 수정.
+                    Object.keys(localStorage).forEach( (elem, index) => {
+                        if(elem.indexOf('savedSettle_') !== -1
+                            && Object.keys( JSON.parse(localStorage.getItem(elem))['settleValueInfo'] ).indexOf(delete_target) !== -1 ) {
+                                let saveKey_name = elem.toString();
+                                //console.log(saveKey_name);
+
+                                let settleValueInfo_obj = JSON.parse(localStorage.getItem(elem))['settleValueInfo'];
+                                //console.log('init_settleValueInfo_obj', settleValueInfo_obj);
+                                let settleSum_value = JSON.parse(localStorage.getItem(elem))['settleSum'];
+                                //* 정산 공통 내용에서 선택한 인원(delete_target) 삭제.
+                                delete settleValueInfo_obj[delete_target];
+
+                                //console.log('settlveValueInfo_modifed_obj : ',settleValueInfo_obj);
+                                let modified_obj_length = Object.keys(settleValueInfo_obj).length;
+                                if(modified_obj_length > 0){
+                                    for(let key in settleValueInfo_obj){
+                                        settleValueInfo_obj[key] = Math.floor( settleSum_value / modified_obj_length );
+                                    }
+                                    let tmp_obj = Object.assign( JSON.parse( localStorage.getItem(elem) ), {
+                                        settleValueInfo: settleValueInfo_obj,
+                                        settleMinUnit : 1,
+                                    });
+                                    console.log(tmp_obj);
+
+                                    localStorage.setItem(saveKey_name, JSON.stringify(tmp_obj));
+                                }
+                                else if(modified_obj_length === 0){
+                                    //* 남아있는 정산 인원 없을 경우, 해당 아이템 삭제.
+                                    localStorage.removeItem(saveKey_name);
+                                }
+
+                        }
+                    });
+
+
+
+                    //* 각 모임차수 정산 내용 재저장.
+
                 }
             }
         }
     }
 
     componentDidMount() {
+
         let savedInfo = null;
         ( localStorage.getItem("formInfo") )  ? savedInfo = JSON.parse( localStorage.getItem("formInfo") ) : savedInfo = null;
         if(savedInfo) {
@@ -159,7 +213,15 @@ class Settle extends React.Component {
     }
 
     render() {
-        let settleDetailForm_style = { height: window.innerHeight + 'px'};
+
+
+
+        //* 모임 차수가 1개 이상일때만, 최종 정산 버튼 visible 처리.
+
+        let SettleFinal_submitBtn_style =
+            {display : ( JSON.parse( localStorage.getItem("formInfo") )['formCnt'] ) ? 'block' : 'none', };
+        let formCnt_allCnt = JSON.parse(localStorage.getItem("formInfo"))['formCnt'];
+        let now_completeFormCnt = Object.keys(localStorage).filter(elem => elem.toString().indexOf('savedSettle_') !== -1).length;
 
         return (
           <div id="SettleLayout">
@@ -201,14 +263,20 @@ class Settle extends React.Component {
                  </div>
               </div>
 
-              <div id="SettleDetailForm_layout" style={settleDetailForm_style}>
+              <div id="SettleDetailForm_layout">
                     <SettleForm
                         FormInfo={this.state.settleFormInfo}
                         TestProps={this.state.settleFormInfo.formCnt}
                         TestProps2={this.state.settleFormInfo.title}
                         personList={this.state.settleContent_people_Array}
                     />
+                    <div id="SettleFinal_submit_btn"
+                         className={ (formCnt_allCnt <= now_completeFormCnt) ? "grant" : ""}
+                         style={SettleFinal_submitBtn_style}>
+                        최종정산
+                    </div>
               </div>
+
           </div>
 
         );

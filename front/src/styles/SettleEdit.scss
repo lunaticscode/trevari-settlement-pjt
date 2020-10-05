@@ -14,7 +14,7 @@
 #SettleEditLayout{
   background: $main-background2;
   //animation-name: slide-from-left; animation-fill-mode: backwards; animation-duration: 500ms;
-  height: 100%;
+  height: auto;
   padding:0px 15px;
 }
 
@@ -86,10 +86,11 @@
 
 .EditForm_personBox{
   display: inline-block; font-size:14px;
-  margin-right:10px; padding:3px 8px; background: $main-background2;
-  border:1px solid gray; border-radius: 5px; font-weight: 500;
-  border: none;
-  box-shadow: 1px 1px 3px $main-line-color;
+  margin-right:8px; padding:3px 8px; background: $main-background2;
+  margin-bottom:5px;
+   border-radius: 5px; font-weight: 500;
+  border:1px solid $main-line-color;
+  box-shadow: 0px 0px 5px $main-line-color;
   &.uncheck{
     box-shadow: none;
     font-weight: 200;

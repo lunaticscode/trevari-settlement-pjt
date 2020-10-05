@@ -96,13 +96,14 @@
     position: absolute; left:1%;
     display: inline-flex; flex-wrap: nowrap;
     flex-direction: row;
-    height:auto; max-height: 400px; margin: 15px 0px; padding:15px 0px;
+    //max-height: 400px;
+    height:auto;  margin: 15px 0px; padding:15px 0px;
     overflow-y: scroll;
   }
 
   .settleInputForm{
     animation-name: fade-in-2;
-    animation-duration: 1s;
+    animation-duration: 500ms;
     animation-fill-mode: backwards;
     color:gray;
     display: inline-block;
@@ -116,7 +117,8 @@
   display: inline-flex; flex-direction: row; justify-content: left; flex-wrap: wrap;
 }
 .personName_box{
-  background: gray;
+  background: linear-gradient(90deg, rgba(33,33,33,1) 0%, rgba(71,71,71,1) 55%);
+  box-shadow: 3px 3px 5px black; font-weight: 300;
   margin-right:5px; margin-bottom:5px;
   display: inline-block; border-radius: 5px; ;
    color:white; text-align: center; padding:3px 6px;
@@ -129,7 +131,8 @@
 #SettleDetailForm_layout{
   width:95%;
   position: absolute; left:2.5%;
-  height:auto; max-height: 400px; margin: 15px 0px; padding:15px 0px;
+  //max-height: 400px;
+  height:auto;  margin: 15px 0px; padding:15px 0px;
   overflow-y: scroll;
 }
 
@@ -182,4 +185,15 @@
 
 .inputForm_personName{
   @extend .inputForm; widht:40%; min-width:100px; max-width:150px;
+}
+
+#SettleFinal_submit_btn{
+  animation-name: fade-in-2; animation-fill-mode: forwards; animation-duration: 1s; animation-delay: 500ms;
+  width:90%; margin-left:3.5%; padding:10px 0px; box-shadow: 5px 5px 5px gray;
+  opacity: 0;
+  background: silver; color:#eeeeee; text-align: center; border-radius: 5px;
+  &.grant{
+    background: $logo-background2;
+    color:white;
+  }
 }

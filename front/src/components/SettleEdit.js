@@ -216,15 +216,12 @@ class SettleEdit extends React.Component {
 
     render() {
 
-
         let settleCase_btns = document.getElementsByClassName("select_settleCase");
         for(var i = 0; i<settleCase_btns.length; i++){
             if(parseInt( this.state.settleCase ) === i ){
                 settleCase_btns[i].classList.remove('uncheck');
             }else{ settleCase_btns[i].classList.add('uncheck'); }
         }
-
-        let editLayout_style = {height: window.innerHeight + 'px'};
 
         //* state : settleCase 가 0 일 때 ( = 정산방식 N/1 선택 시 )
         let N1_PersonSettle_inputValue = ( this.state.selectedPersonList.length > 0 )
@@ -251,7 +248,7 @@ class SettleEdit extends React.Component {
         }
 
         return (
-            <div id="SettleEditLayout" style={editLayout_style}>
+            <div id="SettleEditLayout" >
                 <div className="EditForm_contentBox">
                     <div className="EditForm_titleBox"><font className="bold">#</font> {parseInt( this.state.settleIndex ) + 1}차</div>
                     <div className="EditForm_title">{this.state.common_settleInfoObj['title']}</div>
