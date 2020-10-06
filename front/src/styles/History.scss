@@ -1,5 +1,80 @@
 @import 'extend';
 
+@keyframes expanding-width {
+    from{overflow: auto; white-space: nowrap; width:0%;}
+    to{white-space: nowrap; width:100%;}
+}
+
 #HistoryLayout {
+  //text-align: center;
+  animation-name: fade-in-2; animation-fill-mode: forwards; animation-duration: 700ms;
+}
+#HistoryTitle{
+
+}
+#History_userName_box{
+  margin-left:20px; color:white; font-weight: 600;
+  display: inline-block;
+}
+#History_noUser_noti{
   text-align: center;
+}
+
+#HistoryContent_layout{
+
+}
+
+.HistoryContent_line{
+  margin-top:10px;
+  margin-left:20px; margin-right:20px;
+}
+.HistoryContent{
+  display: inline-block;
+  &.title{
+
+    display: block;
+    background: #383a3f;
+    box-shadow: 5px 5px 5px black;
+    padding:10px 5px; border-radius: 5px;
+    font-size:13px; color:silver;
+  }
+
+  &.value{
+    color:white;
+    margin-left:15px;
+    font-size:14px; font-weight: 600;
+  }
+
+  &.unit{
+    margin-left:3px; margin-right:30px;
+    font-size:14px; color:silver;
+  }
+}
+
+.HistoryContent_detail_btn{
+  display: inline-block; color:#eeeeee;
+  background: none; padding:0px 5px; box-shadow: 0px 0px 5px cyan; border-radius: 5px;
+  float: right; margin-right:5px;
+}
+
+.HistorySettleChild{
+  margin-top:15px; margin-left:5px; margin-right:5px;
+  border-bottom:1px solid white; padding-bottom:10px;
+}
+.HistorySettleChild_Content{
+  margin-bottom:2px;
+  &.date{
+    display: inline-block; padding:3px 5px; border-radius: 5px; margin-bottom:5px;
+    background: $main-background2; color:white; box-shadow: 3px 3px 5px black;
+  }
+  &.title{
+    color: #eeeeee; font-weight: 300;
+  }
+  &.cnt{
+    color: #eeeeee; font-weight: 300;
+  }
+  &.sumPrice{
+    color: #eeeeee; font-weight: 300;
+  }
+
 }

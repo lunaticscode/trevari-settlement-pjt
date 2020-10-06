@@ -6,6 +6,8 @@ import SettleForm from "./SettleForm";
 import {commonModal_open, mask_open} from "../actions";
 import {connect} from "react-redux";
 import Sleep from "../Sleep";
+import Fetch from "../Fetch";
+import Cookie from "../Cookie";
 
 class Settle extends React.Component {
     constructor(props) {
@@ -164,6 +166,40 @@ class Settle extends React.Component {
             });
             console.log(tmp_settleForm_allObj);
             console.log(Object.keys(tmp_settleForm_allObj));
+            let submit_settleForm_cnt = Object.keys(tmp_settleForm_allObj).length;
+            let submit_commonSettle_title = JSON.parse( localStorage.getItem('formInfo') )['title'];
+            //     si_owner_email = models.CharField(max_length=100)
+            //     si_title = models.CharField(max_length=50)
+            //     si_form_cnt = models.CharField(max_length=50)
+            //     si_form_sum_price = models.CharField(max_length=30)
+            //     si_form_person_value_list = models.TextField()
+            //     si_form_info = models.TextField()
+            //     si_regdate = models.CharField(max_length=16)
+
+            let D = new Date();
+            let now_YmdHis = D.getFullYear()+''+( D.getMonth() + 1 )+''+ D.getDate()+''+ D.getHours()+''+D.getMinutes()+''+ D.getSeconds() ;
+            let submit_data = {
+                si_owner_name: Cookie.get_cookie('UserName'),
+                si_title: submit_commonSettle_title, si_form_cnt: submit_settleForm_cnt.toString(),
+                si_form_info: JSON.stringify(tmp_settleForm_allObj).replace(/\\/g, ''),
+                si_regdate : now_YmdHis,
+            };
+
+            console.log(submit_data);
+            Fetch.fetch_api('settle', 'POST', submit_data)
+                .then(res => {
+                    if(res.toString().trim().indexOf('Error') !== -1){
+                        console.log('(!) 서버 에러 발생');
+                        return;
+                    }
+                    if(res['result'] === 'success'){
+                        console.log(res);
+                    }
+                    else{
+                        console.log(res);
+                    }
+                });
+
         }
     }
 
