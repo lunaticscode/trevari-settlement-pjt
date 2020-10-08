@@ -3,8 +3,11 @@ import React from 'react';
 import '../styles/History.scss';
 import Fetch from "../Fetch";
 import Cookie from "../Cookie";
+import {modal_close, modal_open} from "../actions";
+import {connect} from "react-redux";
+import Sleep from "../Sleep";
 
-export default class History extends React.Component {
+class History extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -56,6 +59,14 @@ export default class History extends React.Component {
         let submit_data = {user_name : now_userName,};
         Fetch.fetch_api("settleList", 'POST', submit_data)
             .then(res=> {
+                if( res.toString().trim().indexOf('Error') !== -1){
+                    console.log('server error');
+                    let AlertText = '(!) 서버에 오류가 발생했습니다. 관리자에게 문의해주세요.';
+                    let topPosition = window.innerHeight;
+                    this.props.modalOpen( AlertText, ( topPosition-30 ) );
+                    Sleep.sleep_func(2000).then(()=> this.props.modalClose());
+                    return;
+                }
                 console.log(res);
                 this.setState({settleInfoList: res['settleInfo_List']});
         });
@@ -66,7 +77,7 @@ export default class History extends React.Component {
         let settleAllCnt = 0;
         let settleAllPrice = 0;
         let settleChildAllCnt = 0;
-        if(this.state.loginFlag){
+        if( this.state.loginFlag && this.state.settleInfoList ){
 
             let settleInfoList = this.state.settleInfoList;
             settleAllCnt = settleInfoList.length;
@@ -158,10 +169,19 @@ export default class History extends React.Component {
 
 
                         : ''
-
                 }
             </div>
         );
     }
 }
 
+let mapDispatchToProps = (dispatch) => {
+    return {
+        modalOpen: (text, topPosition) => dispatch(modal_open(text, topPosition)),
+        modalClose: () => dispatch(modal_close())
+    }
+};
+
+History = connect(undefined, mapDispatchToProps)(History);
+
+export default History;

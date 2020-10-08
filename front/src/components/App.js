@@ -138,7 +138,6 @@ let mapDispatchToProps = (dispatch) => {
     }
 };
 
-
 App = connect(undefined, mapDispatchToProps)(App);
 
 export default App;

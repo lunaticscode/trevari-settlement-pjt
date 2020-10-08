@@ -34,18 +34,24 @@
 @keyframes slide-from-right {
   from{position:relative; left:100%; opacity: 0;} to{position:relative; left:0px; opacity: 1;}
 }
+@keyframes fade-out {
+  from{opacity: 1;} to{opacity: 0;}
+}
 
 #JoinModalContent{
-  animation-name: fade-in; animation-duration: 1s; animation-fill-mode: forwards;
   padding:10px;
+
+  &.slide-left{
+    animation-name: slide-from-left; animation-fill-mode: forwards;  animation-duration: 1s;
+  }
+  &.slide-right{
+    animation-name: slide-from-right; animation-fill-mode: forwards;  animation-duration: 1s;
+  }
+  &.fade-out{
+    animation-name: slide-from-right; animation-fill-mode: forwards;  animation-duration: 500ms;
+  }
 }
 
-#JoinModalContent.slide-left{
-  animation-name: slide-from-left; animation-fill-mode: forwards;  animation-duration: 1s;
-}
-#JoinModalContent.slide-right{
-  animation-name: slide-from-right; animation-fill-mode: forwards;  animation-duration: 1s;
-}
 
 #title{ font-size:18px; margin-left:10px; margin-top:15px; margin-bottom:15px; font-weight: 600; }
 

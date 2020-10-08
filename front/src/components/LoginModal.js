@@ -63,7 +63,7 @@ class LoginModal extends React.Component {
                 .then(res=> {
                     //console.log(res);
                     if(res.toString().trim().indexOf('Error') !== -1 ){
-                        let AlertText = '(!) 서버에 오류가 발생했습니다.<br/>관리자에게 문의해주세요.';
+                        let AlertText = '(!) 서버에 오류가 발생했습니다. 관리자에게 문의해주세요.';
                         let topPosition = window.innerHeight;
                         this.props.modalOpen( AlertText, ( topPosition-30 ) );
                         Sleep.sleep_func(1000).then(()=> this.props.modalClose());

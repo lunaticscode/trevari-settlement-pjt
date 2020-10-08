@@ -106,27 +106,26 @@ class JoinModal extends React.Component {
         let joinFlagArray = this.state.joinFlagArray;
         let joinTitleArray = ['Email', 'Nickname', 'Pw', 'PwConfirm'];
 
-        if(joinFlagArray[now_joinStep] ) {
+        if( joinFlagArray[now_joinStep] ) {
 
              //* 비밀번호 제외한, [이메일], [닉네임] 중복 체크 진행.
              if(now_joinStep == 0 || now_joinStep == 1) {
 
                  let api_dir = (now_joinStep === 0) ? "email" : "name";
                  let post_data = (now_joinStep === 0) ? {email: this.state.joinEmail} : {name: this.state.joinNickname};
-
                  let check_result = Fetch.fetch_api('users/check/'+api_dir, 'POST', post_data);
                  check_result.then(res=> {
                      console.log(res);
                      //* API 서버 off 상태일 경우, 서버 에러 Modal 오픈.
                      if(res.toString().trim().indexOf('Error') !== -1 ){
                          console.log( '(!) SERVER Error ');
-                         let AlertText = '(!) 서버에 오류가 발생했습니다.<br/>관리자에게 문의해주세요.';
+                         let AlertText = '(!) 서버에 오류가 발생했습니다. 관리자에게 문의해주세요.';
                          let topPosition = window.innerHeight;
                          this.props.modalOpen(AlertText, topPosition);
                          return;
                      }
 
-                     if(res['sign'] === 'grant') { this.setState({joinStatus : now_joinStep, JoinNextStepBtn_color:'silver'}); }
+                     if( res['sign'] === 'grant' ) { this.setState({joinStatus : now_joinStep, JoinNextStepBtn_color:'silver'}); }
                      else{
                         //* 중복일 경우,
                         console.log('revoke => Alert Modal open...');
@@ -138,6 +137,11 @@ class JoinModal extends React.Component {
                         Sleep.sleep_func(1500).then(() => this.props.modalClose());
                          ( api_dir === 'email' ) ? this.setState({joinEmail : ''}) : this.setState({joinNickname : ''});
                         this.setState({JoinNextStepBtn_color:'silver'});
+                        let tmp_joinFlag_array = this.state.joinFlagArray.map( (elem, index) => {
+                                if(index == now_joinStep){ elem = false; }
+                                return elem;
+                        });
+                        this.setState({joinFlagArray : tmp_joinFlag_array});
                         document.getElementById("input_"+joinTitleArray[now_joinStep]).style.borderBottomColor = 'rgb(255, 124, 140)';
                         document.getElementById("input_"+joinTitleArray[now_joinStep]).value ='';
                      }
@@ -190,6 +194,7 @@ class JoinModal extends React.Component {
 
                 //* 회원가입 완료.
                 else{
+                    location.href = '/login';
                     console.log(' * Success to User Join. * ');
                 }
             });
@@ -206,12 +211,15 @@ class JoinModal extends React.Component {
         let joinContentlayout = document.getElementById("JoinModalContent");
         if(prevStatus.joinStatus !== this.state.joinStatus) {
                 if(prevStatus.joinStatus < this.state.joinStatus){
-                joinContentlayout.classList.add('slide-left');
-                setTimeout(function() { joinContentlayout.classList.remove('slide-left');}, 1000);
+                    joinContentlayout.classList.add('fade-out');
+                    Sleep.sleep_func(500).then( ()=> {
+                        joinContentlayout.classList.remove("fade-out");
+                        joinContentlayout.classList.add('slide-from-right');
+                    })
             }
             else if(prevStatus.joinStatus > this.state.joinStatus){
-                joinContentlayout.classList.add('slide-right');
-                setTimeout(function() { joinContentlayout.classList.remove('slide-right'); }, 1000);
+                // joinContentlayout.classList.add('slide-right');
+                // setTimeout(function() { joinContentlayout.classList.remove('slide-right'); }, 1000);
             }
 
             if(this.state.joinStatus === -1 && prevStatus.joinStatus !== null) {
@@ -219,42 +227,42 @@ class JoinModal extends React.Component {
                     document.getElementById("main_ment").innerHTML = "회원가입을 위한<br/>이메일을 작성해주세요.";
                     document.getElementById("sub_ment").innerHTML = "<font class='Emphasis'>*</font> 유효하지 않은 형식은 등록이 불가능합니다.";
                 }, 1000);
+
             }
             if(this.state.joinStatus === 0) {
-                setTimeout(function() {
+                Sleep.sleep_func(100).then( () => {
                     document.getElementById("main_ment").innerHTML = "사용할 닉네임을<br/>작성해주세요.";
                     document.getElementById("sub_ment").innerHTML = "<font class='Emphasis'>*</font> 최소 5자 이상이어야 합니다.";
-                }, 1000);
+                })
             }
             if(this.state.joinStatus === 1) {
-                setTimeout(function() {
+                Sleep.sleep_func(50).then( () => {
                     document.getElementById("main_ment").innerHTML = "사용할 비밀번호를<br/>입력해주세요.";
                     document.getElementById("sub_ment").innerHTML = "<font class='Emphasis'>*</font> 영문,숫자,특수기호 하나를 포함한 8~16자입니다.";
-                }, 1000);
+                })
             }
 
-            for(var i = 0; i<this.state.joinStatus+1; i++){
+            for(let i = 0; i<this.state.joinStatus+1; i++){
                 document.getElementsByClassName("ProgressBar")[i].style.background = 'linear-gradient(90deg, rgba(142,240,244,1) 0%, rgba(35,195,224,1) 100%)';
                 document.getElementsByClassName("ProgressBar")[i].style.opacity = '0.9';
             }
-
         }
 
         let JoinInputElems = document.getElementsByClassName("JoinInput");
 
 
         if(this.state.joinStatus === -1 || this.state.joinStatus === 0 ){
-            for(var i = 0; i<JoinInputElems.length; i++){
+            for(let i = 0; i<JoinInputElems.length; i++){
                 if( i == (this.state.joinStatus+1) ){ JoinInputElems[i].style.display = 'block'; }
                 else{ JoinInputElems[i].style.display = 'none'; }
             }
         }else{
-            setTimeout(function() {
-                for(var i = 0; i<JoinInputElems.length; i++){
+            Sleep.sleep_func(100).then(()=>{
+                for(let i = 0; i<JoinInputElems.length; i++){
                     if( i == 2 || i == 3 ){ JoinInputElems[i].style.display = 'block'; }
                     else{ JoinInputElems[i].style.display = 'none'; }
                 }
-            }, 1000);
+            })
         }
 
     }
@@ -262,7 +270,7 @@ class JoinModal extends React.Component {
     componentDidMount() {
         console.log("Init - joinStatus : ",this.state.joinStatus);
         let JoinInputElems = document.getElementsByClassName("JoinInput");
-        for(var i = 0; i<JoinInputElems.length; i++){
+        for(let i = 0; i<JoinInputElems.length; i++){
             if(i !== 0 && this.state.joinStatus == -1 ) { JoinInputElems[i].style.display = 'none';}
         }
         //JJoinGuide_layoutoinModalLayout
