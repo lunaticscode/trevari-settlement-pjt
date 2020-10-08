@@ -7,9 +7,11 @@ export default class FetchUtil {
                  let response = await fetch(host_addr+'api/'+dir,
                      {
                          method: method,
-                         body: JSON.stringify(data),
-                         headers: {'Content-Type':'application/json'}
-                     });
+                         body: ( method.toLowerCase().toString() === "post" ) ? JSON.stringify(data) : null,
+                         headers: {'Content-Type':'application/json'},
+                         }
+                     );
+
                  //console.log(response.statusText);
                  result = response.json();
                  return result;

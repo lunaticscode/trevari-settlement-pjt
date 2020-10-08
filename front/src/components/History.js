@@ -21,6 +21,7 @@ class History extends React.Component {
     }
 
     SettleChild_detailView(){
+        if(!this.state.settleInfoList) { return; }
         let now_settleInfoList = this.state.settleInfoList.sort( ( a, b ) => b['id'] - a['id'] );
         console.log(now_settleInfoList);
         let tmp_array = now_settleInfoList.map( (elem, index) => {
@@ -67,7 +68,7 @@ class History extends React.Component {
                     Sleep.sleep_func(2000).then(()=> this.props.modalClose());
                     return;
                 }
-                console.log(res);
+                //console.log(res);
                 this.setState({settleInfoList: res['settleInfo_List']});
         });
     }
@@ -102,8 +103,8 @@ class History extends React.Component {
                 <div id="HistoryTitle">
                     {
                         ( this.state.loginFlag )
-                            ? <div><div id="History_userName_box">{this.state.userName}</div> 님의 정산 <font className="bold">History</font></div>
-                            : <div id="History_noUser_noti">(!)로그인이 필요한 기능입니다.</div>
+                            ? <div><div id="History_userName_box">{this.state.userName}</div> 님의 <font className="bold">정산 History</font></div>
+                            : <div id="History_noUser_noti"><font className="bold">*</font> 로그인이 필요한 기능입니다.</div>
                     }
                 </div>
                 {
@@ -170,6 +171,7 @@ class History extends React.Component {
 
                         : ''
                 }
+                <br/>
             </div>
         );
     }

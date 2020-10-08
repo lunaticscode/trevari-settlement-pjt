@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from .serializers import UserSerializer
 from rest_framework import status
 import jwt
+import requests
 import os, json
 from pathlib import Path
 from django.core.exceptions import ImproperlyConfigured
@@ -129,3 +130,35 @@ class TokenAuthView(APIView):
            else:
                content = {"auth_result": "revoke", "message": "(!) 다시 로그인해주세요."}
                return Response(content, status=status.HTTP_200_OK)
+
+
+imp_key = get_secret("IMP_KEY")
+imp_secret = get_secret("IMP_SECRET")
+
+class BankingTokenView(APIView):
+       """
+       POST /api/banking/accountAuth
+       """
+       def post(self, request):
+           req_username = request.data['username']
+           url = 'http://api.iamport.kr/users/getToken'
+           dict_data = {'imp_key': imp_key,
+                        'imp_secret': imp_secret}
+           response = requests.post(url=url, data=dict_data,
+                                    headers={'Content-Type': 'application/x-www-form-urlencoded'})
+           access_token = response.json()['response']['access_token']
+
+           params = {'bank_code': request.data['bank_code'], 'bank_num': request.data['bank_num']}
+           url_2 = 'http://api.iamport.kr/vbanks/holder'
+           response_2 = requests.get(url=url_2, params=params, headers={'Content-Type': 'application/x-www-form-urlencoded',
+                                                                      'Authorization': 'Bearer '+access_token})
+
+           result_realName = response_2.json()['response']['bank_holder']
+           #print(result_realName, response_2.json())
+           print(result_realName, req_username)
+           if result_realName == req_username:
+               return Response({'result': 'grant'}, status=status.HTTP_200_OK)
+           else:
+               return Response({'result': 'revoke'}, status=status.HTTP_200_OK)
+
+

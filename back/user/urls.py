@@ -8,4 +8,5 @@ urlpatterns = [
     path('users/check/email', views.CheckEmailView.as_view()),
     path('users/check/name', views.CheckNicknameView.as_view()),
     path('token/auth', views.TokenAuthView.as_view()),
+    path('banking/accountAuth', views.BankingTokenView.as_view()),
 ]

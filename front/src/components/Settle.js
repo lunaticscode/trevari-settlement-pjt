@@ -194,7 +194,15 @@ class Settle extends React.Component {
                     }
                     if(res['result'] === 'success'){
                         console.log(res);
+                        localStorage.removeItem("formInfo");
+                        Object.keys( localStorage ).forEach(elem => {
+                            if(elem.toString().indexOf('savedSettle_') !== -1) {
+                                localStorage.removeItem(elem.toString());
+                                location.href = '/settle';
+                            }
+                        });
                     }
+
                     else{
                         console.log(res);
                     }
@@ -389,7 +397,6 @@ class Settle extends React.Component {
                         최종정산
                     </div>
               </div>
-
           </div>
 
         );
