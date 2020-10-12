@@ -140,7 +140,6 @@ class BankingTokenView(APIView):
        POST /api/banking/accountAuth
        """
        def post(self, request):
-           req_username = request.data['username']
            url = 'http://api.iamport.kr/users/getToken'
            dict_data = {'imp_key': imp_key,
                         'imp_secret': imp_secret}
@@ -153,12 +152,52 @@ class BankingTokenView(APIView):
            response_2 = requests.get(url=url_2, params=params, headers={'Content-Type': 'application/x-www-form-urlencoded',
                                                                       'Authorization': 'Bearer '+access_token})
 
-           result_realName = response_2.json()['response']['bank_holder']
-           #print(result_realName, response_2.json())
-           print(result_realName, req_username)
-           if result_realName == req_username:
-               return Response({'result': 'grant'}, status=status.HTTP_200_OK)
+           result_auth = response_2.json()
+
+           if result_auth['response'] is None:
+               return Response({'result': 'revoke', 'revokeType': 'account'}, status=status.HTTP_200_OK)
            else:
-               return Response({'result': 'revoke'}, status=status.HTTP_200_OK)
+               return Response({'result': 'grant', 'realname': result_auth['response']['bank_holder']}, status=status.HTTP_200_OK)
 
 
+
+class UserAccountInfo(APIView):
+        """
+        GET /api/account/
+        """
+        def get(self, *args, **kwargs):
+            print(kwargs.get('username'))
+            if kwargs.get('username') is None:
+                content = {'result': 'fail', 'message': '(!)Need to username'}
+                return Response(content, status=status.HTTP_200_OK)
+
+            else:
+                username = kwargs.get('username')
+                if User.objects.filter(name=username):
+                    user_account_list = User.objects.get(name=username).account_list
+                    if user_account_list is None:
+                        content = {'result': 'success', 'account_list': user_account_list, 'message': 'firstAccount'}
+                        return Response(content, status=status.HTTP_200_OK)
+                    else:
+                        content = {'result': 'success', 'account_list': user_account_list}
+                        return Response(content, status=status.HTTP_200_OK)
+
+                else:
+                    content = {'result': 'fail', 'message': '(!)Does not exist this username'}
+                    return Response(content, status=status.HTTP_200_OK)
+
+        """
+        POST /api/account/
+        """
+        def post(self, request):
+            username = request.data['username']
+            account_info = request.data['account_info']
+            if User.objects.filter(name=username):
+                user_instance = User.objects.get(name=username)
+                user_instance.account_list = account_info
+                user_instance.save()
+                content = {'result': 'success', 'message': 'Success to save Account_info'}
+                return Response(content, status=status.HTTP_200_OK)
+            else:
+                content = {'result': 'fail', 'message': '(!)Does not exist this username'}
+                return Response(content, status=status.HTTP_200_OK)

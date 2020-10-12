@@ -17,7 +17,7 @@ export default class FetchUtil {
                  return result;
              }
              catch(e) {
-                 //* API 서버 off 상태일 경우, 'Type Error ~ ' 뱉어냄.
+                 //* API 서버 off 혹은 기타 에러 상황 시,
                  return e.toString();
              }
          }

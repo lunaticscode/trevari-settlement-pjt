@@ -35,7 +35,6 @@ class SettleInfoView(APIView):
                 settileinfo = SettleInfo.objects.get(id=kwargs.get('id')).si_form_info
                 content = {'settleInfo': settileinfo, 'result': 'success'}
                 return Response(content, status=status.HTTP_200_OK)
-
             else:
                 content = {'result': 'fail', 'message': '(!)This settleInfo_id not exist'}
                 return Response(content, status=status.HTTP_200_OK)

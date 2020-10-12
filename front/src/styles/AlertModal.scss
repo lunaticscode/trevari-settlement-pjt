@@ -8,7 +8,7 @@
 }
 
 #AlertModal_layout{
-  width:90%; margin-left:5%; text-align: center;
+  width:90%; margin-left:5%; text-align: center; z-index:10000000;
   color:white; font-weight: 600; font-size:15px; padding:15px 0px;
   position: absolute;
   border-radius: 10px;

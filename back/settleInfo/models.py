@@ -7,6 +7,8 @@ class SettleInfo(models.Model):
     si_title = models.CharField(max_length=50)
     si_form_cnt = models.CharField(max_length=50)
     si_form_info = models.TextField()
+    si_account = models.CharField(max_length=255)
+    si_bankcode = models.CharField(max_length=10)
     si_regdate = models.CharField(max_length=16)
 
     def __str__(self):

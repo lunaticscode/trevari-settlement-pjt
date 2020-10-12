@@ -46,13 +46,13 @@
 #SettleFormLayout.moveUp{
   animation-name : fold-up;
   animation-fill-mode: forwards;
-  animation-duration: 250ms;
+  animation-duration: 150ms;
 }
 
 #SettleFormLayout.moveDown{
   animation-name : fold-down;
   animation-fill-mode: forwards;
-  animation-duration: 250ms;
+  animation-duration: 150ms;
 }
 
 #arrow_icon_img{
@@ -63,11 +63,11 @@
 
 #arrow_icon_img.rotate_1{
   animation-name : icon-spin-180_1;
-  animation-fill-mode: forwards; animation-duration: 1s;
+  animation-fill-mode: forwards; animation-duration: 500ms;
 }
 #arrow_icon_img.rotate_2{
   animation-name : icon-spin-180_2;
-  animation-fill-mode: forwards; animation-duration: 1s;
+  animation-fill-mode: forwards; animation-duration: 500ms;
 }
 
 #selectMeetCnt_layout{

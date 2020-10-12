@@ -83,33 +83,35 @@ class SettleEdit extends React.Component {
         let settleCase_index = e.target.getAttribute("id").toString().split('settleCase')[1];
         this.setState({settleCase : settleCase_index});
 
-        if(settleCase_index == '1'){
-            let personSettle_inputLayout = document.getElementsByClassName("EditForm_input2");
-            let tmp_obj = this.state.person_settleInfo_obj;
-            if(personSettle_inputLayout.length > 0){
-                for(let i = 0; i<personSettle_inputLayout.length; i++){
-                    let personSettle_value = personSettle_inputLayout[i].value.toString().replace(/,/g, '');
-                    //console.log(personSettle_value);
-                    tmp_obj[ this.state.selectedPersonList[i] ] = parseInt( personSettle_value );
+            if(settleCase_index == '1'){
+                let personSettle_inputLayout = document.getElementsByClassName("EditForm_input2");
+                let tmp_obj = this.state.person_settleInfo_obj;
+                if(personSettle_inputLayout.length > 0){
+                    for(let i = 0; i<personSettle_inputLayout.length; i++){
+                        let personSettle_value = personSettle_inputLayout[i].value.toString().replace(/,/g, '');
+                        //console.log(personSettle_value);
+                        tmp_obj[ this.state.selectedPersonList[i] ] = parseInt( personSettle_value );
+                    }
+                    this.setState({person_settleInfo_obj : tmp_obj});
+                    this.setState({ settleResultNoti: ( Object.keys(tmp_obj).length > 0) ? Object.values(tmp_obj).reduce( ( acc, cur ) => acc+cur ) : 0 });
                 }
-                this.setState({person_settleInfo_obj : tmp_obj});
-                this.setState({ settleResultNoti: ( Object.keys(tmp_obj).length > 0) ? Object.values(tmp_obj).reduce( ( acc, cur ) => acc+cur ) : 0 });
             }
-        }
-        else if(settleCase_index == '0'){
-            let now_selectedPersonList = this.state.selectedPersonList;
-            let now_settleSum = this.state.settle_sum;
-            let now_selectedMinUnit = this.state.settleMinUnit;
-            this.setState({settleResultNoti: ( now_selectedPersonList.length > 0 )
+            else if(settleCase_index == '0'){
+                let now_selectedPersonList = this.state.selectedPersonList;
+                let now_settleSum = this.state.settle_sum;
+                let now_selectedMinUnit = this.state.settleMinUnit;
+                this.setState({settleResultNoti: ( now_selectedPersonList.length > 0 )
                         ? Math.floor( now_settleSum / now_selectedPersonList.length / now_selectedMinUnit ) * now_selectedMinUnit * now_selectedPersonList.length
                         : now_settleSum });
-            let tmp_obj = this.state.person_settleInfo_obj;
-            if(this.state.selectedPersonList.length > 0){
-                for(let i = 0; i<this.state.selectedPersonList.length; i++){
-                    tmp_obj[ this.state.selectedPersonList[i] ] = Math.floor( now_settleSum / now_selectedPersonList.length / now_selectedMinUnit ) * now_selectedMinUnit;
+                let tmp_obj = this.state.person_settleInfo_obj;
+                if(this.state.selectedPersonList.length > 0){
+                    for(let i = 0; i<this.state.selectedPersonList.length; i++){
+                        tmp_obj[ this.state.selectedPersonList[i] ] = Math.floor( now_settleSum / now_selectedPersonList.length / now_selectedMinUnit ) * now_selectedMinUnit;
+                    }
                 }
             }
-        }
+
+
     }
 
     select_settleMinUnit(e) {
@@ -138,7 +140,7 @@ class SettleEdit extends React.Component {
 
     SettleEditCom(e) {
         if(parseInt( this.state.settle_sum ) < 0 || !Number(this.state.settle_sum) ){
-            console.log('모임 비용을 입력해주세요.');
+            //console.log('모임 비용을 입력해주세요.');
             return;
         }
         if(parseInt( this.state.settleCase ) == 0){ document.getElementById("settleCase0").click(); }
@@ -146,7 +148,7 @@ class SettleEdit extends React.Component {
             if( parseInt( this.state.settleCase ) == 0 && this.state.selectedPersonList.length > 0 ){
                 document.getElementById("settleCase0").click();
             }else{
-                console.log('다시 확인');
+                //console.log('다시 확인');
                 return;
             }
         }
@@ -211,6 +213,20 @@ class SettleEdit extends React.Component {
                     return;
                 }
             } });
+
+        //* 저장된 정산 정보가 [직접정산] 유형일 경우,
+        if(savedInfo && savedInfo['settleCase'] == 1){
+            this.setState({person_settleInfo_obj: savedInfo['settleValueInfo']});
+            let settleValueInfo_price = Object.values( savedInfo['settleValueInfo'] );
+            let settleValue_elems = document.getElementsByClassName("EditForm_input2");
+            Sleep.sleep_func(250).then(() => {
+                for(let i = 0; i<settleValue_elems.length; i++){
+                    settleValue_elems[i].value = settleValueInfo_price[i].toLocaleString();
+                }
+            });
+            this.setState({settleResultNoti: settleValueInfo_price.reduce((acc, cur) => acc + cur), settleEditCom_flag: true});
+        }
+
     }
 
 

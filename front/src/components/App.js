@@ -19,6 +19,8 @@ import SettleEdit from "./SettleEdit";
 import SettleDetailModal from "./SettleDetailModal";
 import Mask from "./Mask";
 import CommonModal from "./CommonModal";
+import Sleep from "../Sleep";
+import crypto from "../CryptoInfo";
 
 class App extends React.Component {
     constructor(props){
@@ -37,8 +39,10 @@ class App extends React.Component {
             //console.log('Ready to start Token-Auth work....');
             Fetch.fetch_api('token/auth', 'POST', auth_data)
                 .then(res => {
-                    if(res.toString().trim().indexOf('Error') !== -1 ){
-                        console.log('(!) 서버 에러 발생');
+                    let result_message = res.toString().trim();
+                    if(result_message.indexOf('Error') !== -1 ){
+                        this.props.alertModalOpen('(!) 서버 에러 발생', window.innerHeight);
+                        Sleep.sleep_func(2000).then(() => this.props.alertModalClose());
                         return;
                     }
                     if(res['auth_result'] === 'grant'){
@@ -56,7 +60,6 @@ class App extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-
     }
 
     componentDidMount() {
@@ -134,7 +137,9 @@ class App extends React.Component {
 let mapDispatchToProps = (dispatch) => {
     return {
         leftSwipe: (nowPage) => dispatch(left_swipe(nowPage)),
-        rightSwipe: (nowPage) => dispatch((right_swipe(nowPage)))
+        rightSwipe: (nowPage) => dispatch(right_swipe(nowPage)),
+        alertModalOpen: (text, position) => dispatch(modal_open(text, position)),
+        alertModalClose: () => dispatch(modal_close()),
     }
 };
 

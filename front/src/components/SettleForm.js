@@ -3,7 +3,7 @@ import "../styles/SettleForm.scss";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Home from "./Home";
 import Settle from "./Settle";
-import {infomodal_open, mask_close, mask_open} from "../actions";
+import {infomodal_open, mask_close, mask_open, modal_open, modal_close} from "../actions";
 import {connect} from "react-redux";
 import Sleep from "../Sleep";
 
@@ -19,6 +19,14 @@ class SettleForm extends Component {
     }
 
     settleEdit(e) {
+        if(this.props.FormInfo['personList'].length === 0){
+            console.log('plz confirm personList');
+            let AlertText = '(!) 모임 이름 혹은 참석인원 입력이 누락되었습니다.';
+            let topPosition = window.innerHeight;
+            this.props.alertModalOpen( AlertText, ( topPosition-30 ) );
+            Sleep.sleep_func(750).then(() => this.props.alertModalClose());
+            return;
+        }
         let settleFormIndex = parseInt( e.target.id );
         this.setState({nowEditIndex : settleFormIndex});
     }
@@ -55,7 +63,10 @@ class SettleForm extends Component {
 
                                     <div className="innerForm_title">
                                         <div className="innerForm_indexBox"># {index+1}차</div>{elem['title']}
-                                            <Link key={index} to={ (localStorage.getItem("savedSettle_"+ (index+1) ) ) ?  "/settle" : "/settleEdit/"+index }>
+                                            <Link key={index} to={ (localStorage.getItem("savedSettle_"+ (index+1) ) ) ?  "/settle"
+                                                                    : ( elem['personList'].length === 0 || elem['title'].toString().length === 0 ) ?
+                                                                            "/settle" : "/settleEdit/"+index }>
+
                                                 {
                                                     (localStorage.getItem("savedSettle_"+ (index+1) ) )
                                                     ? <div className="settleCom_noti" value={index+1} onClick={this.viewSettleInfo}>작성완료</div>
@@ -97,6 +108,8 @@ SettleForm.defaultProps = {
 
 let mapDispatchToProps = (dispatch) => {
     return {
+        alertModalOpen: (text, position) => dispatch(modal_open(text, position)),
+        alertModalClose: () => dispatch(modal_close()),
         maskOpen: () => dispatch(mask_open()),
         maskClose: () => dispatch(mask_close()),
         infomodalOpen: (modalInfo) => dispatch(infomodal_open(modalInfo)),

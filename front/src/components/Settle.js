@@ -8,6 +8,8 @@ import {connect} from "react-redux";
 import Sleep from "../Sleep";
 import Fetch from "../Fetch";
 import Cookie from "../Cookie";
+import AlertModal from "./AlertModal";
+import AccountInputModal from "./AccountInputModal";
 
 class Settle extends React.Component {
     constructor(props) {
@@ -21,6 +23,9 @@ class Settle extends React.Component {
             settleContent_personName_Text: '',
             settleContent_deleteTarget_person: '',
             settleFormInfo : { title: '', formCnt: 0, personList: [], },
+
+            submitData : {},
+            AccountInputModal_display: 'none',
         };
         this.selectMeetCnt = this.selectMeetCnt.bind(this);
         this.inputFormTitle = this.inputFormTitle.bind(this);
@@ -28,6 +33,7 @@ class Settle extends React.Component {
         this.inputPersonName_change = this.inputPersonName_change.bind(this);
         this.personName_pop = this.personName_pop.bind(this);
         this.settleFinalSubmit = this.settleFinalSubmit.bind(this);
+        this.accountModal_close = this.accountModal_close.bind(this);
     }
 
     inputFormTitle(e) {
@@ -61,9 +67,6 @@ class Settle extends React.Component {
         });
         this.setState({ selectedMeetCnt: selectedMeetCntIndex, settleFormInfo :  now_settleFormInfo });
         localStorage.setItem("formInfo", JSON.stringify(this.state.settleFormInfo));
-        // document.getElementById("SettleFormLayout").classList.add('moveUp');
-        // document.getElementById("arrow_icon_img").classList.remove('rotate_2');
-        // document.getElementById("arrow_icon_img").classList.add('rotate_1');
     }
 
     inputPersonName_change(e) {
@@ -130,6 +133,10 @@ class Settle extends React.Component {
 
     }
 
+    accountModal_close(){
+        this.setState({AccountInputModal_display: 'none'});
+    }
+
     //* [최종정산] 버튼 클릭 이벤트.
     settleFinalSubmit(){
         let now_selectedMeetCnt = this.state.selectedMeetCnt;
@@ -168,13 +175,6 @@ class Settle extends React.Component {
             console.log(Object.keys(tmp_settleForm_allObj));
             let submit_settleForm_cnt = Object.keys(tmp_settleForm_allObj).length;
             let submit_commonSettle_title = JSON.parse( localStorage.getItem('formInfo') )['title'];
-            //     si_owner_email = models.CharField(max_length=100)
-            //     si_title = models.CharField(max_length=50)
-            //     si_form_cnt = models.CharField(max_length=50)
-            //     si_form_sum_price = models.CharField(max_length=30)
-            //     si_form_person_value_list = models.TextField()
-            //     si_form_info = models.TextField()
-            //     si_regdate = models.CharField(max_length=16)
 
             let D = new Date();
             let now_YmdHis = D.getFullYear()+''+( D.getMonth() + 1 )+''+ D.getDate()+''+ D.getHours()+''+D.getMinutes()+''+ D.getSeconds() ;
@@ -186,30 +186,20 @@ class Settle extends React.Component {
             };
 
             console.log(submit_data);
-            Fetch.fetch_api('settle', 'POST', submit_data)
-                .then(res => {
-                    if(res.toString().trim().indexOf('Error') !== -1){
-                        console.log('(!) 서버 에러 발생');
-                        return;
-                    }
-                    if(res['result'] === 'success'){
-                        console.log(res);
-                        localStorage.removeItem("formInfo");
-                        Object.keys( localStorage ).forEach(elem => {
-                            if(elem.toString().indexOf('savedSettle_') !== -1) {
-                                localStorage.removeItem(elem.toString());
-                                location.href = '/settle';
-                            }
-                        });
-                    }
+            if(submit_data){
+                this.setState({submitData: submit_data});
+                Sleep.sleep_func(100).then(() => {
+                    window.scroll(0,window.innerHeight + window.pageYOffset);
+                    document.body.style.overflow = 'hidden';
+                    this.props.maskOpen();
+                    this.setState({AccountInputModal_display: 'block'});
 
-                    else{
-                        console.log(res);
-                    }
                 });
-
+            }
         }
     }
+
+
 
     componentDidUpdate(prevProps, prevState) {
         if(prevProps.modalConfirm_result !== this.props.modalConfirm_result){
@@ -293,12 +283,16 @@ class Settle extends React.Component {
             //* CommonModal.js 에서 [취소] 버튼 클릭 시,
             if(this.props.modalConfirm_result === 'revoke') {
 
+                //* 참석인원 조정 알림 모달에서 취소 눌렀을 경우,
                 if(this.props.modalConfirm_title === 'personArray modify'){
                     console.log('personArray modify - [ Cancel ]');
                 }
+
+                //* 저장되어있는 남은 정산정보 무시하고 그대로 최종정산 진행 시,
                 else if(this.props.modalConfirm_title === 'notify restSettleForm'){
-                    console.log('notify restSettleForm - [ Cancel ]');
                     let now_selectedMeetCnt = this.state.selectedMeetCnt;
+                    console.log('notify restSettleForm - [ Cancel ]', now_selectedMeetCnt);
+
                     let savedSettleFormKey_array =
                         Object.keys(localStorage).filter( elem => elem.toString().indexOf('savedSettle_') !== -1 )
                                                  .sort( ( a, b ) => a.toString().split('savedSettle_')[1] - b.toString().split('savedSettle_')[1] );
@@ -307,7 +301,29 @@ class Settle extends React.Component {
                     sliced_settleFormKey_Array.forEach( (elem, index) => {
                         submit_settleForm_obj[index] = JSON.parse( localStorage.getItem(elem.toString()) );
                     });
-                    console.log(submit_settleForm_obj);
+
+                    let submit_settleForm_cnt = Object.keys(submit_settleForm_obj).length;
+                    let submit_commonSettle_title = JSON.parse( localStorage.getItem('formInfo') )['title'];
+
+                    let D = new Date();
+                    let now_YmdHis = D.getFullYear()+''+( D.getMonth() + 1 )+''+ D.getDate()+''+ D.getHours()+''+D.getMinutes()+''+ D.getSeconds() ;
+                    let submit_data = {
+                        si_owner_name: Cookie.get_cookie('UserName'),
+                        si_title: submit_commonSettle_title, si_form_cnt: submit_settleForm_cnt.toString(),
+                        si_form_info: JSON.stringify(submit_settleForm_obj).replace(/\\/g, ''),
+                        si_regdate : now_YmdHis,
+                    };
+
+                    if(submit_data){
+                        this.setState({submitData: submit_data});
+                        Sleep.sleep_func(100).then(() => {
+                            window.scroll(0,window.innerHeight + window.pageYOffset);
+                            document.body.style.overflow = 'hidden';
+                            this.props.maskOpen();
+                            this.setState({AccountInputModal_display: 'block'});
+                        });
+                    }
+
                 }
             }
         }
@@ -396,7 +412,14 @@ class Settle extends React.Component {
                          style={SettleFinal_submitBtn_style}>
                         최종정산
                     </div>
+                  <AccountInputModal
+                      AccountModal_close={this.accountModal_close}
+                      finalSubmitData={this.state.submitData}
+                      displayStatus={this.state.AccountInputModal_display}
+                  />
+                    <br/><br/><br/><br/>
               </div>
+
           </div>
 
         );

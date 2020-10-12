@@ -9,4 +9,6 @@ urlpatterns = [
     path('users/check/name', views.CheckNicknameView.as_view()),
     path('token/auth', views.TokenAuthView.as_view()),
     path('banking/accountAuth', views.BankingTokenView.as_view()),
+    path('account', views.UserAccountInfo.as_view()),
+    path('account/<username>', views.UserAccountInfo.as_view()),
 ]

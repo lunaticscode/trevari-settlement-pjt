@@ -1,0 +1,114 @@
+@import "extend";
+@keyframes slideFormBottom {
+  from{bottom:-50%;} to{bottom:0px;}
+}
+
+#AccountInputModal_layout{
+  animation-name: slideFormBottom; animation-fill-mode: forwards; animation-duration: 500ms;
+  box-shadow: 0px 0px 5px powderblue;
+  position: absolute; z-index:100000;
+  top:10px; width:97%; margin-left:1%; margin-bottom:10px;
+  height:240px; background: $main-background2;
+  border-radius: 10px;
+}
+
+#AccountInputModal_content{
+  animation-name: fade-in-2; animation-duration: 750ms; animation-fill-mode: forwards; animation-delay: 500ms;
+  opacity: 0;
+  padding:15px;
+}
+
+#AccountInputModal_title{
+  display: inline-block; padding:4px 8px; border-radius: 10px;
+  background: #3E3C42; box-shadow: 5px 5px 5px black;
+  font-size: 13px;
+}
+
+#AccountInputModal_closeBtn{
+  display: inline-block; float: right; width:16px; height:16px;
+}
+
+
+#AccountInputModal_selectBank_layout{
+  font-size:14px;
+  margin: 15px 0px 10px 5px;
+}
+#AccountInputModal_selectBank{
+  color:white;
+  font-size:13px;
+  outline: none;  border-radius: 5px; background: none;
+  margin-left:15px; padding:3px 5px;
+  & option{
+    color:black;
+    font-size:13px;
+  }
+}
+#AccountInputModal_selectBank_onlyUser_layout{
+  @extend #AccountInputModal_selectBank_layout;
+}
+#AccountInputModal_onlyUser_selectBank{
+  @extend #AccountInputModal_selectBank;
+  max-width:70%; min-width:40%;
+  & option{
+    font-size:11px;
+  }
+
+}
+
+.AccountInputModal_inputLayout{
+ margin-bottom:10px; margin-top:20px;
+}
+.AccountInputModal_input{
+  color:white; width:70%;
+  display: inline-block; margin-left:15px;
+  outline: none; background: none; border:none; border-bottom: 1px solid gray;
+  &.username{ width:30%; min-width: 100px; }
+  &.banknum{ width:55%; min-width: 100px; max-width:150px; display: inline-block; }
+  &.authBtn{
+    display: inline-block; background: #3E3C42; float: right;
+    width:60px; padding:3px 5px; margin-right:10px;
+    border-radius: 5px; border: 1px solid dimgrey;
+    color:dimgrey; text-align: center; font-size:13px;
+    &.active{
+      border:none; box-shadow: 0px 0px 5px cyan;
+      color:white;
+    }
+  }
+}
+
+#AccountInputModal_accountRegistBtn{
+  background: dimgrey;
+  padding:8px 0px; border-radius: 10px; width:95%; margin-left:2.5%; margin-top:35px; margin-bottom:25px;
+  font-weight: 100; font-size:13px; color:silver; text-align: center;
+  &.active{
+    animation-name: fade-in-2; animation-fill-mode: forwards; animation-duration: 750ms;
+    background: #3E3C42; box-shadow: 0px 0px 5px cyan;
+    color:white; font-weight: 600;
+  }
+}
+
+#AccountInputModal_realnameLayout{
+  opacity: 0; margin-left:15px;
+  font-size:14px; color:gray;
+  &.active{
+    animation-fill-mode: forwards; animation-name:fade-in-2; animation-duration: 700ms;
+    opacity: 1;
+    margin-bottom:-5px;
+  }
+}
+
+#AccountInputModal_realname{
+  display: inline-block; margin-left:15px;
+  color:white; font-weight: 600;
+}
+
+.Account_authIcon{
+  width:16px; height:16px;
+  &.exec{
+    animation-name: spinnig; animation-duration: 650ms; animation-iteration-count: infinite;
+  }
+  &.grant{
+    animation-fill-mode: forwards; animation-name: fade-in-2; animation-duration: 500ms;
+    opacity: 0;
+  }
+}

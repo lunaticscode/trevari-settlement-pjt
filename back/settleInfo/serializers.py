@@ -9,6 +9,8 @@ class SettleInfoSerializer(serializers.ModelSerializer):
             'si_title',
             'si_form_cnt',
             'si_form_info',
+            'si_account',
+            'si_bankcode',
             'si_regdate',
         )
         model = SettleInfo
