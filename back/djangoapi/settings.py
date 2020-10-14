@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'post',
     'user',
     'settleInfo',
+    'nouserSettleInfo',
 ]
 
 REST_FRAMEWORK = {

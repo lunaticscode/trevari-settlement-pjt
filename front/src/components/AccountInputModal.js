@@ -7,6 +7,7 @@ import Sleep from "../Sleep";
 import crypto from "../CryptoInfo";
 import Cookie from "../Cookie";
 import AlertModal from "./AlertModal";
+import SettleShareModal from "./SettleShareModal";
 
 class AccountInputModal extends React.Component {
     constructor(props){
@@ -36,12 +37,21 @@ class AccountInputModal extends React.Component {
             bank_realname: '',
             accountAuth_status: null,
             savedAccountText: '',
+
+            //* 마지막 정산계좌 등록 후, 정산결과 공유 모달 오픈 시 아래 state 값으로 회원 / 비회원 구분.
+            settleShare_loginFlag: false,
+            settleShare_info: {},
+            settleShareSite_key: null,
+
+            settleShareModal_display: 'none',
         };
         this.selectBank = this.selectBank.bind(this);
         this.accountInput_banknum = this.accountInput_banknum.bind(this);
         this.authAccount = this.authAccount.bind(this);
         this.registAccount = this.registAccount.bind(this);
         this.accountModal_close = this. accountModal_close.bind(this);
+
+        this.settleShareModal_close = this.settleShareModal_close.bind(this);
     }
 
     selectBank(e) {
@@ -57,8 +67,11 @@ class AccountInputModal extends React.Component {
 
         //* [ My 계좌 ] select-box 에서 선택한 option 일 경우,
         if (e.target.getAttribute("id").toString().indexOf('onlyUser') !== -1) {
-            document.getElementById("AccountInputModal_selectBank").children[0].setAttribute("selected", '');
-            document.getElementById("AccountInputModal_onlyUser_selectBank").children[0].removeAttribute("selected");
+            if(Cookie.get_cookie('UserName') && Cookie.get_cookie("AccessToken") ){
+                document.getElementById("AccountInputModal_selectBank").children[0].setAttribute("selected", '');
+                document.getElementById("AccountInputModal_onlyUser_selectBank").children[0].removeAttribute("selected");
+            }
+
             let onlyUser_savedAccountNum = this.state.myAccountInfo_array[e.target.selectedIndex - 1]['account_num'];
             let onlyUser_savedBankCode = this.state.myAccountInfo_array[e.target.selectedIndex - 1]['bank_info']['code'];
             document.getElementById("AccountInputModal_input_banknum").value = onlyUser_savedAccountNum;
@@ -73,8 +86,10 @@ class AccountInputModal extends React.Component {
                 accountAuth_status: null,
             });
         }else{
-            document.getElementById("AccountInputModal_onlyUser_selectBank").children[0].setAttribute("selected", '');
-            document.getElementById("AccountInputModal_selectBank").children[0].removeAttribute("selected");
+            if(Cookie.get_cookie('UserName') && Cookie.get_cookie("AccessToken") ){
+                document.getElementById("AccountInputModal_onlyUser_selectBank").children[0].setAttribute("selected", '');
+                document.getElementById("AccountInputModal_selectBank").children[0].removeAttribute("selected");
+            }
         }
     }
     accountInput_banknum(e){
@@ -85,7 +100,8 @@ class AccountInputModal extends React.Component {
     }
 
     accountModal_close(){
-        this.props.AccountModal_close(); this.props.maskClose();
+        this.props.AccountModal_close();
+        //this.props.maskClose();
         document.body.style.overflow = 'auto';
 
         //* 작성된 모든 값 초기화.
@@ -103,6 +119,10 @@ class AccountInputModal extends React.Component {
             console.log(submit_data);
             this.setState({accountAuth_status: 'exec'});
             Fetch.fetch_api("banking/accountAuth", "POST", submit_data).then(res=>{
+
+                //* 계좌인증 실패 혹은 점검시간일 경우,
+                //* ==== [ Backend-Api Result ] ===> {'code': -1, 'message': '해당되는 계좌정보를 찾을 수 없습니다.', 'response': None}
+                //* ( 23:30 ~ 00:30 까지 점검인듯 함. )
                 if(res['result'] === 'revoke'){
 
                     //* 계좌인증 관련 정보 모두 초기화.
@@ -136,60 +156,134 @@ class AccountInputModal extends React.Component {
     registAccount(e){
         let flag = ( e.target.classList.value === 'active' ) ? true : false;
         if( flag ){
-            this.props.AccountModal_close();
-            this.props.maskClose(); document.body.style.overflow = 'auto';
 
-            let encrypted_account = crypto.encrypt_account(this.state.bankAuthInfo['bank_num'].toString().trim());
-            let finalSubmit_data = Object.assign(this.props.finalSubmitData, {
-                si_account : encrypted_account,
-                si_bankcode: this.state.bankAuthInfo['bank_code'],
-            });
-            this.setState({tmp_savedAccountText: encrypted_account});
-            this.setState({tmp_savedBankCode: this.state.bankAuthInfo['bank_code']});
-            console.log(finalSubmit_data);
+            //* 회원 유저일 경우,
+            if( Cookie.get_cookie('UserName') && Cookie.get_cookie('AccessToken') ){
+                //this.props.AccountModal_close();
+                //this.props.maskClose(); document.body.style.overflow = 'auto';
 
-            Fetch.fetch_api('settle', 'POST', finalSubmit_data)
-                .then(res => {
-                    if(res.toString().trim().indexOf('Error') !== -1){
-                        console.log('(!) 서버 에러 발생');
-                        return;
-                    }
-
-                    if(res['result'] === 'success'){
-                        console.log(res);
-
-                        //* 작성된 모든 값 초기화.
-                        this.setState({ bankAuthInfo: {}, bank_realname: '', realnameFlag: false, registAccount_flag: false, accountAuth_status: null, });
-                        let bank_selectElem = document.getElementById("AccountInputModal_selectBank");
-                        bank_selectElem.selectedIndex = 0;
-                        let bank_accountNumInputElem = document.getElementById("AccountInputModal_input_banknum");
-                        bank_accountNumInputElem.value = '';
-
-                        localStorage.removeItem("formInfo");
-                        Object.keys( localStorage ).forEach(elem => {
-                            if(elem.toString().indexOf('savedSettle_') !== -1) {
-                                localStorage.removeItem(elem.toString());
-                            }
-                        });
-
-                        if( Cookie.get_cookie('UserName') ){
-                            let mainText = "현재 계좌정보를 [계좌관리] 리스트에 추가하시겠습니까?";
-                            let subText = '최대 5개까지 저장됩니다.';
-                            this.props.commonModalOpen('AccountInfo manage', mainText, subText, 'positive');
-                            // 제어권 이동 ---> componentDidUpdate( ... )에서 변화감지.
-                        }else{
-                            this.setState({tmp_savedAccountText: '', tmp_savedBankCode: ''});
-                            location.href = '/settle';
-                        }
-                    }
-                    else{
-                        console.log(res);
-                    }
+                let encrypted_account = crypto.encrypt_account(this.state.bankAuthInfo['bank_num'].toString().trim());
+                let finalSubmit_data = Object.assign(this.props.finalSubmitData, {
+                    si_account : encrypted_account,
+                    si_bankcode: this.state.bankAuthInfo['bank_code'],
                 });
 
-        }
+                this.setState({tmp_savedAccountText: encrypted_account});
+                this.setState({tmp_savedBankCode: this.state.bankAuthInfo['bank_code']});
+                console.log(finalSubmit_data);
+
+                Fetch.fetch_api('settle', 'POST', finalSubmit_data)
+                    .then(res => {
+                        if(res.toString().trim().indexOf('Error') !== -1){
+                            console.log('(!) 서버 에러 발생');
+                            return;
+                        }
+
+                        if(res['result'] === 'success'){
+                            console.log(res);
+                            let saved_settleInfoId = res['savedIndex'];
+                            console.log('saved_settleIndex : ',saved_settleInfoId);
+                            //* 작성된 모든 값 초기화.
+                            this.setState({ bankAuthInfo: {}, bank_realname: '', realnameFlag: false, registAccount_flag: false, accountAuth_status: null, });
+                            let bank_selectElem = document.getElementById("AccountInputModal_selectBank");
+                            bank_selectElem.selectedIndex = 0;
+                            let bank_accountNumInputElem = document.getElementById("AccountInputModal_input_banknum");
+                            bank_accountNumInputElem.value = '';
+
+                            localStorage.removeItem("formInfo");
+                            Object.keys( localStorage ).forEach(elem => {
+                                if(elem.toString().indexOf('savedSettle_') !== -1) {
+                                    localStorage.removeItem(elem.toString());
+                                }
+                            });
+
+
+                            if( Cookie.get_cookie('UserName') ){
+                                let myAccountInfo_arrayLength =  ( this.state.myAccountInfo_array ) ? this.state.myAccountInfo_array.length : 0;
+                                let now_savedAccountNum = crypto.decrypt_account(this.state.tmp_savedAccountText);
+                                console.log('now_savedAccountNum ', now_savedAccountNum);
+
+                                let settleShareSite_key = Cookie.get_cookie('UserName') + '&&' + saved_settleInfoId + '&&' + finalSubmit_data.si_regdate;
+
+
+                                //* 유저가 이미 관리중인 계좌를 [최종 정산계좌]로 등록하는 경우, 혹은(or) 현재 관리중인 계좌 개수가 5개 이상일 때,
+                                if(
+                                        ( this.state.myAccountInfo_array && this.state.myAccountInfo_array.some( elem => elem['account_num'] === now_savedAccountNum ) )
+                                          || myAccountInfo_arrayLength >= 5
+                                  )
+                                    {
+                                    this.setState({tmp_savedAccountText: '', tmp_savedBankCode: ''});
+                                    console.log( finalSubmit_data );
+                                    console.log( settleShareSite_key );
+                                    console.log('Ready to Open Settle-Share-Modal.');
+                                        this.setState({
+                                            settleShareSite_key: settleShareSite_key,
+                                            settleShare_info: finalSubmit_data,
+                                            settleShare_loginFlag: true,
+                                        });
+                                    this.setState({ settleShareModal_display: 'block'});
+
+                                    //location.href = '/settle';
+                                    }
+
+                                //* 이전에 없던 새로운 계좌로 등록하는 경우,
+                                else{
+                                    let mainText = "현재 계좌정보를 [계좌관리] 리스트에 추가하시겠습니까?";
+                                    let subText = '최대 5개까지 저장됩니다. (현재 ' + myAccountInfo_arrayLength + '개 관리중)';
+
+                                    this.setState({ tmp_finalSubmitData: finalSubmit_data, tmp_settleShareSite_key: settleShareSite_key});
+
+                                    //** 제어권 이동 ---> componentDidUpdate( ... )에서 처리.
+                                    this.props.commonModalOpen('AccountInfo manage', mainText, subText, 'positive');
+
+
+                                }
+
+                            }
+
+                            //* ....??
+                            // else{
+                            //     this.setState({tmp_savedAccountText: '', tmp_savedBankCode: ''});
+                            //     //location.href = '/settle';
+                            // }
+
+                        }
+                        else{
+                            console.log(res);
+                        }
+                    });
+            }
+
+            //* 비회원 유저의 정산계좌 등록일 경우,
+            else{
+                //this.props.AccountModal_close();
+                //this.props.maskClose(); document.body.style.overflow = 'auto';
+                let encrypted_account = crypto.encrypt_account(this.state.bankAuthInfo['bank_num'].toString().trim());
+                let finalSubmit_data = Object.assign(this.props.finalSubmitData, {
+                    si_account : encrypted_account,
+                    si_bankcode: this.state.bankAuthInfo['bank_code'],
+                });
+                let random_key = Math.random().toString(36).slice(2);
+                let settleShareSite_key = 'nouser&&' + random_key + '&&' + Date.now();
+                console.log('Ready to Open Settle-Share-Modal.');
+                console.log( finalSubmit_data );
+                console.log( settleShareSite_key );
+                this.setState({ settleShareSite_key: settleShareSite_key, settleShare_info: finalSubmit_data, settleShare_loginFlag: false });
+                this.setState({ settleShareModal_display: 'block'});
+            }
+
+        } //******
     }
 
+    //* 자식 컴포넌트 [SettleShareModal.js] 레이아웃 closing 함수 ===> 함수 통째로 props 전달.
+    //* 자식 컴포넌트 닫히는 동시에 현재 정산계좌등록 모달도 같이 closing. ( + 저장값 모두 초기화 )
+    settleShareModal_close(){
+        this.setState( {settleShareModal_display: 'none'} );
+        this.setState({ bankAuthInfo: {}, bank_realname: '', realnameFlag: false, registAccount_flag: false, accountAuth_status: null, });
+        this.props.maskClose();
+        this.props.AccountModal_close();
+        location.href = '/settle';
+    }
 
     componentDidUpdate(prevProps, prevState){
 
@@ -225,15 +319,12 @@ class AccountInputModal extends React.Component {
                         });
                     }
                     console.log(myAccountInfo_array);
-
                     this.setState({myAccountInfo_array : myAccountInfo_array});
-
                     this.setState({
                         userAccountList : ( res['account_list'] )
                                 ? JSON.parse( res['account_list'].replace(/'/g, "\"") )
                                 : null
                     });
-
                 }
                 if( res['result'] === 'revoke' ){
                     console.log(res);
@@ -248,6 +339,11 @@ class AccountInputModal extends React.Component {
         //* 계좌관리 리스트 추가 안내 모달 오픈 시,
         if(prevProps.modalConfirm_result !== this.props.modalConfirm_result){
 
+            let finalSubmit_data = this.state.tmp_finalSubmitData;
+            let settleShareSite_key = this.state.tmp_settleShareSite_key;
+            console.log('Now accountAdd_Modal Open..... ',finalSubmit_data, settleShareSite_key);
+
+            //* 모달에서 [확인] 버튼 클릭 시,
             if(this.props.modalConfirm_result === 'exec') {
 
                 if(this.props.modalConfirm_title === 'AccountInfo manage'
@@ -272,15 +368,27 @@ class AccountInputModal extends React.Component {
                         console.log(res);
                         if(res['result'] === 'success') {
                             this.setState({savedAccountText: ''});
+
+                            this.setState({tmp_savedAccountText: '', tmp_savedBankCode: ''});
+                            console.log( finalSubmit_data );
+                            console.log( settleShareSite_key );
+                            console.log('Ready to Open Settle-Share-Modal.');
+                            this.setState({
+                                settleShareSite_key: settleShareSite_key,
+                                settleShare_info: finalSubmit_data,
+                                settleShare_loginFlag: true,
+                            });
+                            this.setState({ settleShareModal_display: 'block'});
+
                         }
                     });
                 }
-
             }
-
+            //* 계좌리스트 추가 모달에서 [취소] 버튼 클릭 시,
             else if(this.props.modalConfirm_result === 'revoke') {
                     console.log('Do not save accountInfo');
                   this.setState({savedAccountText: ''});
+
             }
 
         }
@@ -362,6 +470,15 @@ class AccountInputModal extends React.Component {
                         정산계좌 등록
                     </div>
                 </div>
+
+                <SettleShareModal
+                    settleShareModal_displayStatus={this.state.settleShareModal_display}
+                    settleShareModal_close={this.settleShareModal_close}
+                    settleShare_Info={this.state.settleShare_info}
+                    settleShare_loginFlag={this.state.settleShare_loginFlag}
+                    settleShareSite_key={this.state.settleShareSite_key}
+                />
+
             </div>
         );
     }

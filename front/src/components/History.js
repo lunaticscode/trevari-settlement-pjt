@@ -25,10 +25,8 @@ class History extends React.Component {
         let now_settleInfoList = this.state.settleInfoList.sort( ( a, b ) => b['id'] - a['id'] );
         console.log(now_settleInfoList);
         let tmp_array = now_settleInfoList.map( (elem, index) => {
-                let date_value = elem['si_regdate'].toString().substr(0, elem['si_regdate'].toString().length - 6);
-                let date_day_value = date_value.substr(6, date_value.length);
-                date_day_value = (date_day_value.length == 1) ? '0'+date_day_value : date_day_value;
-                date_value = date_value.substr(0, 4) + '.' + date_value.substr(4, 2) + '.' + date_day_value;
+                let date_value = elem['si_regdate'].toString().substr(0, 8);
+                date_value = date_value.substr(0, 4) + '.' + date_value.substr(4, 2) + '.' + date_value.substr(6, 2);
                 let tmp_elem = {
                     title: elem['si_title'],
                     cnt: elem['si_form_cnt'],
@@ -39,6 +37,7 @@ class History extends React.Component {
                 return tmp_elem;
         });
         this.setState({settleChild_detailList: tmp_array});
+
         console.log(tmp_array);
 
     }

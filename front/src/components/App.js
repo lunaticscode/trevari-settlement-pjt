@@ -21,6 +21,7 @@ import Mask from "./Mask";
 import CommonModal from "./CommonModal";
 import Sleep from "../Sleep";
 import crypto from "../CryptoInfo";
+import SettleResultPage from "./SettleResultPage";
 
 class App extends React.Component {
     constructor(props){
@@ -63,7 +64,6 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-
     }
 
     AppTouchStart(e) {
@@ -97,7 +97,16 @@ class App extends React.Component {
         this.setState({movingTouch_X : -1, startTouch_X : -1, endTouch_X : -1,});
     }
 
-    AppTouchMove(e){ this.setState({movingTouch_X : e.touches[0].clientX}); }
+    AppTouchMove(e){
+
+        let now_path = window.location.pathname;
+        if(now_path.toString().indexOf('settleResult') == -1 && now_path.toString().indexOf('settleEdit') == -1){
+            this.setState({movingTouch_X : e.touches[0].clientX});
+        }
+
+
+    }
+
 
     render() {
         return (
@@ -122,6 +131,7 @@ class App extends React.Component {
                             <Route exact={true} path="/mypage" component={Mypage} />
                             <Route exact={true} path="/login" component={LoginModal}/>
                             <Route exact={true} path="/join" component={JoinModal}/>
+                            <Route exact={true} path="/settleResult/:id" component={SettleResultPage}/>
                         </Switch>
                     <SettleDetailModal/>
                     <CommonModal/>

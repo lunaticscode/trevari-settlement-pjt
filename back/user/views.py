@@ -153,7 +153,10 @@ class BankingTokenView(APIView):
                                                                       'Authorization': 'Bearer '+access_token})
 
            result_auth = response_2.json()
-
+           print('<================================')
+           print(request.data)
+           print(result_auth)
+           print('================================>')
            if result_auth['response'] is None:
                return Response({'result': 'revoke', 'revokeType': 'account'}, status=status.HTTP_200_OK)
            else:

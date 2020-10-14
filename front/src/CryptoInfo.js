@@ -21,4 +21,13 @@ export default class CryptoUtil {
         return decrypted;
     }
 
+    static base64_enc(text){
+        let enc_text = Buffer.from(text).toString('base64');
+        return enc_text;
+    }
+    static base64_denc(text){
+        let denc_text = Buffer.from(text, 'base64').toString('ascii');
+        return denc_text;
+    }
+
 }

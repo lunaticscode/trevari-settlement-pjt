@@ -227,7 +227,6 @@ class JoinModal extends React.Component {
                     document.getElementById("main_ment").innerHTML = "회원가입을 위한<br/>이메일을 작성해주세요.";
                     document.getElementById("sub_ment").innerHTML = "<font class='Emphasis'>*</font> 유효하지 않은 형식은 등록이 불가능합니다.";
                 }, 1000);
-
             }
             if(this.state.joinStatus === 0) {
                 Sleep.sleep_func(100).then( () => {

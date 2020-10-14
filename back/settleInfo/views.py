@@ -16,7 +16,7 @@ class SettleInfoView(APIView):
         if post_serializer.is_valid():
             settleinfo = post_serializer.save()
             if settleinfo:
-                content = {'settleTitle': request.data['si_title'], 'result': 'success'}
+                content = {'settleTitle': request.data['si_title'], 'savedIndex': settleinfo.id, 'result': 'success'}
                 return Response(content, status=status.HTTP_201_CREATED)
             else:
                 content = {'result': 'fail', 'message': '(!)Please confirm your request data'}
@@ -25,7 +25,7 @@ class SettleInfoView(APIView):
     """
     GET /api/settle/{id}
     """
-    def get(self, **kwargs):
+    def get(self, *args, **kwargs):
         if kwargs.get('id') is None:
             content = {'result': 'fail', 'message': '(!)Need to settleInfo_id'}
             return Response(content, status=status.HTTP_200_OK)
@@ -33,7 +33,8 @@ class SettleInfoView(APIView):
         else:
             if SettleInfo.objects.filter(id=kwargs.get('id')):
                 settileinfo = SettleInfo.objects.get(id=kwargs.get('id')).si_form_info
-                content = {'settleInfo': settileinfo, 'result': 'success'}
+                settleTitle = SettleInfo.objects.get(id=kwargs.get('id')).si_title
+                content = {'settleInfo': settileinfo, 'settleTitle': settleTitle, 'result': 'success'}
                 return Response(content, status=status.HTTP_200_OK)
             else:
                 content = {'result': 'fail', 'message': '(!)This settleInfo_id not exist'}

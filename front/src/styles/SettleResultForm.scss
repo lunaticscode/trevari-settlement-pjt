@@ -1,0 +1,115 @@
+@import 'extend';
+
+#SettleResultForm_layout{
+
+}
+
+#srf_sliderLayout{
+  overflow-x: scroll;
+  white-space: nowrap;
+  height: auto;
+
+}
+
+.srf_sliderForm{
+  display: inline-block;
+  vertical-align: top;
+  width: 100%; margin:10px 5px;
+  padding-left:10px;
+  &:last-child{
+    margin-right:0px; width:95%; margin-left:5%;
+    padding-left:15px;
+  }
+}
+
+.srf_sliderForm_content{
+
+  &.title{
+    font-size:13px; padding:3px 10px;
+    background: $main-background2;
+    display: inline-block; box-shadow: 0px 0px 5px cyan;
+    border-radius: 10px;
+  }
+  &.subtitle{
+    color:$main-line-color;
+    color:powderblue; font-weight: 600;
+    font-size:13px; display: inline-block; margin-right:15px;
+  }
+  &.value{
+    color:#eeeeee;
+    font-size:13px; display: inline-block; padding:0px 3px;
+    text-align: left;
+    border-bottom:1px solid $main-line-color;
+  }
+  &.settle_detail{
+    margin-left:10px;
+    width:85%;
+  }
+}
+
+.settle_detail_box{
+  background: #3E3C42;
+  margin:5px 0px;
+  border-radius: 5px; box-shadow: 2px 2px 5px black;
+  font-size:13px;
+  &.name{
+    margin-left:10px;
+    border-radius: initial; box-shadow: initial;
+    display: inline-block;
+  }
+  &.value{
+    margin-right:10px;
+    border-radius: initial; box-shadow: initial;
+    display: inline-block;
+    float: right;
+  }
+}
+
+.srf_sliderForm_border{
+  margin-top:10px;
+}
+
+@keyframes fade-in-4{
+  from{opacity: 0} to{opacity: 0.3}
+}
+@mixin state-change-icon{
+  //animation-name: fade-in-4; animation-duration:750ms; animation-fill-mode: forwards;
+  position: absolute; bottom:145px; right:0px;
+  display: inline-block;
+  width:30px;
+  opacity: 0.5;
+  z-index: 100001;
+  &:active{
+    opacity: 1;
+  }
+}
+
+#next_form_btn_layout{
+  @include state-change-icon;
+
+}
+#next_form_btn_icon{
+  width:30px; height:60px;
+}
+
+#prev_form_btn_layout{
+  @include state-change-icon;
+  left:0px;
+}
+#prev_form_btn_icon{
+  width:30px; height:60px;
+  transform: rotate(180deg);
+}
+
+#SettleResultForm_linkCopyBtn_layout{
+  text-align: center;
+  margin-bottom:15px;
+  & button{
+    background: $logo-background2; box-shadow: 2px 2px 5px dimgrey; padding:10px 30px; border-radius: 5px; color:white; border:none;
+    font-weight: 700; font-size:14px;
+  }
+}
+#SettleResultForm_kakaoLinkBtn{
+  text-align: center;
+  margin-bottom:50px;
+}

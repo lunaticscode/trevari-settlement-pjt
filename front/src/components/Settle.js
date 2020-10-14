@@ -10,6 +10,7 @@ import Fetch from "../Fetch";
 import Cookie from "../Cookie";
 import AlertModal from "./AlertModal";
 import AccountInputModal from "./AccountInputModal";
+import NowDate from "../NowDate";
 
 class Settle extends React.Component {
     constructor(props) {
@@ -176,8 +177,7 @@ class Settle extends React.Component {
             let submit_settleForm_cnt = Object.keys(tmp_settleForm_allObj).length;
             let submit_commonSettle_title = JSON.parse( localStorage.getItem('formInfo') )['title'];
 
-            let D = new Date();
-            let now_YmdHis = D.getFullYear()+''+( D.getMonth() + 1 )+''+ D.getDate()+''+ D.getHours()+''+D.getMinutes()+''+ D.getSeconds() ;
+            let now_YmdHis = NowDate.ymdhis().toString();
             let submit_data = {
                 si_owner_name: Cookie.get_cookie('UserName'),
                 si_title: submit_commonSettle_title, si_form_cnt: submit_settleForm_cnt.toString(),
@@ -193,12 +193,10 @@ class Settle extends React.Component {
                     document.body.style.overflow = 'hidden';
                     this.props.maskOpen();
                     this.setState({AccountInputModal_display: 'block'});
-
                 });
             }
         }
     }
-
 
 
     componentDidUpdate(prevProps, prevState) {
@@ -277,7 +275,6 @@ class Settle extends React.Component {
                    localStorage.setItem('formInfo', JSON.stringify(tmp_2_obj));
                 }
 
-
             }
 
             //* CommonModal.js 에서 [취소] 버튼 클릭 시,
@@ -305,8 +302,8 @@ class Settle extends React.Component {
                     let submit_settleForm_cnt = Object.keys(submit_settleForm_obj).length;
                     let submit_commonSettle_title = JSON.parse( localStorage.getItem('formInfo') )['title'];
 
-                    let D = new Date();
-                    let now_YmdHis = D.getFullYear()+''+( D.getMonth() + 1 )+''+ D.getDate()+''+ D.getHours()+''+D.getMinutes()+''+ D.getSeconds() ;
+
+                    let now_YmdHis = NowDate.ymdhis().toString();
                     let submit_data = {
                         si_owner_name: Cookie.get_cookie('UserName'),
                         si_title: submit_commonSettle_title, si_form_cnt: submit_settleForm_cnt.toString(),
@@ -345,7 +342,6 @@ class Settle extends React.Component {
             meetCnt_selectElem.children[parseInt( savedInfo['formCnt'] )].setAttribute("selected", '');
             this.setState({selectedMeetCnt: savedInfo['formCnt']});
         }
-
     }
 
     render() {
