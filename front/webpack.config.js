@@ -20,8 +20,8 @@ module.exports = {
     devServer: {
         hot: true,
         inline: true,
-        //host: 'humanwater.insoo',
-        host: '0.0.0.0',
+        host: 'humanwater.insoo',
+        //host: '0.0.0.0',
         port: 9500,
         contentBase: __dirname + '/public/',
         historyApiFallback: true,

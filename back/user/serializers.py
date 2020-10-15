@@ -8,7 +8,7 @@ class UserSerializer(serializers.ModelSerializer):
             'name',
             'email',
             'password',
-            'account_list'
+            'account_list',
             'regdate',
         )
         model = User
