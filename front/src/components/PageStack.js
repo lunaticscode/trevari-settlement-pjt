@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { createBrowserHistory } from 'history';
 import { Link } from "react-router-dom";
+import Sleep from "../Sleep";
 
 class PageStack extends React.Component {
     constructor(props) {
@@ -11,6 +12,7 @@ class PageStack extends React.Component {
                 ? localStorage.getItem("PageStack").split(',') : ['/', '/settle', '/history', '/account'],
             direction : this.props.direction,
         };
+
     }
 
     componentWillReceiveProps(props) {
@@ -39,14 +41,12 @@ class PageStack extends React.Component {
 
     componentDidUpdate(prevProps, prevState){
         if(prevState.pageStackArray[0] !== this.state.pageStackArray[0]) {
-            //location.href = this.state.pageStackArray[0];
             document.getElementById("PageStackBtn").click();
-            //console.log('PageStack.js Link-btn Click.');
         }
     }
+    componentDidMount(){ }
 
     render( ) {
-        //console.log('PageStack.js - now Path : ', this.state.pageStackArray[0]);
         return (
             <div>
                 <Link id="PageStackBtn" to={this.state.pageStackArray[0]}></Link>

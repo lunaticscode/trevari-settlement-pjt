@@ -48,6 +48,11 @@ class Header extends React.Component {
         let now_tabIndex = this.state.tabPathArray.indexOf(this.props.appMoveInfo['nowPage']);
         document.getElementById("tab_"+now_tabIndex).classList.add('clicked');
         document.getElementById("tabBorder_"+now_tabIndex).classList.add('clickedBorder');
+
+        if(this.state.nowPath !== window.location.pathname && this.state.tabPathArray.indexOf(window.location.pathname) !== -1 ){
+            this.props.clickLink(window.location.pathname);
+        }
+
     }
 
     render() {
@@ -98,9 +103,11 @@ Header.defaultProps = {
 //* ( 마우스 터치 슬라이드 혹은 클릭 이벤트 때, 탭메뉴 표시를 위해.. )
 const mapStateToProps = (state) => {
     //console.log('redux store - pageChangeInfo : ',state['pageChange']);
+    console.log(state['pageChange']);
     return{
       appMoveInfo : state['pageChange'],
-    }
+    };
+
 };
 
 let mapDispatchToProps = (dispatch) => {
