@@ -32,6 +32,7 @@
 }
 
 #SettleFormLayout{
+  box-shadow: 0px 0px 4px black;
   animation-name: expanding-bottom;
   //animation-name: fold-up;
   animation-fill-mode: backwards;
@@ -141,7 +142,10 @@
   animation-duration: 400ms;
   animation-delay: 100ms;
   animation-fill-mode: backwards;
-  background: $main-background2; box-shadow: 5px 5px 5px gray;
+  background: $main-background2;
+  box-shadow: 3px 3px 5px black;
+  border: 1px solid gray;
+  //box-shadow: 0px 0px 5px $main-line-color;
   //background: #686868;
   //background: $main-background2;
   width:96%; margin-left:1%; margin-bottom:15px; padding-bottom:5px;
@@ -189,11 +193,13 @@
 
 #SettleFinal_submit_btn{
   animation-name: fade-in-2; animation-fill-mode: forwards; animation-duration: 1s; animation-delay: 500ms;
-  width:90%; margin-left:3.5%; padding:10px 0px; box-shadow: 5px 5px 5px gray;
+  width:90%; margin-left:4.5%; padding:10px 0px;
+  box-shadow: 0px 0px 5px silver;
   opacity: 0;
-  background: silver; color:#eeeeee; text-align: center; border-radius: 5px;
+  background: none; color:gray; text-align: center; border-radius: 5px;
   &.grant{
     background: $logo-background2;
+    //box-shadow: 0px 0px 5px $main-line-color;
     color:white;
   }
 }
