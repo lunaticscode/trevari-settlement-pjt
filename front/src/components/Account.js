@@ -3,6 +3,9 @@ import '../styles/Account.scss';
 import Cookie from "../Cookie";
 import Fetch from "../Fetch";
 import Sleep from "../Sleep";
+import {modal_close, modal_open} from "../actions";
+import {connect} from "react-redux";
+import crypto from "../CryptoInfo";
 
 class Account extends React.Component {
 
@@ -29,51 +32,74 @@ class Account extends React.Component {
             bankInfo_valueArray : [],
             addAccount_bankInfo : {},
             addAccount_userName: '', addAccount_accountNum: '',
+
+            loginFlag: ( Cookie.get_cookie('UserName') && Cookie.get_cookie("AccessToken") ) ? true : false,
+            myAccountList: [],
+            slideAccountList: [],
+            now_cardIndex: 0,
         };
-
-        this.registAccount = this.registAccount.bind(this);
-        this.selectBank = this.selectBank.bind(this);
-        this.addAccount = this.addAccount.bind(this);
-    }
-
-
-    registAccount(){
-       let registForm_elem = document.getElementById("AccountRegist_formLayout");
-       let registForm_status = ( registForm_elem.classList.value.toString().length > 0 ) ? true : false;
-       if( registForm_status ){
-           registForm_elem.classList.remove('active');
-       }else{
-           registForm_elem.classList.add('active');
-       }
-    }
-
-    selectBank(e){
-        let bankInfo_array = this.state.bankInfo_valueArray;
-        let selected_bankInfo = bankInfo_array[ e.target.selectedIndex - 1 ];
-        this.setState({addAccount_bankInfo : selected_bankInfo} );
-    }
-
-    addAccount(){
-        let bank_data = {"bank_code": this.state.addAccount_bankInfo['code'], "bank_num": this.state.addAccount_accountNum, "username": this.state.addAccount_userName};
-        console.log(bank_data);
-        Fetch.fetch_api("banking/accountAuth", "POST", bank_data).then(res=>{
-           console.log(res);
-        });
     }
 
     componentDidMount() {
         let banking_info_array = Object.values(this.state.bankInfo_obj);
         this.setState({bankInfo_valueArray: banking_info_array});
+
+        if( this.state.loginFlag ){
+            let userName = Cookie.get_cookie('UserName');
+            Fetch.fetch_api("account/"+userName, "GET", null).then(res => {
+
+               if(res.toString().trim().indexOf('Error') !== -1) {
+                   console.log('(!) Server error ', '\n', res);
+                   let alertModal_text = '(!) 서버 에러 발생, 관리자에게 문의해주세요.';
+                   this.props.alertModal_open(alertModal_text, window.innerHeight - 30);
+                   Sleep.sleep_func(1000).then( () => { this.props.alertModal_close() } );
+               }
+
+               if(res['result'].toString().trim() === 'success'){
+                        console.log(res['account_list']);
+                   let myAccount_list = JSON.parse( res[ 'account_list' ].toString().replace( /'/g,  '\"' ) );
+                   let tmp_account_array = [];
+                   for( let key in myAccount_list ){
+                        let tmp_obj = {
+                            bank_code: myAccount_list[ key ][ 'bank_code' ],
+                            bank_name:
+                                this.state.bankInfo_valueArray[
+                                    this.state.bankInfo_valueArray
+                                        .findIndex( (b_elem) => b_elem['code'] === myAccount_list[ key ]['bank_code'] )
+                                    ].name,
+                            bank_num: crypto.decrypt_account( myAccount_list[ key ][ 'bank_num' ] ),
+                        };
+                        tmp_account_array.push( tmp_obj );
+                   }
+                   this.setState( { myAccountList: tmp_account_array } );
+                   let empty_cardInfo_obj = {
+                            bank_code: 0, bank_name: null, bank_num: null,
+                   };
+                   let tmp_slideAccount_list = tmp_account_array.concat(empty_cardInfo_obj);
+                   this.setState({slideAccountList: tmp_slideAccount_list});
+               }
+
+               if( res['result'].toString().trim() === 'revoke' ) {
+                   console.log('(!) API Error ', '\n', res);
+                   let alertModal_text = '(!) API 요청 오류. 로그아웃 후, 다시 시도해주세요.';
+                   this.props.alertModal_open(alertModal_text, window.innerHeight - 30);
+                   Sleep.sleep_func(1000).then( () => { this.props.alertModal_close() } );
+               }
+            });
+        }
+
     }
 
     render() {
-        let loginFlag = (Cookie.get_cookie('UserName') && Cookie.get_cookie("AccessToken") ) ? true : false;
+        let loginFlag = this.state.loginFlag;
+        let AccountLayout_style = {height: ( !loginFlag ) ? '500px' : window.innerHeight - 50};
+
         let now_userName = ( loginFlag ) ? Cookie.get_cookie('UserName') : '';
         return (
-            <div id="AccountLayout">
+            <div id="AccountLayout" style={AccountLayout_style}>
                 {
                     ( loginFlag )
-                    ? <div id="Account_title">{now_userName}님의 <font className="bold">정산 계좌관리</font></div>
+                    ? ''
                     : <div id="Account_title" className="no-user">
                         <font className="bold">*</font> 로그인이 필요한 기능입니다.
                         </div>
@@ -82,21 +108,37 @@ class Account extends React.Component {
                 {
                     ( loginFlag )
                         ?
-                        <div>
-                            <div id="AccountRegist_btn" onClick={this.registAccount}><font className="bold">+ </font> 계좌추가</div>
-                              <br/>
-                              <div id="AccountRegist_formLayout">
-                                  <select id="Account_selectBox" onChange={this.selectBank} >
-                                    <option value="0">은행 선택</option>
-                                      {this.state.bankInfo_valueArray.map( (elem, index) => {
-                                            return <option key={index} value={elem['code']}>{elem['name']}</option>
-                                      })}
-                                  </select>
-                                  <br/>
-                                  <input className="Account_input" type="text" onChange={(e)=> this.setState({addAccount_userName: e.target.value})} placeholder="예금주 실명" />
-                                  <input className="Account_input" type="number" onChange={(e)=> this.setState({addAccount_accountNum: e.target.value})} placeholder="계좌번호 입력" />
-                                  <div id="Account_addBtn" onClick={this.addAccount}>작성완료</div>
-                              </div>
+                        <div id="AccountContent_layout">
+
+                            <div id="AccountCard_slider">
+                                {
+                                    ( this.state.slideAccountList.length )
+                                    ?
+                                        this.state.slideAccountList.map( ( elem, index ) => {
+                                            return <div className="myAccountCard_layout" id={"myAccountCard_"+index} key={index} >
+                                                        <div className="mac owner_name">{now_userName}</div>
+                                                        <div className="mac bank_name">{
+                                                            ( elem['bank_name'] )
+                                                                ? ( elem['bank_name'] )
+                                                                : <img id="plusAccount_icon" src="/img/plus_account.png"/>
+                                                        }</div>
+                                                        <div className="mac bank_num">{elem['bank_num']}</div>
+                                                        <div className="mac chipIcon_layout"><img className="mac chip_icon" src="/img/sim-card.png" /></div>
+                                                    </div>
+                                        })
+
+                                    :
+                                        <div>noneCard</div>
+                                }
+                            </div>
+                            <div id="mac_slider_counter_layout">
+                                {
+                                    this.state.myAccountList.map( (elem, index) => {
+                                    return <span className="mac_slide_counter" key={index} id={"mac_slide_cnt_"+index}> </span>
+                                    })
+                                }
+                            </div>
+
                         </div>
 
                         : ''
@@ -106,6 +148,16 @@ class Account extends React.Component {
         );
     }
 }
+
+
+let mapDispatchToProps = (dispatch) => {
+    return {
+        alertModal_open: (text, topPosition) => dispatch(modal_open(text, topPosition)),
+        alertModal_close: () => dispatch(modal_close())
+    }
+};
+
+Account = connect(undefined, mapDispatchToProps)(Account);
 
 export default Account;
 

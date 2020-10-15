@@ -74,6 +74,7 @@ class History extends React.Component {
 
 
     render() {
+        let HistoryLayout_style = {height: ( !this.state.loginFlag ) ? '500px' : 'auto'};
         let settleAllCnt = 0;
         let settleAllPrice = 0;
         let settleChildAllCnt = 0;
@@ -96,9 +97,9 @@ class History extends React.Component {
                 return sum_price;
             }, 0).toLocaleString();
         }
-
+        
         return (
-            <div id="HistoryLayout">
+            <div id="HistoryLayout" style={HistoryLayout_style}>
                 <div id="HistoryTitle">
                     {
                         ( this.state.loginFlag )

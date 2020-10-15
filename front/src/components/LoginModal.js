@@ -146,13 +146,13 @@ class LoginModal extends React.Component {
         );
     }
 }
+
 let mapDispatchToProps = (dispatch) => {
     return {
         modalOpen: (text, topPosition) => dispatch(modal_open(text, topPosition)),
         modalClose: () => dispatch(modal_close())
     }
 }
-
 
 LoginModal = connect(undefined, mapDispatchToProps)(LoginModal);
 

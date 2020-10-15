@@ -62,7 +62,7 @@ class SettleForm extends Component {
                                 <div className="innerFormContent">
 
                                     <div className="innerForm_title">
-                                        <div className="innerForm_indexBox"># {index+1}차</div>{elem['title']}
+                                        <div className="innerForm_indexBox"><font className="bold">#</font> {index+1}차</div>{elem['title']}
                                             <Link key={index} to={ (localStorage.getItem("savedSettle_"+ (index+1) ) ) ?  "/settle"
                                                                     : ( elem['personList'].length === 0 || elem['title'].toString().length === 0 ) ?
                                                                             "/settle" : "/settleEdit/"+index }>

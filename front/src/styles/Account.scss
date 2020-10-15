@@ -1,12 +1,12 @@
 @import "extend";
 
+$tmp_borderLine_color : $main-line-color;
 #AccountLayout{
   animation-name: fade-in-2; animation-fill-mode: forwards; animation-duration: 750ms;;
- padding:15px;
+  padding:15px;
 }
 
 #Account_title {
-
   &.no-user{
     color:dimgrey;
     text-align: center;
@@ -14,42 +14,87 @@
   }
 }
 
-#AccountRegist_btn{
-  text-align: right;
-  margin-right:5px; margin-top:5px;
-  float: right;
-  display: inline-block; border-radius: 5px;
-  font-size:13px; padding:3px 5px; background: #3E3C42; box-shadow: 0px 0px 5px cyan;
+@keyframes slide-from-bottom2 { from{opacity: 0; top:100%;} to{opacity: 1; top:220px;}  }
+@keyframes slide-from-right2 {  from{opacity: 0; right: -100%;} to{opacity: 1; right:0px;}  }
+
+#AccountContent_layout{
+  animation-name: slide-from-bottom2; animation-duration: 500ms; animation-delay: 500ms; animation-fill-mode: forwards;
+  opacity: 0;
+  position: absolute; left: 0px; top:220px;
+  border-top-left-radius: 20px; border-top-right-radius: 20px;
+  width:100%; height:100%;
+  border-top: 1px solid $tmp_borderLine_color;
+  box-shadow: 0px 0px 5px $tmp_borderLine_color;
+  background: linear-gradient(90deg, rgba(48,48,48,1) 0%, rgba(101,101,101,1) 100%);;
 }
 
-#AccountRegist_formLayout{
-  display: none; margin-top:25px;
-  &.active{
-    display: block;
+
+#AccountCard_slider{
+  animation-name: slide-from-right2; animation-duration: 500ms; animation-delay:1s; animation-fill-mode: forwards;
+  opacity: 0; height: 200px;
+  position: absolute; top:-60px; z-index:100000;
+  width:100%; white-space: nowrap; overflow-x: auto;
+}
+
+.myAccountCard_layout{
+  margin-top:3px;
+  max-width: 300px;
+  display: inline-block;
+  border-radius: 10px;
+  background: $main-background2; box-shadow: 0px 0px 5px black;
+  height:150px;
+  width:70%; margin-left:5%; margin-right:5%;
+  z-index:100001;
+
+  &:nth-child(1){ margin-left:15%; }
+  &:nth-last-child(1){ margin-right:15%;}
+}
+
+.mac{
+  text-align: center;
+  &.owner_name{
+    font-size:12px; color:silver;
+    position: absolute; top:10px; margin-left:7px;
+    background: $main-background2; padding:3px 5px; border-radius: 5px;
+    box-shadow: 0px 0px 3px black;
+    //border:1px solid gray;
+  }
+  &.bank_name {
+    margin-top: 50px; font-weight: 600;
+  }
+  &.bank_num{
+    margin-top:5px; font-weight: 400; font-size:13px;
+    width:50%;
+    color:silver;
+    display: inline-block; margin-left:25%;
+    &:active{
+      color:$main-line-color;
+    }
+  }
+  &.chipIcon_layout{
+    display: inline-block;
+    //position: absolute;
+    margin-left:-70%;
+    margin-top:-35px;
+  }
+  &.chip_icon{
+    width:25px; height: auto;
+
   }
 }
 
-#Account_selectBox{
- float: right;
-  outline: none; background: none; border-radius: 5px; border:2px solid gray;
-  font-size:15px; color:white; padding:5px 0px 5px 5px; font-weight: 600;
-  width:50%; margin-right:10px; margin-bottom:10px;
-  & option{
-    color: black
-  }
+#plusAccount_icon{
+  padding:5px; top:25px;
+  position: relative; margin-top:-30px;
+  border-radius: 35px; border: 3px solid $main-line-color; background: $main-background2; box-shadow: 0px 0px 7px $main-line-color;
+  width:35px; height:35px;
 }
 
-.Account_input{
-  float: right;
-  font-size:14px; color:white; font-weight: 500;
-  display: block; text-align: right;
-  outline: none; background: none; border:none; border-bottom: 2px solid gray;
-  width:50%; min-width: 150px; margin-bottom:10px; margin-right:10px;
-  &.active{
-    border-bottom-color: cyan;
-  }
+#mac_slider_counter_layout{
+  position: relative;
+  top:100px; text-align: center;
 }
-
-#Account_addBtn{
-
+.mac_slide_counter{
+  display: inline-block; margin-right:5px;
+  width:5px; height:5px; border-radius: 5px; background: none; border: 1px solid gray;
 }

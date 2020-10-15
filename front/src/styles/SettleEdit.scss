@@ -131,7 +131,7 @@ input[id=EditForm_personAllSelect_btn]{
   border: 2px solid gray; border-radius: 10px;
   text-align: center; color: gray;
   &.grant{
-    border:none; color:white;
+    border:#3E3C42; color:white;
     background: #383a3f; box-shadow: 0px 0px 10px $main-line-color;
   }
 }
