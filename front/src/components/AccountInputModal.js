@@ -101,7 +101,7 @@ class AccountInputModal extends React.Component {
 
     accountModal_close(){
         this.props.AccountModal_close();
-        //this.props.maskClose();
+        this.props.maskClose();
         document.body.style.overflow = 'auto';
 
         //* 작성된 모든 값 초기화.

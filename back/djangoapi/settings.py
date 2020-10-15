@@ -111,6 +111,8 @@ WSGI_APPLICATION = 'djangoapi.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+print('now_mode: '+get_secret("NOW_MODE"))
+
 sqlite_config = {'ENGINE': 'django.db.backends.sqlite3',
          'NAME': BASE_DIR / 'db.sqlite3',}
 

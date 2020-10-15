@@ -33,7 +33,7 @@ class SettleEdit extends React.Component {
         this.SettleEditCom = this.SettleEditCom.bind(this);
         this.select_settleMinUnit = this.select_settleMinUnit.bind(this);
         this.input_Shopname = this.input_Shopname.bind(this);
-
+        this.personAllSelectBtn_click = this.personAllSelectBtn_click.bind(this);
     }
 
     input_Shopname(e) {
@@ -41,7 +41,27 @@ class SettleEdit extends React.Component {
         this.setState({settleShopname : shopName});
     }
 
+    //* 정산인원 전체선택 버튼( input [type = checkbox] ) 클릭 이벤트.
+    personAllSelectBtn_click(e) {
+        console.log(e.target.checked);
+        let personName_boxs = document.getElementById("EditForm_personList").children;
+        let allSelectBtn_label = document.getElementById("EditForm_personAllSelect_label");
+        if(e.target.checked == true) {
+            let init_personArray = this.state.common_settleInfoObj['personList'];
+            for(let i = 0; i<personName_boxs.length; i++){ personName_boxs[i].classList.remove("uncheck"); }
+            this.setState({selectedPersonList: init_personArray});
+            allSelectBtn_label.style.color = 'powderblue';
+            e.target.setAttribute("checked", '');
+        }
+        else{
+            for( let i = 0; i<personName_boxs.length; i++ ){ personName_boxs[i].classList.add("uncheck"); }
+            this.setState({selectedPersonList: []});
+            allSelectBtn_label.style.color = 'gray';
+            e.target.removeAttribute("checked");
+        }
+    }
 
+    //* 정산인원 리스트 내부, 각 인원들 [NAME] 박스 클릭 이벤트.
     selectPerson_box(e){
         let selectStatus = ( e.target.classList.toString().indexOf('uncheck') !== -1 ) ? false : true;
         let selectPersonName = e.target.innerText;
@@ -61,9 +81,21 @@ class SettleEdit extends React.Component {
             tmp_array.push(selectPersonName);
         }
         this.setState({selectedPersonList : tmp_array});
-        //console.log(tmp_array);
+
+        //* 정산인원 선택에 따른, 전체인원 체크 버튼 상태 변경.
+        let allSelectBox_elem = document.getElementById("EditForm_personAllSelect_btn");
+        let allSelectBoxLabel_elem = document.getElementById("EditForm_personAllSelect_label");
+        if(tmp_array.length === this.state.common_settleInfoObj['personList'].length){
+            allSelectBox_elem.setAttribute("checked", '');
+            allSelectBoxLabel_elem.style.color = 'powderblue';
+        }
+        else{
+            allSelectBox_elem.removeAttribute("checked");
+            allSelectBoxLabel_elem.style.color = 'gray';
+        }
     }
 
+    //* 해당 차수 모임 비용 입력 이벤트.
     settleSum_input(e){
         let input_value = e.target.value.toString().replace(/[^0-9]/g,'');
         input_value = input_value.replace(/,/g,'');
@@ -79,6 +111,7 @@ class SettleEdit extends React.Component {
         }
     }
 
+    //* 정산방법 ( N/1 or 직접정산(=직접 기입) ) 선택 이벤트.
     select_SettleCase(e){
         let settleCase_index = e.target.getAttribute("id").toString().split('settleCase')[1];
         this.setState({settleCase : settleCase_index});
@@ -110,10 +143,9 @@ class SettleEdit extends React.Component {
                     }
                 }
             }
-
-
     }
 
+    //* 정산 최소단위( = 절삭단위 ) selectBox 변경 이벤트.
     select_settleMinUnit(e) {
         let minUnit_value = parseInt( e.target.value.toString().split("원")[0].replace(/,/g, '') );
         //console.log(minUnit_value);
@@ -137,6 +169,7 @@ class SettleEdit extends React.Component {
         this.setState({ person_settleInfo_obj : tmp_obj});
         this.setState({ settleResultNoti : Object.values(tmp_obj).reduce( ( acc, cur ) => acc+cur ) });
     }
+
 
     SettleEditCom(e) {
         if(parseInt( this.state.settle_sum ) < 0 || !Number(this.state.settle_sum) ){
@@ -174,8 +207,6 @@ class SettleEdit extends React.Component {
         };
         this.props.maskOpen();
         Sleep.sleep_func(250).then(() => this.props.infomodalOpen(settleInfo_obj));
-
-
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -184,8 +215,12 @@ class SettleEdit extends React.Component {
 
 
     componentDidMount() {
+
         this.setState({settleResultNoti : '0'});
+
+        //* 새로운 정산내용 작성인지, 저장된 정산내용의 수정인지 판단.
         let savedInfo =  ( this.state.savedSettleInfo ) ? this.state.savedSettleInfo : null;
+
         let savedShopname = ( savedInfo ) ? savedInfo['settleLocation'] : '';
         this.setState({settleShopname : savedShopname});
         let savedPersonList =  ( savedInfo ) ? Object.keys( savedInfo['settleValueInfo'] ) : [];
@@ -197,7 +232,13 @@ class SettleEdit extends React.Component {
                 personBox_list[i].classList.remove('uncheck');
             }
         }
+
         this.setState({selectedPersonList: savedPersonList });
+        if(savedPersonList.length === this.state.common_settleInfoObj['personList'].length){
+            document.getElementById("EditForm_personAllSelect_btn").setAttribute("checked", '');
+            document.getElementById("EditForm_personAllSelect_label").style.color = 'powderblue';
+        }
+
         this.setState({settle_sum : savedSettleSum });
 
         let savedSettleCase = ( savedInfo ) ? savedInfo['settleCase'] : 0;
@@ -226,6 +267,7 @@ class SettleEdit extends React.Component {
             });
             this.setState({settleResultNoti: settleValueInfo_price.reduce((acc, cur) => acc + cur), settleEditCom_flag: true});
         }
+
 
     }
 
@@ -276,12 +318,18 @@ class SettleEdit extends React.Component {
                            onChange={this.input_Shopname} placeholder="장소명 혹은 상호명 입력."/>
                 </div>
                 <div className="EditForm_contentBox">
-                    <div className="EditForm_titleBox"><font className="bold">*</font>{parseInt( this.state.settleIndex ) + 1}차 참석 인원 선택</div><br/>
+                    <div className="EditForm_titleBox"><font className="bold">*</font>{parseInt( this.state.settleIndex ) + 1}차 참석 인원 선택</div>
+                    <input id="EditForm_personAllSelect_btn" type="checkbox" onClick={this.personAllSelectBtn_click} /><label id="EditForm_personAllSelect_label" htmlFor="EditForm_personAllSelect_btn">전체선택</label>
+                    <br/>
+
                     <div id="EditForm_personList">
                     {this.state.common_settleInfoObj['personList'].map( (elem, index) => {
-                        return <div key={"person_"+index} onClick={this.selectPerson_box} className="EditForm_personBox uncheck">{elem}</div>
+
+                        return <div key={"person_"+index} id={"personBox_"+index} onClick={this.selectPerson_box} className="EditForm_personBox uncheck">{elem}</div>
+
                     })}
                     </div>
+
                 </div>
                 <div className="EditForm_contentBox">
                     <div className="EditForm_titleBox"><font className="bold">*</font> 모임 비용</div>

@@ -80,6 +80,15 @@
   font-size:13px; font-weight: 200;
 }
 
+input[id=EditForm_personAllSelect_btn]{
+  display: none;
+  outline: none; cursor: pointer;
+  border:1px solid gray; background-color: #3E3C42;
+}
+#EditForm_personAllSelect_label{
+  font-size: 14px; position: relative; top:-1.5px;
+  color:gray;
+}
 #EditForm_personList{
   margin-top:10px; margin-bottom:20px;
 }
