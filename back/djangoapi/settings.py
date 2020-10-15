@@ -108,29 +108,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'djangoapi.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
+sqlite_config = {'ENGINE': 'django.db.backends.sqlite3',
+         'NAME': BASE_DIR / 'db.sqlite3',}
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": "humanwater",
-        "USER": "root",
-        "PASSWORD": "",
-        "HOST": "localhost",
-        "PORT": "3306",
-        "OPTIONS": {"init_command": 'SET sql_mode="STRICT_TRANS_TABLES"'},
-    }
+    'default': sqlite_config if get_secret("NOW_MODE") == "local" else get_secret("MYSQL_CONFIG")
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
