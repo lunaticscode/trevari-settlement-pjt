@@ -1,5 +1,7 @@
 const webpack = require('webpack');
 
+const secret = require('./secret');
+console.log('now_mode:', secret.now_mode);
 //const WebpackPwaManifest = require('webpack-pwa-manifest');
 //const { InjectManifest } = require('workbox-webpack-plugin');
 // const manifest = require('./public/manifest.json');
@@ -9,7 +11,6 @@ const webpack = require('webpack');
 //     swSrc: './src/sw.js',
 //     swDest: 'sw.js',
 // });
-
 module.exports = {
 
     entry: './src/index.js',
@@ -20,8 +21,8 @@ module.exports = {
     devServer: {
         hot: true,
         inline: true,
-        //host: 'humanwater.insoo',
-        host: '0.0.0.0',
+        host: ( secret.now_mode === 'local' ) ? 'humanwater.insoo' : '0.0.0.0',
+        //host: '0.0.0.0',
         port: 9500,
         contentBase: __dirname + '/public/',
         historyApiFallback: true,
