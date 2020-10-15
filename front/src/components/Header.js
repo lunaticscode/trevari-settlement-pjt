@@ -22,7 +22,7 @@ class Header extends React.Component {
     }
 
     tabMenuClick(e){
-            let clickedTab_textValue = e.target.innerText;
+        let clickedTab_textValue = e.target.innerText;
             let tabIndexNumber = this.state.tabMenuArray.indexOf(clickedTab_textValue);
             let clickedTab_pathName = this.state.tabPathArray[tabIndexNumber];
             this.props.clickLink(clickedTab_pathName);
@@ -86,6 +86,7 @@ class Header extends React.Component {
                                         {elem}
                                         <div id={"tabBorder_"+index}  className="tabMenuBorder"></div>
                                     </div>
+
                                </Link>
                     })}
                </div>

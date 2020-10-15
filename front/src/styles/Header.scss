@@ -48,22 +48,22 @@
   float: left; margin:5px 5px;
   min-width: 30px; text-align: center;
   color:gray; font-weight: 600;
-  width:auto; padding:5px 5px;
+  width:auto; padding:4px 5px;
   //border-bottom: 0px solid none;
-
 }
 
-@keyframes border-expanding {
-  from{width:0px;opacity: 0; } to{width:100%; opacity: 1;}
-}
-.tabMenuBorder{
-  display: block; background: $main-line-color;
-  width: 0px; margin-top:3px;
-  height:2px;
-}
-.clicked{ color:$main-line-color; }
+//@keyframes border-expanding {
+//  from{width:0px;opacity: 0; } to{width:100%; opacity: 1;}
+//}
+//.tabMenuBorder{
+//  display: block; background: $main-line-color;
+//  width: 0; margin-top:3px;
+//  height:2px;
+//}
 
-.clickedBorder{
-  animation-name: border-expanding;
-  animation-duration: 750ms; animation-fill-mode: forwards;
-}
+.clicked{ color:$main-line-color; border-bottom: 3px solid $main-line-color; }
+
+//.clickedBorder{
+//  animation-name: border-expanding;
+//  animation-duration: 750ms; animation-fill-mode: forwards;
+//}
