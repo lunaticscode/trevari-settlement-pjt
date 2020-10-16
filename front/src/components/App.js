@@ -103,8 +103,8 @@ class App extends React.Component {
         if(
             now_path.toString().indexOf('settleResult') == -1
             && now_path.toString().indexOf('settleEdit') == -1
-            && Cookie.get_cookie("mac_slider_Scrolling") == 'false'
-            )
+            && ( Cookie.get_cookie("mac_slider_Scrolling") == 'false' || !Cookie.get_cookie("mac_slider_Scrolling") )
+          )
         {
             this.setState({movingTouch_X : e.touches[0].clientX});
         }
