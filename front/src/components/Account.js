@@ -36,8 +36,11 @@ class Account extends React.Component {
             loginFlag: ( Cookie.get_cookie('UserName') && Cookie.get_cookie("AccessToken") ) ? true : false,
             myAccountList: [],
             slideAccountList: [],
+
+            mac_initOffsetX_list : [],
             now_cardIndex: 0,
             now_sliderOffsetX: 0,
+
         };
 
         this.AccountCardSliding = this.AccountCardSliding.bind(this);
@@ -47,19 +50,19 @@ class Account extends React.Component {
 
     AcconutCardSlider_touchStart(e){ Cookie.set_cookie("mac_slider_Scrolling", 'true'); }
     AcconutCardSlider_touchEnd(e){
-        setTimeout(() => { Cookie.set_cookie('mac_slider_Scrolling', 'false'); }, 500);
+        setTimeout(() => { Cookie.set_cookie('mac_slider_Scrolling', 'false'); }, 1000);
     }
 
     AccountCardSliding(e) {
         let now_slider_offsetX = e.target.scrollLeft;
         this.setState({now_sliderOffsetX : now_slider_offsetX});
-        
     }
 
     componentDidMount() {
         let banking_info_array = Object.values(this.state.bankInfo_obj);
         this.setState({bankInfo_valueArray: banking_info_array});
 
+        //* 회원 유저, DB에 등록된 계좌정보 API 호출.
         if( this.state.loginFlag ){
             let userName = Cookie.get_cookie('UserName');
             Fetch.fetch_api("account/"+userName, "GET", null).then(res => {
@@ -72,17 +75,21 @@ class Account extends React.Component {
                }
 
                if(res['result'].toString().trim() === 'success'){
-                        console.log(res['account_list']);
-                   let myAccount_list = JSON.parse( res[ 'account_list' ].toString().replace( /'/g,  '\"' ) );
+                   console.log(res['account_list']);
+
+                   //* 회원 유저임에도 불구하고, 관리중인 계좌 목록이 하나도 없을 경우, 빈 배열로 설정;
+                   let myAccount_list = (res['account_list']) ? JSON.parse( res[ 'account_list' ].toString().replace( /'/g,  '\"' ) ) : [];
+
                    let tmp_account_array = [];
                    for( let key in myAccount_list ){
                         let tmp_obj = {
                             bank_code: myAccount_list[ key ][ 'bank_code' ],
+
                             bank_name:
                                 this.state.bankInfo_valueArray[
-                                    this.state.bankInfo_valueArray
-                                        .findIndex( (b_elem) => b_elem['code'] === myAccount_list[ key ]['bank_code'] )
+                                        this.state.bankInfo_valueArray.findIndex( ( b_elem ) => b_elem['code'] === myAccount_list[ key ][ 'bank_code' ] )
                                     ].name,
+
                             bank_num: crypto.decrypt_account( myAccount_list[ key ][ 'bank_num' ] ),
                         };
                         tmp_account_array.push( tmp_obj );
@@ -91,8 +98,28 @@ class Account extends React.Component {
                    let empty_cardInfo_obj = {
                             bank_code: 0, bank_name: null, bank_num: null,
                    };
-                   let tmp_slideAccount_list = tmp_account_array.concat(empty_cardInfo_obj);
-                   this.setState({slideAccountList: tmp_slideAccount_list});
+                   //* 관리가능 계좌 최대 5개,
+                   //* 5개 미만일 경우, [ + 추가 ] 기능있는 빈 계좌 obj 추가.
+                   if(tmp_account_array.length < 5){
+                       let tmp_slideAccount_list = tmp_account_array.concat(empty_cardInfo_obj);
+                       this.setState({slideAccountList: tmp_slideAccount_list});
+                   }
+
+                   //* 슬라이드 제어를 위한, 슬라이더 레이아웃 내부에 있는 계좌카드 초기 위치( offset X ) state 값으로 저장.
+                   if(this.state.myAccountList.length > 0){
+                       let slideMac_elems = document.getElementsByClassName("myAccountCard_layout");
+                       console.log(slideMac_elems);
+                       let tmp_offsetX_list = [];
+
+                       //* 애니메이션 종료 후, 각 카드 offsetX 취합 후에 state로 지정.
+                       Sleep.sleep_func(1000).then(() => {
+                           for(let i = 0; i<slideMac_elems.length; i++){
+                               let offsetX_mac_elem = document.getElementById("myAccountCard_"+i).offsetLeft;
+                               tmp_offsetX_list.push(offsetX_mac_elem);
+                           }
+                           this.setState({mac_initOffsetX_list: tmp_offsetX_list});
+                       });
+                   }
                }
 
                if( res['result'].toString().trim() === 'revoke' ) {
@@ -101,7 +128,9 @@ class Account extends React.Component {
                    this.props.alertModal_open(alertModal_text, window.innerHeight - 30);
                    Sleep.sleep_func(1000).then( () => { this.props.alertModal_close() } );
                }
+
             });
+
         }
 
     }
@@ -131,10 +160,11 @@ class Account extends React.Component {
                                  onTouchEnd={this.AcconutCardSlider_touchEnd}
                                  onScroll={this.AccountCardSliding} >
                                 {
-                                    ( this.state.slideAccountList.length )
-                                    ?
                                         this.state.slideAccountList.map( ( elem, index ) => {
-                                            return <div className="myAccountCard_layout" id={"myAccountCard_"+index} key={index} >
+                                            return <div className="myAccountCard_layout"
+                                                        onTouchStart={this.AcconutCardSlider_touchStart}
+                                                        onTouchEnd={this.AcconutCardSlider_touchEnd}
+                                                        id={"myAccountCard_"+index} key={index} >
                                                         <div className="mac owner_name">{now_userName}</div>
                                                         <div className="mac bank_name">{
                                                             ( elem['bank_name'] )
@@ -145,9 +175,6 @@ class Account extends React.Component {
                                                         <div className="mac chipIcon_layout"><img className="mac chip_icon" src="/img/sim-card.png" /></div>
                                                     </div>
                                         })
-
-                                    :
-                                        <div>noneCard</div>
                                 }
                             </div>
                             <div id="mac_slider_counter_layout">
