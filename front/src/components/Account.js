@@ -37,7 +37,23 @@ class Account extends React.Component {
             myAccountList: [],
             slideAccountList: [],
             now_cardIndex: 0,
+            now_sliderOffsetX: 0,
         };
+
+        this.AccountCardSliding = this.AccountCardSliding.bind(this);
+        this.AcconutCardSlider_touchStart = this.AcconutCardSlider_touchStart.bind(this);
+        this.AcconutCardSlider_touchEnd = this.AcconutCardSlider_touchEnd.bind(this);
+    }
+
+    AcconutCardSlider_touchStart(e){ Cookie.set_cookie("mac_slider_Scrolling", 'true'); }
+    AcconutCardSlider_touchEnd(e){
+        setTimeout(() => { Cookie.set_cookie('mac_slider_Scrolling', 'false'); }, 500);
+    }
+
+    AccountCardSliding(e) {
+        let now_slider_offsetX = e.target.scrollLeft;
+        this.setState({now_sliderOffsetX : now_slider_offsetX});
+        
     }
 
     componentDidMount() {
@@ -110,7 +126,10 @@ class Account extends React.Component {
                         ?
                         <div id="AccountContent_layout">
 
-                            <div id="AccountCard_slider">
+                            <div id="AccountCard_slider"
+                                 onTouchStart={this.AcconutCardSlider_touchStart}
+                                 onTouchEnd={this.AcconutCardSlider_touchEnd}
+                                 onScroll={this.AccountCardSliding} >
                                 {
                                     ( this.state.slideAccountList.length )
                                     ?

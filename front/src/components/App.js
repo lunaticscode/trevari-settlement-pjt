@@ -100,11 +100,14 @@ class App extends React.Component {
     AppTouchMove(e){
 
         let now_path = window.location.pathname;
-        if(now_path.toString().indexOf('settleResult') == -1 && now_path.toString().indexOf('settleEdit') == -1){
+        if(
+            now_path.toString().indexOf('settleResult') == -1
+            && now_path.toString().indexOf('settleEdit') == -1
+            && Cookie.get_cookie("mac_slider_Scrolling") == 'false'
+            )
+        {
             this.setState({movingTouch_X : e.touches[0].clientX});
         }
-
-
     }
 
 

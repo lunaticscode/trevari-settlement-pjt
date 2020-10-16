@@ -173,7 +173,7 @@ class UserAccountInfo(APIView):
             if kwargs.get('username') is None:
                 content = {'result': 'fail', 'message': '(!)Need to username'}
                 return Response(content, status=status.HTTP_200_OK)
-            
+
             else:
                 username = kwargs.get('username')
                 if User.objects.filter(name=username):
