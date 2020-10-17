@@ -36,6 +36,8 @@ $tmp_borderLine_color : $main-line-color;
   width:100%; white-space: nowrap; overflow-x: auto;
 }
 
+
+@keyframes card-fade-in {  from{ opacity: 0.3; } to{ opacity: 1; } }
 .myAccountCard_layout{
   margin-top:3px;
   max-width: 300px;
@@ -45,9 +47,14 @@ $tmp_borderLine_color : $main-line-color;
   height:150px;
   width:70%; margin-left:5%; margin-right:5%;
   z-index:100001;
-
+  opacity: 0.3;
   &:nth-child(1){ margin-left:15%; }
   &:nth-last-child(1){ margin-right:15%;}
+
+  &.active{
+    animation-name: card-fade-in; animation-duration: 500ms; animation-fill-mode: forwards;
+    opacity: 1;
+  }
 }
 
 .mac{
@@ -97,4 +104,8 @@ $tmp_borderLine_color : $main-line-color;
 .mac_slide_counter{
   display: inline-block; margin-right:5px;
   width:5px; height:5px; border-radius: 5px; background: none; border: 1px solid gray;
+  &.active{
+    border: 1px solid $main-line-color; box-shadow: 0px 0px 5px $main-line-color;
+    background: $main-line-color;
+  }
 }

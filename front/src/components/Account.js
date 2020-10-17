@@ -38,7 +38,7 @@ class Account extends React.Component {
             slideAccountList: [],
 
             mac_initOffsetX_list : [],
-            now_cardIndex: 0,
+            now_lookingCardIndex: 0,
             now_sliderOffsetX: 0,
 
         };
@@ -54,8 +54,13 @@ class Account extends React.Component {
     }
 
     AccountCardSliding(e) {
-        let now_slider_offsetX = e.target.scrollLeft;
+        let cardWidth = document.getElementById("myAccountCard_0").offsetWidth;
+
+        let now_slider_offsetX = ( e.target.scrollLeft == 0 ) ? 1 : e.target.scrollLeft;
         this.setState({now_sliderOffsetX : now_slider_offsetX});
+        let passing_index = Math.floor( now_slider_offsetX / cardWidth );
+        this.setState({now_lookingCardIndex: passing_index});
+
     }
 
     componentDidMount() {
@@ -109,11 +114,12 @@ class Account extends React.Component {
                    if(this.state.myAccountList.length > 0){
                        let slideMac_elems = document.getElementsByClassName("myAccountCard_layout");
                        console.log(slideMac_elems);
-                       let tmp_offsetX_list = [];
 
-                       //* 애니메이션 종료 후, 각 카드 offsetX 취합 후에 state로 지정.
+                       let tmp_offsetX_list = [];
+                       let real_myCard_cnt = ( this.state.myAccountList.length < 5 ) ? slideMac_elems.length - 1 : slideMac_elems.length;
+                       //* 애니메이션 종료 후, 각 카드( 실제 등록되어진 계좌카드일 경우에만 ) offsetX 취합 후에 state로 지정.
                        Sleep.sleep_func(1000).then(() => {
-                           for(let i = 0; i<slideMac_elems.length; i++){
+                           for(let i = 0; i < real_myCard_cnt; i++){
                                let offsetX_mac_elem = document.getElementById("myAccountCard_"+i).offsetLeft;
                                tmp_offsetX_list.push(offsetX_mac_elem);
                            }
@@ -161,7 +167,7 @@ class Account extends React.Component {
                                  onScroll={this.AccountCardSliding} >
                                 {
                                         this.state.slideAccountList.map( ( elem, index ) => {
-                                            return <div className="myAccountCard_layout"
+                                            return <div className={ (this.state.now_lookingCardIndex === index) ? "myAccountCard_layout active" : "myAccountCard_layout"}
                                                         onTouchStart={this.AcconutCardSlider_touchStart}
                                                         onTouchEnd={this.AcconutCardSlider_touchEnd}
                                                         id={"myAccountCard_"+index} key={index} >
@@ -180,7 +186,8 @@ class Account extends React.Component {
                             <div id="mac_slider_counter_layout">
                                 {
                                     this.state.myAccountList.map( (elem, index) => {
-                                    return <span className="mac_slide_counter" key={index} id={"mac_slide_cnt_"+index}> </span>
+                                    return <span className={ (this.state.now_lookingCardIndex === index ) ? "mac_slide_counter active" : 'mac_slide_counter ' }
+                                                 key={index} id={"mac_slide_cnt_"+index}></span>
                                     })
                                 }
                             </div>
