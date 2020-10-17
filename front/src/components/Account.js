@@ -44,23 +44,21 @@ class Account extends React.Component {
         };
 
         this.AccountCardSliding = this.AccountCardSliding.bind(this);
-        this.AcconutCardSlider_touchStart = this.AcconutCardSlider_touchStart.bind(this);
+        this.AcconutCardSlider_touchStartMove = this.AcconutCardSlider_touchStartMove.bind(this);
         this.AcconutCardSlider_touchEnd = this.AcconutCardSlider_touchEnd.bind(this);
     }
 
-    AcconutCardSlider_touchStart(e){ Cookie.set_cookie("mac_slider_Scrolling", 'true'); }
+    AcconutCardSlider_touchStartMove(e){ Cookie.set_cookie("mac_slider_Scrolling", 'true'); }
     AcconutCardSlider_touchEnd(e){
         setTimeout(() => { Cookie.set_cookie('mac_slider_Scrolling', 'false'); }, 1000);
     }
 
     AccountCardSliding(e) {
         let cardWidth = document.getElementById("myAccountCard_0").offsetWidth;
-
         let now_slider_offsetX = ( e.target.scrollLeft == 0 ) ? 1 : e.target.scrollLeft;
         this.setState({now_sliderOffsetX : now_slider_offsetX});
         let passing_index = Math.floor( now_slider_offsetX / cardWidth );
         this.setState({now_lookingCardIndex: passing_index});
-
     }
 
     componentDidMount() {
@@ -162,13 +160,15 @@ class Account extends React.Component {
                         <div id="AccountContent_layout">
 
                             <div id="AccountCard_slider"
-                                 onTouchStart={this.AcconutCardSlider_touchStart}
+                                 onTouchStart={this.AcconutCardSlider_touchStartMove}
+                                 onTouchMove={this.AcconutCardSlider_touchStartMove}
                                  onTouchEnd={this.AcconutCardSlider_touchEnd}
                                  onScroll={this.AccountCardSliding} >
                                 {
                                         this.state.slideAccountList.map( ( elem, index ) => {
                                             return <div className={ (this.state.now_lookingCardIndex === index) ? "myAccountCard_layout active" : "myAccountCard_layout"}
-                                                        onTouchStart={this.AcconutCardSlider_touchStart}
+                                                        onTouchStart={this.AcconutCardSlider_touchStartMove}
+                                                        onTouchMove={this.AcconutCardSlider_touchStartMove}
                                                         onTouchEnd={this.AcconutCardSlider_touchEnd}
                                                         id={"myAccountCard_"+index} key={index} >
                                                         <div className="mac owner_name">{now_userName}</div>
