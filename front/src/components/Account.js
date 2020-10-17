@@ -43,11 +43,14 @@ class Account extends React.Component {
             now_sliderOffsetX: 0,
             settleInfo_byAccount_obj: {},
             now_lookingCardInfo_array: [],
+            nowEdit_addMyAccount: false,
         };
 
         this.AccountCardSliding = this.AccountCardSliding.bind(this);
         this.AcconutCardSlider_touchStartMove = this.AcconutCardSlider_touchStartMove.bind(this);
         this.AcconutCardSlider_touchEnd = this.AcconutCardSlider_touchEnd.bind(this);
+        this.addMyAccount = this.addMyAccount.bind(this);
+        this.addMyAccount_selectBank = this.addMyAccount_selectBank.bind(this);
     }
 
     AcconutCardSlider_touchStartMove(e){ Cookie.set_cookie("mac_slider_Scrolling", 'true'); }
@@ -66,6 +69,14 @@ class Account extends React.Component {
         let now_accountSettleInfo = ( now_accountNum ) ? this.state.settleInfo_byAccount_obj[now_accountNum] : null;
         if(now_accountNum) {now_accountSettleInfo.sort( (a, b) => b['date'] - a['date']);}
         this.setState({now_lookingCardInfo_array: now_accountSettleInfo});
+    }
+
+    addMyAccount() {
+        this.setState({nowEdit_addMyAccount: true});
+        console.log('Ready to add account');
+    }
+    addMyAccount_selectBank(e){
+
     }
 
     componentDidMount() {
@@ -222,7 +233,7 @@ class Account extends React.Component {
                                                         <div className="mac bank_name">{
                                                             ( elem['bank_name'] )
                                                                 ? ( elem['bank_name'] )
-                                                                : <img id="plusAccount_icon" src="/img/plus_account.png"/>
+                                                                : <img id="plusAccount_icon" onClick={this.addMyAccount} src="/img/plus_account.png"/>
                                                         }</div>
                                                         <div className="mac bank_num">{elem['bank_num']}</div>
                                                         <div className="mac chipIcon_layout"><img className="mac chip_icon" src="/img/sim-card.png" /></div>
@@ -267,7 +278,29 @@ class Account extends React.Component {
 
                                         </div>
 
-                                    : ''
+                                    :  ( this.state.nowEdit_addMyAccount )
+                                        ? <div>
+                                                <div id="addMyAccount_layout">
+                                                    <select id="addMyAccount_bankName_select" onChange={this.addMyAccount_selectBank}>
+                                                        {
+                                                            Object.values( this.state.bankInfo_obj ).map( (elem, index) => {
+                                                                return <option key={index} value={elem['code']}
+                                                                               className="addMyAccount_bankName_option">
+                                                                        {elem['name']}
+                                                                       </option>
+                                                            })
+                                                        }
+                                                    </select>
+                                                    <div>
+                                                        <input id="addMyAccount_input_accountNum"
+                                                            placeholder="계좌번호 입력"
+                                                        />
+                                                        <div id="addMyAccount_authBtn">계좌인증</div>
+                                                        <div id="addMyAccount_registBtn">계좌 등록</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        : ''
                                 }
 
                             </div>
