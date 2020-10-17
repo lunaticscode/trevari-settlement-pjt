@@ -17,29 +17,26 @@ class History extends React.Component {
         };
 
         this.SettleChild_detailView = this.SettleChild_detailView.bind(this);
-
     }
 
     SettleChild_detailView(){
-        if(!this.state.settleInfoList) { return; }
-        let now_settleInfoList = this.state.settleInfoList.sort( ( a, b ) => b['id'] - a['id'] );
+        if( !this.state.settleInfoList ) { return; }
+        let now_settleInfoList = this.state.settleInfoList.sort( ( a, b ) => b[ 'id' ] - a[ 'id' ] );
         console.log(now_settleInfoList);
-        let tmp_array = now_settleInfoList.map( (elem, index) => {
-                let date_value = elem['si_regdate'].toString().substr(0, 8);
+        let tmp_array = now_settleInfoList.map( ( elem, index ) => {
+                let date_value = elem[ 'si_regdate' ].toString().substr( 0, 8 );
                 date_value = date_value.substr(0, 4) + '.' + date_value.substr(4, 2) + '.' + date_value.substr(6, 2);
                 let tmp_elem = {
-                    title: elem['si_title'],
-                    cnt: elem['si_form_cnt'],
+                    title: elem[ 'si_title' ],
+                    cnt: elem[ 'si_form_cnt' ],
                     date: date_value,
-                    settleInfo: JSON.parse( elem['si_form_info'] ),
-                    regdate: elem['si_regdate'],
+                    settleInfo: JSON.parse( elem[ 'si_form_info' ] ),
+                    regdate: elem[ 'si_regdate' ],
                 };
                 return tmp_elem;
         });
-        this.setState({settleChild_detailList: tmp_array});
-
-        console.log(tmp_array);
-
+        this.setState( { settleChild_detailList: tmp_array } );
+        console.log( tmp_array );
     }
 
     componentDidMount() {

@@ -6,6 +6,7 @@ import Sleep from "../Sleep";
 import {modal_close, modal_open} from "../actions";
 import {connect} from "react-redux";
 import crypto from "../CryptoInfo";
+import AccountTimeline from "./AccountTimeline";
 
 class Account extends React.Component {
 
@@ -40,7 +41,8 @@ class Account extends React.Component {
             mac_initOffsetX_list : [],
             now_lookingCardIndex: 0,
             now_sliderOffsetX: 0,
-
+            settleInfo_byAccount_obj: {},
+            now_lookingCardInfo_array: [],
         };
 
         this.AccountCardSliding = this.AccountCardSliding.bind(this);
@@ -59,15 +61,20 @@ class Account extends React.Component {
         this.setState({now_sliderOffsetX : now_slider_offsetX});
         let passing_index = Math.floor( now_slider_offsetX / cardWidth );
         this.setState({now_lookingCardIndex: passing_index});
+
+        let now_accountNum = (this.state.myAccountList[passing_index] ) ? this.state.myAccountList[passing_index]['bank_num'] : null;
+        let now_accountSettleInfo = ( now_accountNum ) ? this.state.settleInfo_byAccount_obj[now_accountNum] : null;
+        if(now_accountNum) {now_accountSettleInfo.sort( (a, b) => b['date'] - a['date']);}
+        this.setState({now_lookingCardInfo_array: now_accountSettleInfo});
     }
 
     componentDidMount() {
         let banking_info_array = Object.values(this.state.bankInfo_obj);
         this.setState({bankInfo_valueArray: banking_info_array});
-
+        let userName = ( Cookie.get_cookie('UserName') ) ? Cookie.get_cookie('UserName') : '';
         //* 회원 유저, DB에 등록된 계좌정보 API 호출.
         if( this.state.loginFlag ){
-            let userName = Cookie.get_cookie('UserName');
+
             Fetch.fetch_api("account/"+userName, "GET", null).then(res => {
 
                if(res.toString().trim().indexOf('Error') !== -1) {
@@ -111,7 +118,7 @@ class Account extends React.Component {
                    //* 슬라이드 제어를 위한, 슬라이더 레이아웃 내부에 있는 계좌카드 초기 위치( offset X ) state 값으로 저장.
                    if(this.state.myAccountList.length > 0){
                        let slideMac_elems = document.getElementsByClassName("myAccountCard_layout");
-                       console.log(slideMac_elems);
+                       //console.log(slideMac_elems);
 
                        let tmp_offsetX_list = [];
                        let real_myCard_cnt = ( this.state.myAccountList.length < 5 ) ? slideMac_elems.length - 1 : slideMac_elems.length;
@@ -132,10 +139,49 @@ class Account extends React.Component {
                    this.props.alertModal_open(alertModal_text, window.innerHeight - 30);
                    Sleep.sleep_func(1000).then( () => { this.props.alertModal_close() } );
                }
+            }); // ---> 카드리스트 Fetch 코드 종료 부분.
 
-            });
+            //* 현재 유저 정산기록 호출
+            let submit_data = {user_name : userName,};
+            Fetch.fetch_api("settleList", 'POST', submit_data)
+                .then(res=> {
+                    if( res.toString().trim().indexOf('Error') !== -1){
+                        console.log('server error');
+                        let AlertText = '(!) 서버에 오류가 발생했습니다. 관리자에게 문의해주세요.';
+                        let topPosition = window.innerHeight;
+                        this.props.modalOpen( AlertText, ( topPosition-30 ) );
+                        Sleep.sleep_func(2000).then(()=> this.props.modalClose());
+                        return;
+                    }
+                    //console.log(res);
+                    let result_settleInfo = res['settleInfo_List'];
+                    this.setState({settleInfoList: result_settleInfo});
 
+                    let tmp_info_array = result_settleInfo.map(elem => {
+                        let account_num = crypto.decrypt_account(elem['si_account']);
+                        let tmp_obj = {account: account_num, regdate: elem['si_regdate'], settleInfo: JSON.parse( elem['si_form_info'] )};
+                        return tmp_obj;
+                    }).sort( (a, b) => a['account'] - b['account'] );
+                    //console.log(tmp_info_array);
+                    tmp_info_array = tmp_info_array.reduce( ( acc, cur ) => {
+                        let tmp_array = [ {info:cur['settleInfo'],
+                                           sumprice: Object.values( cur['settleInfo'] ).reduce( (acc, cur) => acc + cur['settleSum'], 0) ,
+                                           date:cur['regdate']}];
+                        let curValue = ( Object.keys(acc).indexOf(cur['account']) !== -1 ) ? acc[cur['account']].concat(tmp_array) : tmp_array;
+                        acc[cur['account']] = curValue;
+                        return acc;
+                    }, {});
+
+                    //* ===> { accountNumber : [ {info}, {info2}, .... ], accountNumber2 : [{}, {}, .... ], ... }
+                    this.setState({settleInfo_byAccount_obj: tmp_info_array});
+
+                    //console.log(tmp_info_array);
+                    document.getElementById("AccountCard_slider").scroll(1, 0);
+                });
         }
+
+        //* 비회원일 접속일 경우,
+        else{ }
 
     }
 
@@ -191,7 +237,39 @@ class Account extends React.Component {
                                     })
                                 }
                             </div>
+                            <div id="mac_info_infoLayout">
+                                {
+                                    ( this.state.now_lookingCardInfo_array )
+                                    ?
+                                        <div>
+                                            <div id="mac_info_settleCnt_box">
+                                                <div className="mac_info title">정산 횟수</div>
+                                                <div className="mac_info value">
+                                                    {this.state.now_lookingCardInfo_array.length + " 회"}
+                                                </div>
+                                            </div>
 
+                                            <div id="mac_info_settleSumPrice_box">
+                                                <div className="mac_info title">정산 금액</div>
+                                                <div className="mac_info value">
+                                                    {
+                                                        this.state.now_lookingCardInfo_array.reduce( ( acc, cur ) => {
+                                                            return acc + cur['sumprice'];
+                                                        }, 0).toLocaleString()+" 원"
+                                                    }
+                                                </div>
+                                            </div>
+
+                                            <AccountTimeline
+                                                accountInfo={this.state.now_lookingCardInfo_array}
+                                            />
+
+                                        </div>
+
+                                    : ''
+                                }
+
+                            </div>
                         </div>
 
                         : ''
