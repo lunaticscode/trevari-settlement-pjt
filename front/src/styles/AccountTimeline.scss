@@ -1,5 +1,38 @@
 @import 'extend';
 
 #AccountTimeline_layout{
+  white-space: nowrap;
+  overflow-y: auto; height:450px;
   padding:20px;
+  position: relative; top:20px;
+}
+
+.AccountTimeline_dateBorder{
+ margin-top:15px;
+ &.date_value{
+   display: inline-block;
+   background: $main-background2; padding:3px 15px; border-radius: 5px; box-shadow: 0px 0px 5px black;
+ }
+}
+
+.AccountTimeline_content{
+  font-size:13px;
+  &.box{
+    margin-top:10px;
+    padding-bottom:5px; border-bottom:1px solid $main-line-color;
+  }
+  &.date_value{
+    color:silver;
+    font-size:13px;
+  }
+  &.title_value{
+    color:silver;
+    font-size:13px;
+  }
+  &.sum_value{
+    text-align: right;
+    color: white;
+    font-weight: 700;
+  }
+
 }

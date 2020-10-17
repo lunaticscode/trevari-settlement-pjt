@@ -153,18 +153,19 @@ class Account extends React.Component {
                         Sleep.sleep_func(2000).then(()=> this.props.modalClose());
                         return;
                     }
-                    //console.log(res);
+                    console.log(res['settleInfo_List']);
                     let result_settleInfo = res['settleInfo_List'];
                     this.setState({settleInfoList: result_settleInfo});
 
                     let tmp_info_array = result_settleInfo.map(elem => {
                         let account_num = crypto.decrypt_account(elem['si_account']);
-                        let tmp_obj = {account: account_num, regdate: elem['si_regdate'], settleInfo: JSON.parse( elem['si_form_info'] )};
+                        let tmp_obj = {account: account_num, title:elem['si_title'], regdate: elem['si_regdate'], settleInfo: JSON.parse( elem['si_form_info'] )};
                         return tmp_obj;
                     }).sort( (a, b) => a['account'] - b['account'] );
-                    //console.log(tmp_info_array);
+                    console.log(tmp_info_array);
                     tmp_info_array = tmp_info_array.reduce( ( acc, cur ) => {
                         let tmp_array = [ {info:cur['settleInfo'],
+                                           title:cur['title'],
                                            sumprice: Object.values( cur['settleInfo'] ).reduce( (acc, cur) => acc + cur['settleSum'], 0) ,
                                            date:cur['regdate']}];
                         let curValue = ( Object.keys(acc).indexOf(cur['account']) !== -1 ) ? acc[cur['account']].concat(tmp_array) : tmp_array;
