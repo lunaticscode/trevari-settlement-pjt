@@ -44,13 +44,20 @@ class Account extends React.Component {
             settleInfo_byAccount_obj: {},
             now_lookingCardInfo_array: [],
             nowEdit_addMyAccount: false,
+
+            nowEdit_bankInfo: {bank_code: null, bank_num: null},
+            accountGrant_flag: false,
         };
 
         this.AccountCardSliding = this.AccountCardSliding.bind(this);
         this.AcconutCardSlider_touchStartMove = this.AcconutCardSlider_touchStartMove.bind(this);
         this.AcconutCardSlider_touchEnd = this.AcconutCardSlider_touchEnd.bind(this);
+
         this.addMyAccount = this.addMyAccount.bind(this);
         this.addMyAccount_selectBank = this.addMyAccount_selectBank.bind(this);
+        this.addMyAccount_inputNumber = this.addMyAccount_inputNumber.bind(this);
+        this.addMyAccount_authBtnClick = this.addMyAccount_authBtnClick.bind(this);
+        this.addMyAccount_registBtnClick = this.addMyAccount_registBtnClick.bind(this);
     }
 
     AcconutCardSlider_touchStartMove(e){ Cookie.set_cookie("mac_slider_Scrolling", 'true'); }
@@ -75,7 +82,66 @@ class Account extends React.Component {
         this.setState({nowEdit_addMyAccount: true});
         console.log('Ready to add account');
     }
+
     addMyAccount_selectBank(e){
+        let option_elems = e.target.children[e.target.selectedIndex];
+        let tmp_obj = Object.assign(this.state.nowEdit_bankInfo, {
+            bank_code: option_elems.getAttribute("value"),
+        });
+        this.setState({nowEdit_bankInfo: tmp_obj, accountGrant_flag: false,});
+    }
+
+    addMyAccount_inputNumber(e){
+        let edit_accountNum = e.target.value;
+        if(e.target.value.toString().trim().length> 0 ){
+            e.target.borderBottomColor = "rgb(70,236,231)";
+        }
+        let tmp_obj = Object.assign(this.state.nowEdit_bankInfo, {
+            bank_num: edit_accountNum,
+        });
+
+        this.setState({nowEdit_bankInfo: tmp_obj, accountGrant_flag: false,});
+    }
+
+    addMyAccount_authBtnClick(e){
+        let availFlag = Object.values(this.state.nowEdit_bankInfo).every( elem => elem !==null && elem.toString().length > 0 );
+        if(!availFlag){
+            console.log('revoke');
+            return;
+        }
+        else{
+            let submit_data = this.state.nowEdit_bankInfo;
+            console.log(submit_data);
+            Fetch.fetch_api("banking/accountAuth", "POST", submit_data).then(res=>{
+
+                //* 계좌인증 실패 혹은 점검시간일 경우,
+                //* ==== [ Backend-Api Result ] ===> {'code': -1, 'message': '해당되는 계좌정보를 찾을 수 없습니다.', 'response': None}
+                //* ( 23:30 ~ 00:30 까지 점검인듯 함. )
+                if(res['result'] === 'revoke'){
+                    //* 계좌인증 관련 정보 모두 초기화.
+                    this.setState({nowEdit_bankIfno: {}, });
+
+                    //* AlertModal 오픈
+                    let alertModal_text = '(!)계좌정보가 없습니다. 다시 확인해주세요.';
+                    this.props.alertModal_open(alertModal_text, window.innerHeight+window.pageYOffset);
+                    Sleep.sleep_func(1000).then( () => { this.props.alertModal_close(); } );
+                }
+
+                if(res['result'] === 'grant'){
+                    let realname = res['realname'].toString().trim();
+                    document.getElementById("addMyAccount_realName").innerHTML = realname;
+                    Sleep.sleep_func(150).then( () => {
+                        this.setState({
+                            accountGrant_flag: true,
+                        });
+                    });
+                }
+
+            });
+        }
+        }
+
+    addMyAccount_registBtnClick(e){
 
     }
 
@@ -236,7 +302,14 @@ class Account extends React.Component {
                                                                 : <img id="plusAccount_icon" onClick={this.addMyAccount} src="/img/plus_account.png"/>
                                                         }</div>
                                                         <div className="mac bank_num">{elem['bank_num']}</div>
-                                                        <div className="mac chipIcon_layout"><img className="mac chip_icon" src="/img/sim-card.png" /></div>
+                                                        <div className="mac chipIcon_layout">
+                                                            {
+                                                                ( elem['bank_name'] )
+                                                                ? <img className="mac chip_icon" src="/img/sim-card.png" />
+                                                                : ''
+                                                            }
+
+                                                        </div>
                                                     </div>
                                         })
                                 }
@@ -254,21 +327,23 @@ class Account extends React.Component {
                                     ( this.state.now_lookingCardInfo_array )
                                     ?
                                         <div>
-                                            <div id="mac_info_settleCnt_box">
-                                                <div className="mac_info title">정산 횟수</div>
-                                                <div className="mac_info value">
-                                                    {this.state.now_lookingCardInfo_array.length + " 회"}
+                                            <div id="mac_info_box_layout">
+                                                <div id="mac_info_settleCnt_box">
+                                                    <div className="mac_info title">정산 횟수</div>
+                                                    <div className="mac_info value">
+                                                        {this.state.now_lookingCardInfo_array.length + " 회"}
+                                                    </div>
                                                 </div>
-                                            </div>
 
-                                            <div id="mac_info_settleSumPrice_box">
-                                                <div className="mac_info title">정산 금액</div>
-                                                <div className="mac_info value">
-                                                    {
-                                                        this.state.now_lookingCardInfo_array.reduce( ( acc, cur ) => {
-                                                            return acc + cur['sumprice'];
-                                                        }, 0).toLocaleString()+" 원"
-                                                    }
+                                                <div id="mac_info_settleSumPrice_box">
+                                                    <div className="mac_info title">정산 금액</div>
+                                                    <div className="mac_info value">
+                                                        {
+                                                            this.state.now_lookingCardInfo_array.reduce( ( acc, cur ) => {
+                                                                return acc + cur['sumprice'];
+                                                            }, 0).toLocaleString()+" 원"
+                                                        }
+                                                    </div>
                                                 </div>
                                             </div>
 
@@ -292,11 +367,38 @@ class Account extends React.Component {
                                                         }
                                                     </select>
                                                     <div>
-                                                        <input id="addMyAccount_input_accountNum"
-                                                            placeholder="계좌번호 입력"
-                                                        />
-                                                        <div id="addMyAccount_authBtn">계좌인증</div>
-                                                        <div id="addMyAccount_registBtn">계좌 등록</div>
+                                                        <input id="addMyAccount_input_accountNum" type="number"
+                                                               className={
+                                                                   ( this.state.nowEdit_bankInfo['num']
+                                                                       && ( this.state.nowEdit_bankInfo['num'] ).toString().length > 0 )
+                                                                   ? "active" : ''
+                                                               }
+                                                               onChange={this.addMyAccount_inputNumber}
+                                                               placeholder="계좌번호 입력" />
+
+                                                        <div id="addMyAccount_authBtn"
+                                                             onClick={this.addMyAccount_authBtnClick}
+                                                             className={
+                                                                 ( Object.values(this.state.nowEdit_bankInfo).every(elem => elem !== null && elem.toString().length>0 ) )
+                                                                 ? "grant" : ""
+                                                             }
+                                                                >계좌인증
+                                                        </div>
+                                                        <div id="addMyAccount_realName_layout"
+                                                             className={
+                                                                 (this.state.accountGrant_flag)
+                                                                 ? 'active' : ''
+                                                             }>
+                                                            예금주
+                                                            <div id="addMyAccount_realName"></div>
+                                                        </div>
+                                                        <div id="addMyAccount_registBtn"
+                                                             onClick={this.addMyAccount_registBtnClick}
+                                                             className={
+                                                                 (this.state.accountGrant_flag )
+                                                                 ? 'grant' : ''
+                                                                }>
+                                                            계좌 등록</div>
                                                     </div>
                                                 </div>
                                             </div>

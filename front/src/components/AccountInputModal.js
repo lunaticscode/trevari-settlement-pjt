@@ -203,8 +203,8 @@ class AccountInputModal extends React.Component {
                                 let now_savedAccountNum = crypto.decrypt_account(this.state.tmp_savedAccountText);
                                 console.log('now_savedAccountNum ', now_savedAccountNum);
 
-                                let settleShareSite_key = Cookie.get_cookie('UserName') + '&&' + saved_settleInfoId + '&&' + finalSubmit_data.si_regdate;
-
+                                //let settleShareSite_key = Cookie.get_cookie('UserName') + '&&' + saved_settleInfoId + '&&' + finalSubmit_data.si_regdate;
+                                let settleShareSite_key = Cookie.get_cookie('UserName') + '&&' + saved_settleInfoId;
 
                                 //* 유저가 이미 관리중인 계좌를 [최종 정산계좌]로 등록하는 경우, 혹은(or) 현재 관리중인 계좌 개수가 5개 이상일 때,
                                 if(

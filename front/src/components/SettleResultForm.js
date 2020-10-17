@@ -46,8 +46,16 @@ class SettleResultForm extends React.Component {
 
     //* 현재페이지 링크 복사 버튼, 클릭 이벤트 성공 시.
     copySuccess() {
+            document.getElementById("LinkCopySuccess_alertModal").style.display = 'block';
+            Sleep.sleep_func(1000).then( () => {
+                document.getElementById("LinkCopySuccess_alertModal").style.display = 'none';
+            });
+    }
+
+    kakaoLink_click(){
 
     }
+
 
     componentDidUpdate(prevProps, prevState) {
         if(prevProps.settleFormInfo !== this.props.settleFormInfo){
@@ -132,9 +140,11 @@ class SettleResultForm extends React.Component {
                         정산결과 링크복사
                     </ClipboardButton>
                 </div>
-                <div id="SettleResultForm_kakaoLinkBtn">
-                    카카오톡 공유
+                <div onClick={this.kakaoLink_click} id="SettleResultForm_kakaoLinkBtn">
+                    <img id="kakaoLinkIcon" src="/img/kakao-talk-link-icon.png" />카카오톡 공유
                 </div>
+                <div id="LinkCopySuccess_alertModal">링크복사 완료</div>
+
 
             </div>
         );

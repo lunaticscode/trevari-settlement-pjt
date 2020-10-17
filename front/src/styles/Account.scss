@@ -119,16 +119,19 @@ $tmp_accountContent_back: linear-gradient(90deg, rgba(48,48,48,1) 0%, rgba(101,1
   position: relative; top:130px;
 }
 
+#mac_info_box_layout{
+  text-align: center;
+}
 #mac_info_settleCnt_box{
-  display: inline-block;
-  background: $tmp_accountContent_back; padding: 10px; margin-left:15px; border-radius: 10px;
-  box-shadow: 1px 1px 4px black;
+  width:40%; display: inline-block;
+  background: $tmp_accountContent_back; padding: 10px; margin-right: 5px; border-radius: 10px;
+  box-shadow: 1px 1px 3px black;
   text-align: center; font-size:15px;
 }
 #mac_info_settleSumPrice_box{
-  display: inline-block;
-  background: $tmp_accountContent_back; padding: 10px; margin-left:15px; border-radius: 10px;
-  box-shadow: 1px 1px 4px black;
+  width:40%; display: inline-block;
+  background: $tmp_accountContent_back; padding: 10px; margin-left:5px; border-radius: 10px;
+  box-shadow: 1px 1px 3px black;
   text-align: center; font-size:15px;
 }
 .mac_info{
@@ -143,26 +146,54 @@ $tmp_accountContent_back: linear-gradient(90deg, rgba(48,48,48,1) 0%, rgba(101,1
 }
 
 #addMyAccount_bankName_select{
-  background: none; outline: none; padding:3px 5px; color:white;
-  margin-bottom:10px;
+  background: none; outline: none; padding:5px 5px; color:white;
+  margin-bottom:10px; border-radius: 5px;
   & option{
     color: black;
   }
 }
 #addMyAccount_input_accountNum{
-  display: inline-block;
+  display: inline-block; color:white;
   outline: none; background: none; border:none; border-bottom:1px solid gray;
+  &.active{ border-bottom-color: $main-line-color; }
 }
 
 #addMyAccount_authBtn{
   display: inline-block;
   float: right; padding:3px 10px;
-  font-size:13px; border-radius: 5px; background: $main-background2; box-shadow: 0px 0px 5px black;
+  font-size:13px; border-radius: 5px;
+  background: none; border: 1px solid gray; color:gray;
+  &.grant{
+    color:white;
+    background: $main-background2; box-shadow: 0px 0px 5px black;
+    border:none;
+  }
+}
+
+#addMyAccount_realName_layout{
+  margin-top:10px;
+  opacity: 0; font-size:14px;
+  color: silver;
+  &.active{
+    animation-name: fade-in-2; animation-duration: 500ms; animation-fill-mode: forwards;
+    opacity: 1;
+  }
+}
+#addMyAccount_realName{
+  display: inline-block; margin-left:20px;
+  color:white; font-weight: 700;
 }
 
 #addMyAccount_registBtn{
+  opacity: 0.5;
   margin-top:20px;
   text-align: center; font-size:14px;
   width:90%; margin-left:5%; padding:5px 0px; border-radius: 10px;
   border:1px solid gray; color:gray;
+  &.grant{
+    animation-name: fade-in-2; animation-duration: 500ms; animation-fill-mode: forwards;
+    opacity: 1;
+    border:1px solid $main-line-color; box-shadow: 0px 0px 5px $main-line-color;
+    background: $main-background2; color:white;
+  }
 }

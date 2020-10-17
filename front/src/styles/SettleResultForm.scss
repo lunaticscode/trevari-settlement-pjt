@@ -14,7 +14,7 @@
 .srf_sliderForm{
   display: inline-block;
   vertical-align: top;
-  width: 100%; margin:10px 5px;
+  width: 95%; margin:10px 5px;
   padding-left:10px;
   &:last-child{
     margin-right:0px; width:95%; margin-left:5%;
@@ -23,8 +23,8 @@
 }
 
 .srf_sliderForm_content{
-
   &.title{
+    margin-left:-3%;
     font-size:13px; padding:3px 10px;
     background: $main-background2;
     display: inline-block; box-shadow: 0px 0px 5px cyan;
@@ -42,8 +42,8 @@
     border-bottom:1px solid $main-line-color;
   }
   &.settle_detail{
-    margin-left:10px;
-    width:85%;
+    //margin-left:;
+    width:95%;
   }
 }
 
@@ -66,7 +66,7 @@
 }
 
 .srf_sliderForm_border{
-  margin-top:10px;
+  margin-top:10px; margin-left:-3%;
 }
 
 @keyframes fade-in-4{
@@ -103,13 +103,34 @@
 
 #SettleResultForm_linkCopyBtn_layout{
   text-align: center;
+  position: relative; top:20px;
   margin-bottom:15px;
   & button{
-    background: $logo-background2; box-shadow: 2px 2px 5px dimgrey; padding:10px 30px; border-radius: 5px; color:white; border:none;
-    font-weight: 700; font-size:14px;
+    background: $logo-background2; box-shadow: 2px 2px 5px black; padding:11px 30px; border-radius: 5px; color:white; border:none;
+    font-weight: 600; font-size:13px; width: 100%;
   }
 }
 #SettleResultForm_kakaoLinkBtn{
   text-align: center;
+  font-size:13px;
+  background: #FEE533; padding:8px 30px; border-radius: 5px;
+  box-shadow: 2px 2px 5px black;
+  font-weight: 600;
+  color: #3e2109; vertical-align: top;
+  position: relative; top:15px;
   margin-bottom:50px;
+  & img{
+    vertical-align: middle; margin-right: 5px; margin-bottom:2px;
+    display: inline-block;
+    width:20px; height:20px;
+  }
+}
+
+#LinkCopySuccess_alertModal{
+  animation-name: fade-in-2; animation-fill-mode: forwards; animation-duration: 500ms;
+  display: none; opacity: 0;
+  position: absolute; bottom:100px;
+  background: black;
+  width:60%; margin-left:13%; padding:10px; border-radius: 10px;
+  color:white; font-weight: 600; text-align: center;
 }

@@ -159,7 +159,7 @@ class SettleResultPage extends React.Component {
                                     <div className="srp_subTitle_value">{this.state.settleInfo_sumPrice}원</div>
                                 </div>
                                 <div className="srp_subTitleContent">
-                                    <div className="srp_subTitleBox">정산 참여인원 <font className="bold">({this.state.settleInfo_personArray.length})</font></div>
+                                    <div className="srp_subTitleBox">정산 참여인원 <font className="bold">({this.state.settleInfo_personArray.length}명)</font></div>
                                     <br/>
                                     <div className="srp_subTitle_value personList">
                                         {this.state.settleInfo_personArray.map( ( elem, index ) => {

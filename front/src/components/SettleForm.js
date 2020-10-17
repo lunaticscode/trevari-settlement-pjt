@@ -41,6 +41,7 @@ class SettleForm extends Component {
         window.scroll(0, 0); document.body.style.overflow = 'hidden';
         document.getElementById("Mask_layout").style.height = window.innerHeight +'px';
         this.props.maskOpen();
+        console.log(JSON.parse( localStorage.getItem("savedSettle_"+settle_index) ));
         Sleep.sleep_func(250).then(() => this.props.infomodalOpen( JSON.parse( localStorage.getItem("savedSettle_"+settle_index) ) ) );
     }
 
