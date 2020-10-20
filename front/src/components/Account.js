@@ -327,14 +327,17 @@ class Account extends React.Component {
                     let result_settleInfo = res['settleInfo_List'];
 
                     //* 정산정보중에 내가 관리중인 계좌가 아닌 정보일 경우, Array에서 해제.
+                    let myAccountList = this.state.myAccountList;
                     result_settleInfo = result_settleInfo.filter( elem => {
                         let accountNumber = crypto.decrypt_account(elem['si_account']);
-                        return  this.state.myAccountList.findIndex(i_elem => {
+                        return myAccountList.findIndex(i_elem => {
                             return accountNumber.toString() === i_elem['bank_num'];
                         }) !== -1;
                     });
+                    console.log(result_settleInfo);
 
                     //console.log(result_settleInfo);
+
                     if(result_settleInfo.length === 0) {
                         this.setState({now_lookingCardInfo_array: null});
                         return;
@@ -343,30 +346,30 @@ class Account extends React.Component {
                         this.setState({settleInfoList: result_settleInfo});
                     }
 
+                        let tmp_info_array = result_settleInfo.map(elem => {
+                            let account_num = crypto.decrypt_account(elem['si_account']);
+                            let tmp_obj = {account: account_num, title:elem['si_title'], regdate: elem['si_regdate'], settleInfo: JSON.parse( elem['si_form_info'] )};
+                            return tmp_obj;
+                        }).sort( (a, b) => a['account'] - b['account'] );
 
-                    let tmp_info_array = result_settleInfo.map(elem => {
-                        let account_num = crypto.decrypt_account(elem['si_account']);
-                        let tmp_obj = {account: account_num, title:elem['si_title'], regdate: elem['si_regdate'], settleInfo: JSON.parse( elem['si_form_info'] )};
-                        return tmp_obj;
-                    }).sort( (a, b) => a['account'] - b['account'] );
+                        //console.log(tmp_info_array);
 
-                    //console.log(tmp_info_array);
+                        tmp_info_array = tmp_info_array.reduce( ( acc, cur ) => {
+                            let tmp_array = [ {info:cur['settleInfo'],
+                                title:cur['title'],
+                                sumprice: Object.values( cur['settleInfo'] ).reduce( (acc, cur) => acc + cur['settleSum'], 0) ,
+                                date:cur['regdate']}];
+                            let curValue = ( Object.keys(acc).indexOf(cur['account']) !== -1 ) ? acc[cur['account']].concat(tmp_array) : tmp_array;
+                            acc[cur['account']] = curValue;
+                            return acc;
+                        }, {});
 
-                    tmp_info_array = tmp_info_array.reduce( ( acc, cur ) => {
-                        let tmp_array = [ {info:cur['settleInfo'],
-                                           title:cur['title'],
-                                           sumprice: Object.values( cur['settleInfo'] ).reduce( (acc, cur) => acc + cur['settleSum'], 0) ,
-                                           date:cur['regdate']}];
-                        let curValue = ( Object.keys(acc).indexOf(cur['account']) !== -1 ) ? acc[cur['account']].concat(tmp_array) : tmp_array;
-                        acc[cur['account']] = curValue;
-                        return acc;
-                    }, {});
+                        Sleep.sleep_func(500).then( ()=> {
+                            //* ===> { accountNumber : [ {info}, {info2}, .... ], accountNumber2 : [{}, {}, .... ], ... }
+                            this.setState({settleInfo_byAccount_obj: tmp_info_array, cardSliding_availFlag: true});
+                            document.getElementById("AccountCard_slider").scroll(1, 0);
+                        });
 
-                    Sleep.sleep_func(250).then( ()=> {
-                        //* ===> { accountNumber : [ {info}, {info2}, .... ], accountNumber2 : [{}, {}, .... ], ... }
-                        this.setState({settleInfo_byAccount_obj: tmp_info_array, cardSliding_availFlag: true});
-                        document.getElementById("AccountCard_slider").scroll(1, 0);
-                    });
 
                 });
         }
