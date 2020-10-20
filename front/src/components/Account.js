@@ -225,10 +225,11 @@ class Account extends React.Component {
         let userName = ( Cookie.get_cookie('UserName') ) ? Cookie.get_cookie('UserName') : '';
         //* 회원 유저, DB에 등록된 계좌정보 API 호출.
         if( this.state.loginFlag ){
-
+            console.log('fetch1 - start');
             Fetch.fetch_api("account/"+userName, "GET", null).then(res => {
+                console.log('fetch1 - end');
 
-               if(res.toString().trim().indexOf('Error') !== -1) {
+                if(res.toString().trim().indexOf('Error') !== -1) {
                    console.log('(!) Server error ', '\n', res);
                    let alertModal_text = '(!) 서버 에러 발생, 관리자에게 문의해주세요.';
                    this.props.alertModal_open(alertModal_text, window.innerHeight - 30);
@@ -267,8 +268,6 @@ class Account extends React.Component {
                             bank_code: 0, bank_name: null, bank_num: null,
                    };
 
-
-                    Sleep.sleep_func(500).then(() => {
                         //* 관리가능 계좌 최대 5개,
                         //* 5개 미만일 경우, [ + 추가 ] 기능있는 빈 계좌 obj 추가.
                         if(tmp_account_array.length < 5){
@@ -290,10 +289,90 @@ class Account extends React.Component {
                                     tmp_offsetX_list.push(offsetX_mac_elem);
                                     this.setState({mac_initOffsetX_list: tmp_offsetX_list});
                                 }
-
                             });
                         }
-                    });
+
+                        // --- testcode ---- //
+
+
+                   //* 현재 유저 정산기록 호출
+                   let submit_data = {user_name : userName,};
+                   console.log('fetch2 - start');
+                   Fetch.fetch_api("settleList", 'POST', submit_data)
+                       .then(res=> {
+                           console.log('fetch2 - end');
+                           if( res.toString().trim().indexOf('Error') !== -1){
+                               console.log('server error');
+                               let AlertText = '(!) 서버에 오류가 발생했습니다. 관리자에게 문의해주세요.';
+                               let topPosition = window.innerHeight;
+                               this.props.modalOpen( AlertText, ( topPosition-30 ) );
+                               Sleep.sleep_func(2000).then(()=> this.props.modalClose());
+                               return;
+                           }
+                           //console.log(res);
+
+
+                           //* 현재 관리중인 계좌가 하나도 없는 유저일 경우,
+                           if(res['result'].toString().trim() === 'fail'){
+                               this.setState({now_lookingCardInfo_array: null});
+                               return;
+                           }
+
+
+                           //console.log(res['settleInfo_List']);
+                           let result_settleInfo = res['settleInfo_List'];
+
+                           //* 정산정보중에 내가 관리중인 계좌가 아닌 정보일 경우, Array에서 해제.
+                           let myAccountList = this.state.myAccountList;
+                           result_settleInfo = result_settleInfo.filter( elem => {
+                               let accountNumber = crypto.decrypt_account(elem['si_account']);
+                               return myAccountList.findIndex(i_elem => {
+                                   return accountNumber.toString() === i_elem['bank_num'];
+                               }) !== -1;
+                           });
+                           console.log(result_settleInfo);
+
+                           //console.log(result_settleInfo);
+
+                           if(result_settleInfo.length === 0) {
+                               this.setState({now_lookingCardInfo_array: null});
+                               return;
+                           }
+                           else{
+                               this.setState({settleInfoList: result_settleInfo});
+                           }
+
+                           let tmp_info_array = result_settleInfo.map(elem => {
+                               let account_num = crypto.decrypt_account(elem['si_account']);
+                               let tmp_obj = {account: account_num, title:elem['si_title'], regdate: elem['si_regdate'], settleInfo: JSON.parse( elem['si_form_info'] )};
+                               return tmp_obj;
+                           }).sort( (a, b) => a['account'] - b['account'] );
+
+                           //console.log(tmp_info_array);
+
+                           tmp_info_array = tmp_info_array.reduce( ( acc, cur ) => {
+                               let tmp_array = [ {info:cur['settleInfo'],
+                                   title:cur['title'],
+                                   sumprice: Object.values( cur['settleInfo'] ).reduce( (acc, cur) => acc + cur['settleSum'], 0) ,
+                                   date:cur['regdate']}];
+                               let curValue = ( Object.keys(acc).indexOf(cur['account']) !== -1 ) ? acc[cur['account']].concat(tmp_array) : tmp_array;
+                               acc[cur['account']] = curValue;
+                               return acc;
+                           }, {});
+
+                           Sleep.sleep_func(500).then( ()=> {
+                               //* ===> { accountNumber : [ {info}, {info2}, .... ], accountNumber2 : [{}, {}, .... ], ... }
+                               this.setState({settleInfo_byAccount_obj: tmp_info_array, cardSliding_availFlag: true});
+                               document.getElementById("AccountCard_slider").scroll(1, 0);
+                           });
+
+
+                       });
+
+
+
+
+                        // --- testcode ---- //
 
                }
 
@@ -306,77 +385,8 @@ class Account extends React.Component {
 
             }); // ---> 카드리스트 Fetch 코드 종료 부분.
 
-            //* 현재 유저 정산기록 호출
-            let submit_data = {user_name : userName,};
-            Fetch.fetch_api("settleList", 'POST', submit_data)
-                .then(res=> {
-                    if( res.toString().trim().indexOf('Error') !== -1){
-                        console.log('server error');
-                        let AlertText = '(!) 서버에 오류가 발생했습니다. 관리자에게 문의해주세요.';
-                        let topPosition = window.innerHeight;
-                        this.props.modalOpen( AlertText, ( topPosition-30 ) );
-                        Sleep.sleep_func(2000).then(()=> this.props.modalClose());
-                        return;
-                    }
-                    //console.log(res);
 
 
-                    //* 현재 관리중인 계좌가 하나도 없는 유저일 경우,
-                    if(res['result'].toString().trim() === 'fail'){
-                        this.setState({now_lookingCardInfo_array: null});
-                        return;
-                    }
-
-
-                    //console.log(res['settleInfo_List']);
-                    let result_settleInfo = res['settleInfo_List'];
-
-                    //* 정산정보중에 내가 관리중인 계좌가 아닌 정보일 경우, Array에서 해제.
-                    let myAccountList = this.state.myAccountList;
-                    result_settleInfo = result_settleInfo.filter( elem => {
-                        let accountNumber = crypto.decrypt_account(elem['si_account']);
-                        return myAccountList.findIndex(i_elem => {
-                            return accountNumber.toString() === i_elem['bank_num'];
-                        }) !== -1;
-                    });
-                    console.log(result_settleInfo);
-
-                    //console.log(result_settleInfo);
-
-                    if(result_settleInfo.length === 0) {
-                        this.setState({now_lookingCardInfo_array: null});
-                        return;
-                    }
-                    else{
-                        this.setState({settleInfoList: result_settleInfo});
-                    }
-
-                        let tmp_info_array = result_settleInfo.map(elem => {
-                            let account_num = crypto.decrypt_account(elem['si_account']);
-                            let tmp_obj = {account: account_num, title:elem['si_title'], regdate: elem['si_regdate'], settleInfo: JSON.parse( elem['si_form_info'] )};
-                            return tmp_obj;
-                        }).sort( (a, b) => a['account'] - b['account'] );
-
-                        //console.log(tmp_info_array);
-
-                        tmp_info_array = tmp_info_array.reduce( ( acc, cur ) => {
-                            let tmp_array = [ {info:cur['settleInfo'],
-                                title:cur['title'],
-                                sumprice: Object.values( cur['settleInfo'] ).reduce( (acc, cur) => acc + cur['settleSum'], 0) ,
-                                date:cur['regdate']}];
-                            let curValue = ( Object.keys(acc).indexOf(cur['account']) !== -1 ) ? acc[cur['account']].concat(tmp_array) : tmp_array;
-                            acc[cur['account']] = curValue;
-                            return acc;
-                        }, {});
-
-                        Sleep.sleep_func(500).then( ()=> {
-                            //* ===> { accountNumber : [ {info}, {info2}, .... ], accountNumber2 : [{}, {}, .... ], ... }
-                            this.setState({settleInfo_byAccount_obj: tmp_info_array, cardSliding_availFlag: true});
-                            document.getElementById("AccountCard_slider").scroll(1, 0);
-                        });
-
-
-                });
         }
 
         //* 비회원일 접속일 경우,
