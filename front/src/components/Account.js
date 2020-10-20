@@ -30,6 +30,7 @@ class Account extends React.Component {
                 38: {code: "088", name: "신한은행"}, 39: {code: "089", name: "케이뱅크"},
                 40: {code: "090", name: "카카오뱅크"}, 44: {code: "096", name: "한국전자금융(주)"}
             },
+
             bankInfo_valueArray : [],
             addAccount_bankInfo : {},
             addAccount_userName: '', addAccount_accountNum: '',
@@ -58,9 +59,13 @@ class Account extends React.Component {
         this.addMyAccount_inputNumber = this.addMyAccount_inputNumber.bind(this);
         this.addMyAccount_authBtnClick = this.addMyAccount_authBtnClick.bind(this);
         this.addMyAccount_registBtnClick = this.addMyAccount_registBtnClick.bind(this);
+
+        this.deleteMyAccount = this.deleteMyAccount.bind(this);
     }
 
-    AcconutCardSlider_touchStartMove(e){ Cookie.set_cookie("mac_slider_Scrolling", 'true'); }
+    AcconutCardSlider_touchStartMove(e){
+        Cookie.set_cookie("mac_slider_Scrolling", 'true');
+    }
     AcconutCardSlider_touchEnd(e){
         setTimeout(() => { Cookie.set_cookie('mac_slider_Scrolling', 'false'); }, 1000);
     }
@@ -145,7 +150,55 @@ class Account extends React.Component {
 
     }
 
+    deleteMyAccount(e){
+        let now_myAccountInfo_array = this.state.myAccountList;
+        let deleteIndex = e.target.getAttribute('value');
+        console.log('delete AccountInfo : ', now_myAccountInfo_array[parseInt(deleteIndex)]);
+        // ===> {'1': {'bank_code': '003', 'bank_num': 'tac3pgyLwHOYL8KILGezHA=='}, '2': {'bank_code': '090', 'bank_num': 'B//tf0Eu9hRzXStq+s/KvA=='}, .....
+        let delete_myAccountInfo_array = now_myAccountInfo_array.filter( (elem, index) => {return index !== parseInt( deleteIndex) });
+        console.log(delete_myAccountInfo_array);
+        let delete_result_obj = {};
+        delete_myAccountInfo_array.forEach( ( elem, index ) => {
+            delete_result_obj[ index + 1 ] = {
+                bank_code: elem['bank_code'],
+                bank_num: crypto.encrypt_account(elem['bank_num'].toString()),
+            }
+        });
+        console.log(delete_result_obj);
+
+        let now_username = Cookie.get_cookie('UserName');
+        let submitData = { username: now_username, account_info: delete_result_obj };
+        Fetch.fetch_api('account', 'POST', submitData).then(res => {
+            console.log(res);
+            if(res.toString().trim().indexOf('Error') !== -1) {
+                let alertModal_text = '(!) 서버 에러 발생, 관리자에게 문의해주세요.';
+                this.props.alertModal_open(alertModal_text, window.innerHeight - 30);
+                Sleep.sleep_func(1000).then( () => { this.props.alertModal_close() } );
+            }
+            if(res['result'] === 'success') {
+                //let modifyAccountList = res['accountList'];
+                location.href = '/account';
+            }
+
+            if( res['result'].toString().trim() === 'revoke' ) {
+                console.log('(!) API Error ', '\n', res);
+                let alertModal_text = '(!) API 요청 오류. 로그아웃 후, 다시 시도해주세요.';
+                this.props.alertModal_open(alertModal_text, window.innerHeight - 30);
+                Sleep.sleep_func(1000).then( () => { this.props.alertModal_close() } );
+            }
+
+        });
+    }
+
     componentDidMount() {
+        console.log('account layout mount');
+        //* 초기에 슬라이더 레이아웃 제대로 세팅되기전에 스크롤 움직이면,
+        //* 정산 내역 가공 부분에서 에러 발생.
+        //* 애니메이션 종료 시점에 scroll 허용.
+        let accountSlider_layout = document.getElementById("AccountCard_slider");
+        accountSlider_layout.style.overflow = 'hidden';
+        Sleep.sleep_func(1500).then( ()=> { accountSlider_layout.style.overflow = 'auto'; });
+
         let banking_info_array = Object.values(this.state.bankInfo_obj);
         this.setState({bankInfo_valueArray: banking_info_array});
         let userName = ( Cookie.get_cookie('UserName') ) ? Cookie.get_cookie('UserName') : '';
@@ -160,12 +213,19 @@ class Account extends React.Component {
                    this.props.alertModal_open(alertModal_text, window.innerHeight - 30);
                    Sleep.sleep_func(1000).then( () => { this.props.alertModal_close() } );
                }
+                // if(res['result'] === 'fail'){
+                //     this.setState({settleInfo_byAccount_obj: {}});
+                //     let myAccount_list = (res['account_list']) ? JSON.parse( res[ 'account_list' ].toString().replace( /'/g,  '\"' ) ) : [];
+                //
+                // }
 
                if(res['result'].toString().trim() === 'success'){
-                   console.log(res['account_list']);
+
+                   //console.log(res['account_list']);
 
                    //* 회원 유저임에도 불구하고, 관리중인 계좌 목록이 하나도 없을 경우, 빈 배열로 설정;
                    let myAccount_list = (res['account_list']) ? JSON.parse( res[ 'account_list' ].toString().replace( /'/g,  '\"' ) ) : [];
+
 
                    let tmp_account_array = [];
                    for( let key in myAccount_list ){
@@ -208,6 +268,7 @@ class Account extends React.Component {
                            this.setState({mac_initOffsetX_list: tmp_offsetX_list});
                        });
                    }
+                   Sleep.sleep_func(500).then( ()=> { window.scroll(5,0); });
                }
 
                if( res['result'].toString().trim() === 'revoke' ) {
@@ -215,7 +276,8 @@ class Account extends React.Component {
                    let alertModal_text = '(!) API 요청 오류. 로그아웃 후, 다시 시도해주세요.';
                    this.props.alertModal_open(alertModal_text, window.innerHeight - 30);
                    Sleep.sleep_func(1000).then( () => { this.props.alertModal_close() } );
-               }
+               };
+
             }); // ---> 카드리스트 Fetch 코드 종료 부분.
 
             //* 현재 유저 정산기록 호출
@@ -230,16 +292,43 @@ class Account extends React.Component {
                         Sleep.sleep_func(2000).then(()=> this.props.modalClose());
                         return;
                     }
-                    console.log(res['settleInfo_List']);
+                    //console.log(res);
+
+
+                    //* 현재 관리중인 계좌가 하나도 없는 유저일 경우,
+                    if(res['result'].toString().trim() === 'fail'){
+                        this.setState({now_lookingCardInfo_array: null});
+                        return;
+                    }
+
+
+                    //console.log(res['settleInfo_List']);
                     let result_settleInfo = res['settleInfo_List'];
-                    this.setState({settleInfoList: result_settleInfo});
+
+                    //* 정산정보중에 내가 관리중인 계좌가 아닌 정보일 경우, Array에서 해제.
+                    result_settleInfo = result_settleInfo.filter( elem => {
+                        let accountNumber = crypto.decrypt_account(elem['si_account']);
+                        return  this.state.myAccountList.findIndex(i_elem => {
+                            return accountNumber.toString() === i_elem['bank_num'];
+                        }) !== -1;
+                    });
+
+                    //console.log(result_settleInfo);
+                    if(result_settleInfo.length === 0) {
+                        this.setState({now_lookingCardInfo_array: null});
+                        return;
+                    }
+                    else{
+                        this.setState({settleInfoList: result_settleInfo});
+                    }
+
 
                     let tmp_info_array = result_settleInfo.map(elem => {
                         let account_num = crypto.decrypt_account(elem['si_account']);
                         let tmp_obj = {account: account_num, title:elem['si_title'], regdate: elem['si_regdate'], settleInfo: JSON.parse( elem['si_form_info'] )};
                         return tmp_obj;
                     }).sort( (a, b) => a['account'] - b['account'] );
-                    console.log(tmp_info_array);
+                    //console.log(tmp_info_array);
                     tmp_info_array = tmp_info_array.reduce( ( acc, cur ) => {
                         let tmp_array = [ {info:cur['settleInfo'],
                                            title:cur['title'],
@@ -295,6 +384,15 @@ class Account extends React.Component {
                                                         onTouchMove={this.AcconutCardSlider_touchStartMove}
                                                         onTouchEnd={this.AcconutCardSlider_touchEnd}
                                                         id={"myAccountCard_"+index} key={index} >
+                                                        {
+                                                            ( this.state.myAccountList.length !== 5 && ( index ) === this.state.myAccountList.length )
+                                                            ?  ''
+                                                                : <div className="mac_deleteBtn" onClick={this.deleteMyAccount} value={index} >
+                                                                    <img src="/img/delete_icon.png" value={index}/>
+                                                                </div>
+                                                        }
+
+
                                                         <div className="mac owner_name">{now_userName}</div>
                                                         <div className="mac bank_name">{
                                                             ( elem['bank_name'] )
@@ -331,7 +429,7 @@ class Account extends React.Component {
                                                 <div id="mac_info_settleCnt_box">
                                                     <div className="mac_info title">정산 횟수</div>
                                                     <div className="mac_info value">
-                                                        {this.state.now_lookingCardInfo_array.length + " 회"}
+                                                        { this.state.now_lookingCardInfo_array.length + " 회"}
                                                     </div>
                                                 </div>
 

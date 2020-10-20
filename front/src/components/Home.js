@@ -14,8 +14,9 @@ export default class Home extends React.Component {
     }
 
     componentDidMount() {
-        //console.log('HOME - component Mounted');
+
     }
+
     render() {
         let HomeLayout_style = {height: window.innerHeight+'px'};
         //console.log(this.props.userName);
@@ -34,5 +35,4 @@ export default class Home extends React.Component {
 
 Home.defaultProps = {
     userName : null,
-
-}
+};

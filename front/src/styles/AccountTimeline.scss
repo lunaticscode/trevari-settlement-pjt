@@ -9,30 +9,40 @@
 
 .AccountTimeline_dateBorder{
  margin-top:15px;
+  border-bottom:1px solid dimgrey;
  &.date_value{
    display: inline-block;
-   background: $main-background2; padding:3px 15px; border-radius: 5px; box-shadow: 0px 0px 5px black;
+   background: black; padding:3px 30px; border-radius: 5px; box-shadow: 0px 0px 5px black;
  }
 }
 
 .AccountTimeline_content{
   font-size:13px;
   &.box{
-    margin-top:10px;
-    padding-bottom:5px; border-bottom:1px solid $main-line-color;
+    margin-top:15px;
+    padding-bottom:10px; border-bottom:1px solid gray;
+    &:nth-last-child(1){ border-bottom: none; }
   }
   &.date_value{
-    color:silver;
-    font-size:13px;
+    color:white; font-size:13px;
   }
   &.title_value{
-    color:silver;
-    font-size:13px;
+    color:silver; font-size:13px;
+    & font{
+      color:$main-line-color; font-size:11px;
+    }
   }
   &.sum_value{
-    text-align: right;
-    color: white;
-    font-weight: 700;
+    text-align: right; color: white; font-weight: 700;
   }
+}
 
+#AccountTimeline_moreViewBtn{
+  color:gray; text-align: center; font-size:13px; font-weight: 600;
+  width:90%; padding:8px 0px; margin-left:5%; margin-top:15px; border-radius: 5px;
+  background: none; border: 1px solid gray;
+  &.active{
+    background: #3E3C42;
+    color:white; border: none; box-shadow: 0px 0px 5px $main-line-color;
+  }
 }

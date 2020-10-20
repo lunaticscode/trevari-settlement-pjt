@@ -22,7 +22,7 @@ class SettleResultForm extends React.Component {
         let now_slideFormIndex = this.state.now_slideFormIndex;
         let target_slideIndex = ( direction === 'next' ) ? now_slideFormIndex + 1 : now_slideFormIndex - 1;
 
-        if(target_slideIndex >= 0 && target_slideIndex < formCnt ){
+        if( target_slideIndex >= 0 && target_slideIndex < formCnt ){
             this.setState({now_slideFormIndex: target_slideIndex});
             let target_slideForm = document.getElementById("srf_settleForm_"+ target_slideIndex);
             let target_slideForm_offsetX = target_slideForm.offsetLeft;
@@ -35,10 +35,18 @@ class SettleResultForm extends React.Component {
         let now_scrollOffsetX = e.target.scrollLeft;
         let settleFormOffsetArray = this.state.init_settleFormOffsetArray;
         let passing_formIndex = 0;
+
+        console.log(now_scrollOffsetX);
+        if(parseInt( now_scrollOffsetX ) === 0 ) {
+            this.setState({now_slideFormIndex: 0});
+            return;
+        }
+
         let passing_point = settleFormOffsetArray.some( (elem, index) => {
             passing_formIndex = index;
             return  elem - 10  <= parseInt(now_scrollOffsetX) && elem + 10 >= parseInt(now_scrollOffsetX);
         });
+
         if(passing_point){
             this.setState({now_slideFormIndex: passing_formIndex});
         }

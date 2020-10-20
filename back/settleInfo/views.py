@@ -32,9 +32,11 @@ class SettleInfoView(APIView):
 
         else:
             if SettleInfo.objects.filter(id=kwargs.get('id')):
-                settileinfo = SettleInfo.objects.get(id=kwargs.get('id')).si_form_info
-                settleTitle = SettleInfo.objects.get(id=kwargs.get('id')).si_title
-                content = {'settleInfo': settileinfo, 'settleTitle': settleTitle, 'result': 'success'}
+                settleInfo = SettleInfo.objects.get(id=kwargs.get('id'))
+                settleFormInfo = settleInfo.si_form_info
+                settleTitle = settleInfo.si_title
+                settleBankInfo = {'bank_code': settleInfo.si_bankcode, 'bank_num': settleInfo.si_account}
+                content = {'result': 'success', 'settleInfo': settleFormInfo, 'settleBankInfo': settleBankInfo, 'settleTitle': settleTitle}
                 return Response(content, status=status.HTTP_200_OK)
             else:
                 content = {'result': 'fail', 'message': '(!)This settleInfo_id not exist'}

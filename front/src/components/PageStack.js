@@ -37,6 +37,7 @@ class PageStack extends React.Component {
         }
         localStorage.setItem('PageStack', tmpArray);
         this.setState({pageStackArray: tmpArray});
+        console.log('page change, ',tmpArray);
     }
 
     componentDidUpdate(prevProps, prevState){

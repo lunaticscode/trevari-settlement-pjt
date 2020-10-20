@@ -40,6 +40,7 @@ class Mypage extends React.Component {
 
     Logout() {
        Cookie.delete_cookie('AccessToken');
+       Cookie.delete_cookie('saved_historyDetailPageIndex');
        Cookie.delete_cookie('UserName');
        location.href = '/';
     }

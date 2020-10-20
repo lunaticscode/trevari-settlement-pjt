@@ -199,7 +199,7 @@ class UserAccountInfo(APIView):
                 user_instance = User.objects.get(name=username)
                 user_instance.account_list = account_info
                 user_instance.save()
-                content = {'result': 'success', 'message': 'Success to save Account_info'}
+                content = {'result': 'success', 'message': 'Success to save Account_info', 'accountList': account_info}
                 return Response(content, status=status.HTTP_200_OK)
             else:
                 content = {'result': 'fail', 'message': '(!)Does not exist this username'}

@@ -13,7 +13,7 @@
 
 }
 #History_userName_box{
-  margin-left:20px; color:white; font-weight: 600;
+  margin-left:7px; color:white; font-weight: 600;
   display: inline-block;
 }
 #History_noUser_noti{
@@ -22,20 +22,18 @@
 }
 
 #HistoryContent_layout{
-
+  margin-top:-15px; margin-bottom:-40px;
 }
 
 .HistoryContent_line{
-  margin-top:10px;
-  margin-left:20px; margin-right:20px;
+  margin: 10px 7px 0px 7px;
 }
 .HistoryContent{
   display: inline-block;
   &.title{
-
     display: block;
     background: #383a3f;
-    box-shadow: 5px 5px 5px black;
+    box-shadow: 2px 2px 4px black;
     padding:10px 5px; border-radius: 5px;
     font-size:13px; color:silver;
   }
@@ -85,10 +83,43 @@
   }
 }
 
+
+
+@keyframes fade-in-5 { from{opacity: 0;} to{opacity: 0.2} }
+$scrollNoti_borderRatio: 50%;
+@mixin scrollNoti_animation{
+  animation-name: fade-in-5; animation-duration: 500ms; animation-fill-mode: forwards;
+}
+@mixin scrollNoti_layout{
+  opacity: 0; height:50px; background: black; width:95%; left:2.5%;
+  position: absolute; z-index:100001;
+  box-shadow: 0px 0px 20px #eeeeee;
+}
+
+#detailView_scrollNoti_top{
+  @include scrollNoti_layout;
+  margin-top:45px;border-bottom-left-radius: $scrollNoti_borderRatio; border-bottom-right-radius: $scrollNoti_borderRatio;
+  &.active{ @include scrollNoti_animation; }
+}
+
+#detailView_scrollNoti_bottom{
+  @include scrollNoti_layout;
+  bottom:95px; border-top-left-radius: $scrollNoti_borderRatio; border-top-right-radius: $scrollNoti_borderRatio;
+  &.active{ @include scrollNoti_animation; }
+}
+
+#detailView_selectListCnt{
+  background: none; outline: none;
+  margin-left:10px;  border-radius: 5px; padding:3px 5px;
+  font-weight: 600; color:silver;
+  & option{ color:black; }
+}
+
 .HistorySettleChild{
-  position: relative;
+  position: relative; z-index: 100005;
   margin-top:15px; margin-left:5px; margin-right:5px;
-  border-bottom:1px solid white; padding-bottom:10px;
+  border-bottom:1px solid dimgrey; padding-bottom:15px;
+  &:nth-last-child(1){ border-bottom:none; }
 }
 .HistorySettleChild_Content{
   margin-bottom:2px;
@@ -97,7 +128,7 @@
     background: $main-background2; color:white; box-shadow: 3px 3px 5px black;
   }
   &.title{
-    color: #eeeeee; font-weight: 300;
+    color: white; font-weight: 600;
   }
   &.cnt{
     color: #eeeeee; font-weight: 300;
@@ -109,7 +140,29 @@
 }
 
 .HistorySettleChild_detailViewBtn{
-  font-size:12px; background: #3E3C42; box-shadow: 0px 0px 5px black; border-radius: 5px;
+  font-size:12px; background: #3E3C42; box-shadow: 0px 0px 3px $main-line-color; border-radius: 5px;
   padding:3px 5px;
   float: right;
+}
+
+#detailView_pagingLayout{
+  text-align: center; padding:15px 0px 5px 0px;
+}
+
+.pagingDirectionBtn{
+  display: inline-block;
+  width:15px; height:15px;
+  & img{width:15px; height:15px; vertical-align: middle;}
+  &.prev{ margin-right:10px; }
+  &.next{ margin-left:10px; }
+}
+
+.pagingBox_btn{
+  display: inline-block;
+  border: 1px solid dimgray; padding:2px 8px; border-radius: 5px;
+  margin: 0px 6px;
+  &.active{
+    color:$main-line-color;
+    border-color: $main-line-color; box-shadow: 0px 0px 2px;
+  }
 }

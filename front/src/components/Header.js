@@ -71,7 +71,7 @@ class Header extends React.Component {
             <div id="HeaderLayout">
                 <div id="TopSection">
                     <div id="MainLogo">
-                        <img id="AppLogo" src={"/img/AppLogo.png"}/>
+                        <img id="AppLogo" src={"/img/AppLogo2.png.png"}/>
                         <div id="AppLogo_text">모두의 정산</div>
                     </div>
                     <Link to={ (this.props.LoginUserName) ?  "/mypage"  : "/login"}>

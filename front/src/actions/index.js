@@ -81,7 +81,6 @@ export function commonModal_action() {
 }
 
 
-
 export function infomodal_open(info) {
     return {
         type: InfoModalOpen,

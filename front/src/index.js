@@ -9,7 +9,6 @@ import {createStore} from "redux";
 
 const store = createStore(counterApp);
 
-
 //store.subscribe(handleChange);
 const rootElement = document.getElementById("root");
 console.log(window.history);

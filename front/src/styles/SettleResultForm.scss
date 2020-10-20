@@ -8,7 +8,6 @@
   overflow-x: scroll;
   white-space: nowrap;
   height: auto;
-
 }
 
 .srf_sliderForm{
@@ -42,7 +41,6 @@
     border-bottom:1px solid $main-line-color;
   }
   &.settle_detail{
-    //margin-left:;
     width:95%;
   }
 }
@@ -86,8 +84,8 @@
 
 #next_form_btn_layout{
   @include state-change-icon;
-
 }
+
 #next_form_btn_icon{
   width:30px; height:60px;
 }
@@ -96,6 +94,7 @@
   @include state-change-icon;
   left:0px;
 }
+
 #prev_form_btn_icon{
   width:30px; height:60px;
   transform: rotate(180deg);
@@ -110,6 +109,7 @@
     font-weight: 600; font-size:13px; width: 100%;
   }
 }
+
 #SettleResultForm_kakaoLinkBtn{
   text-align: center;
   font-size:13px;

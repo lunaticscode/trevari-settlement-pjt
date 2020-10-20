@@ -23,6 +23,9 @@ import Sleep from "../Sleep";
 import crypto from "../CryptoInfo";
 import SettleResultPage from "./SettleResultPage";
 
+
+const host_addr = window.location.protocol + '//' + window.location.hostname;
+
 class App extends React.Component {
     constructor(props){
         super(props);
@@ -31,6 +34,10 @@ class App extends React.Component {
             userName: '',
             movingTouch_X : -1,
             startTouch_X : -1, endTouch_X : -1,
+            userSocketId : '',
+
+            movingTouch_direction : null,
+
         };
         //location.href= this.state.pageStack[0];
 
@@ -57,13 +64,15 @@ class App extends React.Component {
     }
 
     componentWillReceiveProps(props){
-        console.log(props);
+
     }
 
     componentDidUpdate(prevProps, prevState) {
+
     }
 
     componentDidMount() {
+
     }
 
     AppTouchStart(e) {
@@ -95,6 +104,7 @@ class App extends React.Component {
             }
         }
         this.setState({movingTouch_X : -1, startTouch_X : -1, endTouch_X : -1,});
+        this.setState({movingTouch_direction: null});
     }
 
     AppTouchMove(e){
@@ -106,12 +116,30 @@ class App extends React.Component {
             && ( Cookie.get_cookie("mac_slider_Scrolling") == 'false' || !Cookie.get_cookie("mac_slider_Scrolling") )
           )
         {
-            this.setState({movingTouch_X : e.touches[0].clientX});
+            let movingTouch_x = e.touches[0].clientX;
+            this.setState({movingTouch_X : movingTouch_x});
+
+            let movingTouch_direction = ( this.state.startTouch_X > movingTouch_x ) ? 'left' : 'right';
+            if( Math.abs( this.state.startTouch_X - movingTouch_x ) > ( window.innerWidth / 4 ) ) {
+                console.log('Ready to visible slide noti layout', '\ndirection : ',movingTouch_direction);
+                //* 현재 터치 방향이 왼쪽일 경우 ---> 오른쪽 방향의 페이지로 넘어감
+                this.setState({ movingTouch_direction: movingTouch_direction });
+                if(movingTouch_direction === 'left'){
+                    //* Right-side-noti Layout visible
+                }
+                if(movingTouch_direction === 'right'){
+                    //* Left-side-noti Layout visible
+
+                }
+            }
         }
     }
 
 
     render() {
+        let sliderNotiLayout_style = {height: window.innerHeight+pageYOffset,
+                                      display: (this.state.movingTouch_direction) ? 'block' : 'none'};
+        let sliderNotiImg_style = {top: ( window.innerHeight+pageYOffset ) / 2 }
         return (
             <Router>
                 <div id="AppLayout"
@@ -119,6 +147,22 @@ class App extends React.Component {
                      onTouchEnd={this.AppTouchEnd}
                      onTouchMove={this.AppTouchMove}
                 >
+                    <div id="AppSlideDirectionNoti_layout" style={sliderNotiLayout_style}
+                         className={
+                                (this.state.movingTouch_direction === 'left')
+                                    ? 'go-right-page'
+                                    : 'go-left-page'
+                         }
+                    >
+                        <img src={
+                            (this.state.movingTouch_direction === 'left')
+                                ? '/img/slide-direction-noti-right.png'
+                                : '/img/slide-direction-noti-left.png'
+                            }
+                             style={sliderNotiImg_style}
+                        />
+                        <div id="SliderNoti_pagePath"></div>
+                    </div>
 
                     <PageStack/>
                     <Header

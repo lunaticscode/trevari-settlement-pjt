@@ -3,6 +3,11 @@ import '../styles/SettleResultPage.scss'
 import crypto from '../CryptoInfo';
 import Fetch from "../Fetch";
 import SettleResultForm from "./SettleResultForm";
+import {Link} from "react-router-dom";
+import {connect} from "react-redux";
+import Sleep from "../Sleep";
+import ClipboardButton from "react-clipboard.js";
+
 class SettleResultPage extends React.Component {
     constructor(props){
         super(props);
@@ -10,7 +15,27 @@ class SettleResultPage extends React.Component {
         let settleResult_key_denc = crypto.base64_denc(params.id);
         settleResult_key_denc = crypto.decrypt_account(settleResult_key_denc);
         this.state={
+
+            bankInfo_obj: {
+                0: {code: "001", name: "한국은행"}, 1: {code: "002", name: "산업은행"},
+                2: {code: "003", name: "기업은행"}, 3: {code: "004", name: "국민은행"},
+                4: {code: "007", name: "수협중앙회"}, 6: {code: "011", name: "농협은행"},
+                8: {code: "020", name: "우리은행"}, 9: {code: "023", name: "SC은행"},
+                10: {code: "027", name: "한국씨티은행"}, 11: {code: "031", name: "대구은행"},
+                12: {code: "032", name: "부산은행"}, 13: {code: "034", name: "광주은행"},
+                14: {code: "035", name: "제주은행"}, 15: {code: "037", name: "전북은행"},
+                16: {code: "039", name: "경남은행"}, 17: {code: "045", name: "새마을금고중앙회"},
+                18: {code: "048", name: "신협중앙회"}, 19: {code: "050", name: "상호저축은행"},
+                20: {code: "052", name: "모건스탠리은행"}, 29: {code: "062", name: "중국공상은행"},
+                30: {code: "063", name: "중국은행"}, 31: {code: "064", name: "산림조합중앙회"},
+                32: {code: "065", name: "대화은행"}, 33: {code: "066", name: "교통은행"},
+                34: {code: "071", name: "우체국"}, 37: {code: "081", name: "KEB하나은행"},
+                38: {code: "088", name: "신한은행"}, 39: {code: "089", name: "케이뱅크"},
+                40: {code: "090", name: "카카오뱅크"}, 44: {code: "096", name: "한국전자금융(주)"}
+            },
+
             settleParam: params['id'],
+            settleOwnerName: null,
             settleKey_info : settleResult_key_denc,
             settleInfo_errorFlag: true,
             settleInfo_title: '',
@@ -18,10 +43,23 @@ class SettleResultPage extends React.Component {
             settleInfo_sumPrice: 0,
             settleInfo_personArray: [],
             settleInfo_sumValueObj: {},
+            settleInfo_bank: {},
         };
         console.log(params);
     }
+    //AppLogoBtn_click(){ document.getElementById("Link_goIndexPage").click(); }
+    AccountCopySuccess(){
+        document.getElementById("AccountCopySuccess_alertModal").style.display = 'block';
+        Sleep.sleep_func(1000).then( () => {
+            document.getElementById("AccountCopySuccess_alertModal").style.display = 'none';
+        });
+        console.log('asd');
+    }
     componentDidMount(){
+        window.scroll(0, 0);
+        let BackBtn_flag = ( this.props.appMoveInfo['nowPage'] === '/history' ) ? this.setState({backBtn_flag: true}) : this.setState({backBtn_flag: false});
+        console.log('BackBtn_flag : ', BackBtn_flag);
+
         let keyInfo_splitArray = this.state.settleKey_info.split('&&');
 
         //* 저장된 정산결과 내용이 비회원 유저가 작성한 경우,
@@ -39,8 +77,8 @@ class SettleResultPage extends React.Component {
 
                 if(res['result'] === 'success'){
                     this.setState({settleInfo_errorFlag: false});
-                    let settleInfo_obj = res['settleInfo'];
 
+                    let settleInfo_obj = res['settleInfo'];
 
                     let settleInnerInfo = JSON.parse( res['settleInfo']['settle_info'] );
                     console.log(settleInnerInfo);
@@ -85,13 +123,26 @@ class SettleResultPage extends React.Component {
             let access_key = crypto.base64_denc(this.state.settleParam);
             access_key = crypto.decrypt_account(access_key);
             let get_param = access_key.split('&&')[1];
+            let userName = access_key.split('&&')[0];
+            this.setState({settleOwnerName: userName});
             console.log(access_key);
             Fetch.fetch_api("settle/"+get_param, 'GET', null).then(res => {
-                console.log(res);
+
                 if(res['result'].toString() === 'success'){
                     this.setState({settleInfo_errorFlag: false});
+
                     let settleInnerInfo = JSON.parse( res['settleInfo'] );
-                    console.log(settleInnerInfo);
+                    let settleBankInfo = res['settleBankInfo'];
+
+                    if(settleBankInfo){
+                        let bank_index = Object.values( this.state.bankInfo_obj ).findIndex(elem => elem['code'] === settleBankInfo['bank_code'] );
+                        let bank_name = Object.values ( this.state.bankInfo_obj )[bank_index]['name'];
+                        let tmp_obj = Object.assign(settleBankInfo, {
+                             bank_num: crypto.decrypt_account(settleBankInfo.bank_num),
+                             bank_name: bank_name,
+                        });
+                        this.setState({settleInfo_bank: tmp_obj});
+                    }
 
                     let settleInnerForm_cnt = Object.keys(settleInnerInfo).length;
 
@@ -134,11 +185,25 @@ class SettleResultPage extends React.Component {
         return (
             <div id="SettleResultPage_layout">
                 <br/>
-                <div id="SettleResultPage_titleLogo">
-                    <img id="title_icon" src="/img/AppLogo.png" />
-                    모두의정산
+
+                <div id="SettleResultPage_titleLogo" onClick={()=>location.href='/'}>
+                        <img id="title_icon" src="/img/AppLogo2-neon.png" />
+                        모두의정산
                 </div>
-                <div id="SettleResultPage_title"><font className="bold">정산결과</font></div>
+
+                <div id="SettleResultPage_title">
+                    {
+                        ( this.state.backBtn_flag )
+                        ? <Link to={"/history"}>
+                            <div id="BackBtn">
+                               <img src="/img/back-arrow.png"/>
+                            </div>
+                         </Link>
+                         : ''
+                    }
+                    <font className="bold"><font id="settleOwnerName">{(this.state.settleOwnerName) ? this.state.settleOwnerName : ''}<font id="settleOwnerConnecter"> 님의</font></font> 정산결과</font>
+                </div>
+
                 <div id="SettleResultPage_content">
                     {
                         ( this.state.settleInfo_errorFlag )
@@ -159,6 +224,17 @@ class SettleResultPage extends React.Component {
                                     <div className="srp_subTitle_value">{this.state.settleInfo_sumPrice}원</div>
                                 </div>
                                 <div className="srp_subTitleContent">
+                                    <div className="srp_subTitleBox">정산계좌</div>
+                                    <div className="srp_subTitle_value account">
+                                        <ClipboardButton id="AccountCopyBtn"
+                                                         onSuccess={this.AccountCopySuccess}
+                                                         data-clipboard-text={this.state.settleInfo_bank['bank_name']+" "+this.state.settleInfo_bank['bank_num']}>
+                                            {this.state.settleInfo_bank['bank_name']+" "+this.state.settleInfo_bank['bank_num']}
+                                        </ClipboardButton>
+
+                                    </div>
+                                </div>
+                                <div className="srp_subTitleContent">
                                     <div className="srp_subTitleBox">정산 참여인원 <font className="bold">({this.state.settleInfo_personArray.length}명)</font></div>
                                     <br/>
                                     <div className="srp_subTitle_value personList">
@@ -169,7 +245,7 @@ class SettleResultPage extends React.Component {
                                         })}
                                     </div>
                                 </div>
-
+                                <div id="AccountCopySuccess_alertModal">계좌복사 완료</div>
                                 <SettleResultForm
                                     settleFormInfo={this.state.settleInfo_formInfoObj}
                                 />
@@ -184,5 +260,16 @@ class SettleResultPage extends React.Component {
         );
     }
 }
+
+const mapStateToProps = (state) => {
+    //console.log('redux store - pageChangeInfo : ',state['pageChange']);
+    console.log(state['pageChange']);
+    return{
+        appMoveInfo : state['pageChange'],
+    };
+
+};
+
+SettleResultPage = connect(mapStateToProps, null)(SettleResultPage);
 
 export default SettleResultPage;

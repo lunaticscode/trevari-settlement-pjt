@@ -2,6 +2,7 @@ const webpack = require('webpack');
 
 const secret = require('./secret');
 console.log('now_mode:', secret.now_mode);
+
 //const WebpackPwaManifest = require('webpack-pwa-manifest');
 //const { InjectManifest } = require('workbox-webpack-plugin');
 // const manifest = require('./public/manifest.json');
@@ -12,7 +13,6 @@ console.log('now_mode:', secret.now_mode);
 //     swDest: 'sw.js',
 // });
 module.exports = {
-
     entry: './src/index.js',
     output: {
         path: __dirname + '/public',
@@ -59,3 +59,5 @@ module.exports = {
     plugins: [ new webpack.HotModuleReplacementPlugin(), ]
     //pwaPlugin, workboxPlugin
 };
+
+
