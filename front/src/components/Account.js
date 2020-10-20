@@ -75,7 +75,7 @@ class Account extends React.Component {
     }
 
     AccountCardSliding(e) {
-            //if(this.state.cardSliding_availFlag){
+            if(this.state.cardSliding_availFlag){
                 let cardWidth = document.getElementById("myAccountCard_0").offsetWidth;
                 let now_slider_offsetX = ( e.target.scrollLeft == 0 ) ? 1 : e.target.scrollLeft;
                 this.setState({now_sliderOffsetX : now_slider_offsetX});
@@ -90,14 +90,14 @@ class Account extends React.Component {
                 }
                 else{
                     try{
-                        let now_accountSettleInfo = ( now_accountNum ) ? this.state.settleInfo_byAccount_obj[now_accountNum] : null;
-                        if(now_accountNum) {now_accountSettleInfo.sort( (a, b) => b['date'] - a['date']);}
-                        this.setState({now_lookingCardInfo_array: now_accountSettleInfo});
+                            let now_accountSettleInfo = ( now_accountNum ) ? this.state.settleInfo_byAccount_obj[now_accountNum] : null;
+                            if(now_accountNum) {now_accountSettleInfo.sort( (a, b) => b['date'] - a['date']);}
+                            this.setState({now_lookingCardInfo_array: now_accountSettleInfo});
                     }catch(e){
                         console.log(e.toString());
                     }
                 }
-            //}
+            }
 
 
     }
@@ -289,7 +289,7 @@ class Account extends React.Component {
                            this.setState({mac_initOffsetX_list: tmp_offsetX_list});
                        });
                    }
-                   //Sleep.sleep_func(500).then( ()=> { window.scroll(5,0); });
+                   Sleep.sleep_func(500).then( ()=> { window.scroll(5,0); });
                }
 
                if( res['result'].toString().trim() === 'revoke' ) {
@@ -349,7 +349,9 @@ class Account extends React.Component {
                         let tmp_obj = {account: account_num, title:elem['si_title'], regdate: elem['si_regdate'], settleInfo: JSON.parse( elem['si_form_info'] )};
                         return tmp_obj;
                     }).sort( (a, b) => a['account'] - b['account'] );
+
                     //console.log(tmp_info_array);
+
                     tmp_info_array = tmp_info_array.reduce( ( acc, cur ) => {
                         let tmp_array = [ {info:cur['settleInfo'],
                                            title:cur['title'],
@@ -360,11 +362,12 @@ class Account extends React.Component {
                         return acc;
                     }, {});
 
-                    //* ===> { accountNumber : [ {info}, {info2}, .... ], accountNumber2 : [{}, {}, .... ], ... }
-                    this.setState({settleInfo_byAccount_obj: tmp_info_array});
+                    Sleep.sleep_func(250).then( ()=> {
+                        //* ===> { accountNumber : [ {info}, {info2}, .... ], accountNumber2 : [{}, {}, .... ], ... }
+                        this.setState({settleInfo_byAccount_obj: tmp_info_array, cardSliding_availFlag: true});
+                        document.getElementById("AccountCard_slider").scroll(1, 0);
+                    });
 
-                    //console.log(tmp_info_array);
-                    document.getElementById("AccountCard_slider").scroll(1, 0);
                 });
         }
 
@@ -376,7 +379,7 @@ class Account extends React.Component {
     render() {
         let loginFlag = this.state.loginFlag;
         let AccountLayout_style = {height: ( !loginFlag ) ? '500px' : window.innerHeight - 50};
-
+        let CardSlider_style = {display: ( this.state.cardSliding_availFlag ) ? 'block': 'none' }
         let now_userName = ( loginFlag ) ? Cookie.get_cookie('UserName') : '';
         return (
             <div id="AccountLayout" style={AccountLayout_style}>
@@ -394,6 +397,7 @@ class Account extends React.Component {
                         <div id="AccountContent_layout">
 
                             <div id="AccountCard_slider"
+                                 style={CardSlider_style}
                                  onTouchStart={this.AcconutCardSlider_touchStartMove}
                                  onTouchMove={this.AcconutCardSlider_touchStartMove}
                                  onTouchEnd={this.AcconutCardSlider_touchEnd}

@@ -163,7 +163,6 @@ class BankingTokenView(APIView):
                return Response({'result': 'grant', 'realname': result_auth['response']['bank_holder']}, status=status.HTTP_200_OK)
 
 
-
 class UserAccountInfo(APIView):
         """
         GET /api/account/
