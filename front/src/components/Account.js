@@ -211,23 +211,15 @@ class Account extends React.Component {
 
     componentDidMount() {
         console.log('account layout mount');
-        //* 초기에 슬라이더 레이아웃 제대로 세팅되기전에 스크롤 움직이면,
-        //* 정산 내역 가공 부분에서 에러 발생.
-        //* 애니메이션 종료 시점에 scroll 허용.
-        // let accountSlider_layout = document.getElementById("AccountCard_slider");
-        // accountSlider_layout.style.overflow = 'hidden';
-        // Sleep.sleep_func(1500).then( ()=> { accountSlider_layout.style.overflow = 'auto';
-        //                                                 this.setState({cardSliding_availFlag: true});
-        //                                             });
 
         let banking_info_array = Object.values(this.state.bankInfo_obj);
         this.setState({bankInfo_valueArray: banking_info_array});
         let userName = ( Cookie.get_cookie('UserName') ) ? Cookie.get_cookie('UserName') : '';
         //* 회원 유저, DB에 등록된 계좌정보 API 호출.
         if( this.state.loginFlag ){
-            console.log('fetch1 - start');
+            //console.log('fetch1 - start');
             Fetch.fetch_api("account/"+userName, "GET", null).then(res => {
-                console.log('fetch1 - end');
+                //console.log('fetch1 - end');
 
                 if(res.toString().trim().indexOf('Error') !== -1) {
                    console.log('(!) Server error ', '\n', res);
@@ -235,11 +227,6 @@ class Account extends React.Component {
                    this.props.alertModal_open(alertModal_text, window.innerHeight - 30);
                    Sleep.sleep_func(1000).then( () => { this.props.alertModal_close() } );
                }
-                // if(res['result'] === 'fail'){
-                //     this.setState({settleInfo_byAccount_obj: {}});
-                //     let myAccount_list = (res['account_list']) ? JSON.parse( res[ 'account_list' ].toString().replace( /'/g,  '\"' ) ) : [];
-                //
-                // }
 
                if(res['result'].toString().trim() === 'success'){
 
@@ -283,7 +270,7 @@ class Account extends React.Component {
                             let tmp_offsetX_list = [];
                             let real_myCard_cnt = ( this.state.myAccountList.length < 5 ) ? slideMac_elems.length - 1 : slideMac_elems.length;
                             //* 애니메이션 종료 후, 각 카드( 실제 등록되어진 계좌카드일 경우에만 ) offsetX 취합 후에 state로 지정.
-                            Sleep.sleep_func(1500).then(() => {
+                            Sleep.sleep_func(500).then(() => {
                                 for(let i = 0; i < real_myCard_cnt; i++){
                                     let offsetX_mac_elem = document.getElementById("myAccountCard_"+i).offsetLeft;
                                     tmp_offsetX_list.push(offsetX_mac_elem);
@@ -292,15 +279,13 @@ class Account extends React.Component {
                             });
                         }
 
-                        // --- testcode ---- //
-
 
                    //* 현재 유저 정산기록 호출
                    let submit_data = {user_name : userName,};
-                   console.log('fetch2 - start');
+                   //console.log('fetch2 - start');
                    Fetch.fetch_api("settleList", 'POST', submit_data)
                        .then(res=> {
-                           console.log('fetch2 - end');
+                           //console.log('fetch2 - end');
                            if( res.toString().trim().indexOf('Error') !== -1){
                                console.log('server error');
                                let AlertText = '(!) 서버에 오류가 발생했습니다. 관리자에게 문의해주세요.';
@@ -330,8 +315,6 @@ class Account extends React.Component {
                                    return accountNumber.toString() === i_elem['bank_num'];
                                }) !== -1;
                            });
-                           console.log(result_settleInfo);
-
                            //console.log(result_settleInfo);
 
                            if(result_settleInfo.length === 0) {
@@ -365,15 +348,7 @@ class Account extends React.Component {
                                this.setState({settleInfo_byAccount_obj: tmp_info_array, cardSliding_availFlag: true});
                                document.getElementById("AccountCard_slider").scroll(1, 0);
                            });
-
-
                        });
-
-
-
-
-                        // --- testcode ---- //
-
                }
 
                if( res['result'].toString().trim() === 'revoke' ) {
@@ -383,9 +358,7 @@ class Account extends React.Component {
                    Sleep.sleep_func(1000).then( () => { this.props.alertModal_close() } );
                };
 
-            }); // ---> 카드리스트 Fetch 코드 종료 부분.
-
-
+            }); // ---> 카드리스트 Fetch ----> 해당 계좌 정산정보 Fetch ----> 종료 지점.
 
         }
 
