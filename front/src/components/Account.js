@@ -75,7 +75,7 @@ class Account extends React.Component {
     }
 
     AccountCardSliding(e) {
-            if(this.state.cardSliding_availFlag){
+            //if(this.state.cardSliding_availFlag){
                 let cardWidth = document.getElementById("myAccountCard_0").offsetWidth;
                 let now_slider_offsetX = ( e.target.scrollLeft == 0 ) ? 1 : e.target.scrollLeft;
                 this.setState({now_sliderOffsetX : now_slider_offsetX});
@@ -97,7 +97,7 @@ class Account extends React.Component {
                         console.log(e.toString());
                     }
                 }
-            }
+            //}
 
 
     }
@@ -214,11 +214,11 @@ class Account extends React.Component {
         //* 초기에 슬라이더 레이아웃 제대로 세팅되기전에 스크롤 움직이면,
         //* 정산 내역 가공 부분에서 에러 발생.
         //* 애니메이션 종료 시점에 scroll 허용.
-        let accountSlider_layout = document.getElementById("AccountCard_slider");
-        accountSlider_layout.style.overflow = 'hidden';
-        Sleep.sleep_func(1500).then( ()=> { accountSlider_layout.style.overflow = 'auto';
-                                                        this.setState({cardSliding_availFlag: true});
-                                                    });
+        // let accountSlider_layout = document.getElementById("AccountCard_slider");
+        // accountSlider_layout.style.overflow = 'hidden';
+        // Sleep.sleep_func(1500).then( ()=> { accountSlider_layout.style.overflow = 'auto';
+        //                                                 this.setState({cardSliding_availFlag: true});
+        //                                             });
 
         let banking_info_array = Object.values(this.state.bankInfo_obj);
         this.setState({bankInfo_valueArray: banking_info_array});
