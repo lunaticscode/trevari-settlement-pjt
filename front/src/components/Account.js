@@ -48,6 +48,8 @@ class Account extends React.Component {
 
             nowEdit_bankInfo: {bank_code: null, bank_num: null},
             accountGrant_flag: false,
+
+            cardSliding_availFlag: false,
         };
 
         this.AccountCardSliding = this.AccountCardSliding.bind(this);
@@ -61,6 +63,8 @@ class Account extends React.Component {
         this.addMyAccount_registBtnClick = this.addMyAccount_registBtnClick.bind(this);
 
         this.deleteMyAccount = this.deleteMyAccount.bind(this);
+
+
     }
 
     AcconutCardSlider_touchStartMove(e){
@@ -71,16 +75,29 @@ class Account extends React.Component {
     }
 
     AccountCardSliding(e) {
-        let cardWidth = document.getElementById("myAccountCard_0").offsetWidth;
-        let now_slider_offsetX = ( e.target.scrollLeft == 0 ) ? 1 : e.target.scrollLeft;
-        this.setState({now_sliderOffsetX : now_slider_offsetX});
-        let passing_index = Math.floor( now_slider_offsetX / cardWidth );
-        this.setState({now_lookingCardIndex: passing_index});
 
-        let now_accountNum = (this.state.myAccountList[passing_index] ) ? this.state.myAccountList[passing_index]['bank_num'] : null;
-        let now_accountSettleInfo = ( now_accountNum ) ? this.state.settleInfo_byAccount_obj[now_accountNum] : null;
-        if(now_accountNum) {now_accountSettleInfo.sort( (a, b) => b['date'] - a['date']);}
-        this.setState({now_lookingCardInfo_array: now_accountSettleInfo});
+            let cardWidth = document.getElementById("myAccountCard_0").offsetWidth;
+            let now_slider_offsetX = ( e.target.scrollLeft == 0 ) ? 1 : e.target.scrollLeft;
+            this.setState({now_sliderOffsetX : now_slider_offsetX});
+            let passing_index = Math.floor( now_slider_offsetX / cardWidth );
+
+            this.setState({now_lookingCardIndex: passing_index});
+
+            let now_accountNum = (this.state.myAccountList[passing_index] ) ? this.state.myAccountList[passing_index]['bank_num'] : null;
+            if( !this.state.settleInfo_byAccount_obj || !now_accountNum  ){
+                console.log('empty card section');
+                this.setState({now_lookingCardInfo_array: null});
+            }
+            else{
+                try{
+                    let now_accountSettleInfo = ( now_accountNum ) ? this.state.settleInfo_byAccount_obj[now_accountNum] : null;
+                    if(now_accountNum) {now_accountSettleInfo.sort( (a, b) => b['date'] - a['date']);}
+                    this.setState({now_lookingCardInfo_array: now_accountSettleInfo});
+                }catch(e){
+                    console.log(e.toString());
+                }
+            }
+
     }
 
     addMyAccount() {
@@ -197,7 +214,9 @@ class Account extends React.Component {
         //* 애니메이션 종료 시점에 scroll 허용.
         let accountSlider_layout = document.getElementById("AccountCard_slider");
         accountSlider_layout.style.overflow = 'hidden';
-        Sleep.sleep_func(1500).then( ()=> { accountSlider_layout.style.overflow = 'auto'; });
+        Sleep.sleep_func(1500).then( ()=> { accountSlider_layout.style.overflow = 'auto';
+                                                        this.setState({cardSliding_availFlag: true});
+                                                    });
 
         let banking_info_array = Object.values(this.state.bankInfo_obj);
         this.setState({bankInfo_valueArray: banking_info_array});
@@ -268,7 +287,7 @@ class Account extends React.Component {
                            this.setState({mac_initOffsetX_list: tmp_offsetX_list});
                        });
                    }
-                   Sleep.sleep_func(500).then( ()=> { window.scroll(5,0); });
+                   //Sleep.sleep_func(500).then( ()=> { window.scroll(5,0); });
                }
 
                if( res['result'].toString().trim() === 'revoke' ) {
