@@ -106,9 +106,9 @@ class AccountTimeline extends React.Component {
     }
 
     componentDidMount() {
-            Sleep.sleep_func(1500).then(() => {
-                //document.getElementById("AccountTimeline_layout").click();
-            });
+            // Sleep.sleep_func(500).then(() => {
+            //
+            // });
     }
 
     render() {

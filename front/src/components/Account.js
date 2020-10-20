@@ -266,30 +266,35 @@ class Account extends React.Component {
                    let empty_cardInfo_obj = {
                             bank_code: 0, bank_name: null, bank_num: null,
                    };
-                   //* 관리가능 계좌 최대 5개,
-                   //* 5개 미만일 경우, [ + 추가 ] 기능있는 빈 계좌 obj 추가.
-                   if(tmp_account_array.length < 5){
-                       let tmp_slideAccount_list = tmp_account_array.concat(empty_cardInfo_obj);
-                       this.setState({slideAccountList: tmp_slideAccount_list});
-                   }
 
-                   //* 슬라이드 제어를 위한, 슬라이더 레이아웃 내부에 있는 계좌카드 초기 위치( offset X ) state 값으로 저장.
-                   if(this.state.myAccountList.length > 0){
-                       let slideMac_elems = document.getElementsByClassName("myAccountCard_layout");
-                       //console.log(slideMac_elems);
 
-                       let tmp_offsetX_list = [];
-                       let real_myCard_cnt = ( this.state.myAccountList.length < 5 ) ? slideMac_elems.length - 1 : slideMac_elems.length;
-                       //* 애니메이션 종료 후, 각 카드( 실제 등록되어진 계좌카드일 경우에만 ) offsetX 취합 후에 state로 지정.
-                       Sleep.sleep_func(1000).then(() => {
-                           for(let i = 0; i < real_myCard_cnt; i++){
-                               let offsetX_mac_elem = document.getElementById("myAccountCard_"+i).offsetLeft;
-                               tmp_offsetX_list.push(offsetX_mac_elem);
-                           }
-                           this.setState({mac_initOffsetX_list: tmp_offsetX_list});
-                       });
-                   }
-                   Sleep.sleep_func(500).then( ()=> { window.scroll(5,0); });
+                    Sleep.sleep_func(500).then(() => {
+                        //* 관리가능 계좌 최대 5개,
+                        //* 5개 미만일 경우, [ + 추가 ] 기능있는 빈 계좌 obj 추가.
+                        if(tmp_account_array.length < 5){
+                            let tmp_slideAccount_list = tmp_account_array.concat(empty_cardInfo_obj);
+                            this.setState({slideAccountList: tmp_slideAccount_list});
+                        }
+
+                        //* 슬라이드 제어를 위한, 슬라이더 레이아웃 내부에 있는 계좌카드 초기 위치( offset X ) state 값으로 저장.
+                        if(this.state.myAccountList.length > 0){
+                            let slideMac_elems = document.getElementsByClassName("myAccountCard_layout");
+                            //console.log(slideMac_elems);
+
+                            let tmp_offsetX_list = [];
+                            let real_myCard_cnt = ( this.state.myAccountList.length < 5 ) ? slideMac_elems.length - 1 : slideMac_elems.length;
+                            //* 애니메이션 종료 후, 각 카드( 실제 등록되어진 계좌카드일 경우에만 ) offsetX 취합 후에 state로 지정.
+                            Sleep.sleep_func(1500).then(() => {
+                                for(let i = 0; i < real_myCard_cnt; i++){
+                                    let offsetX_mac_elem = document.getElementById("myAccountCard_"+i).offsetLeft;
+                                    tmp_offsetX_list.push(offsetX_mac_elem);
+                                    this.setState({mac_initOffsetX_list: tmp_offsetX_list});
+                                }
+
+                            });
+                        }
+                    });
+
                }
 
                if( res['result'].toString().trim() === 'revoke' ) {
