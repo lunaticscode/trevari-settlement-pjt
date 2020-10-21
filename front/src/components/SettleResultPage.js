@@ -40,13 +40,46 @@ class SettleResultPage extends React.Component {
             settleKey_info : settleResult_key_denc,
             settleInfo_errorFlag: true,
             settleInfo_title: '',
+            settleInfo_formInfoObj: {},
             settleInfo_formCnt: 0,
             settleInfo_sumPrice: 0,
             settleInfo_personArray: [],
             settleInfo_sumValueObj: {},
             settleInfo_bank: {},
+            selectedPerson_settleSumPrice: 0,
+
+            selectedPersonName_box: '',
+            selectedPerson_settleInfoArray: {},
         };
+
+        this.personNameBox_click = this.personNameBox_click.bind(this);
+
         console.log(params);
+
+    }
+
+    personNameBox_click(e) {
+
+        let now_SettleFormInfo_array = Object.values( this.state.settleInfo_formInfoObj ).map(elem => elem['settleValueInfo']);
+        let selectedPersonName = e.target.innerHTML;
+
+        if(selectedPersonName === this.state.selectedPersonName_box){
+            this.setState({selectedPersonName_box : '', selectedPerson_settleInfoArray: [], selectedPerson_settleSumPrice: 0});
+            return;
+        }
+
+        let tmp_Array = [];
+        now_SettleFormInfo_array.forEach( (elem, index) => {
+            if(Object.keys(elem).indexOf(selectedPersonName) !== -1){
+                tmp_Array.push( { meetcnt: index+1 ,price: elem[selectedPersonName] } );
+            }
+        });
+
+        let selectedPerson_settleSumPrice = tmp_Array.reduce((acc, cur) => { return acc + parseInt( cur['price'] ); }, 0);
+        console.log(selectedPerson_settleSumPrice);
+        this.setState({selectedPersonName_box: selectedPersonName});
+        this.setState({selectedPerson_settleInfoArray: tmp_Array});
+        this.setState({selectedPerson_settleSumPrice: selectedPerson_settleSumPrice});
     }
 
     AccountCopySuccess(){
@@ -177,7 +210,7 @@ class SettleResultPage extends React.Component {
                         acc[cur['name']] = curValue;
                         return acc;
                     }, {});
-                    //console.log(personSettleInfo_obj);
+                    console.log(personSettleInfo_obj);
 
                     this.setState({
                         settleInfo_title: settleTitle,
@@ -195,6 +228,7 @@ class SettleResultPage extends React.Component {
 
     }
     render() {
+        let selectedPerson_settleInfoLayout_style = {display: (this.state.selectedPersonName_box.length > 0) ? 'block' : 'none'}
         return (
             <div id="SettleResultPage_layout">
                 <br/>
@@ -227,7 +261,6 @@ class SettleResultPage extends React.Component {
                     {
                         ( this.state.settleInfo_errorFlag )
                         ? <div>존재하지않는 정산페이지 입니다.</div>
-
                         :
                             <div>
                                 <div className="srp_subTitleContent">
@@ -258,14 +291,46 @@ class SettleResultPage extends React.Component {
                                     <br/>
                                     <div className="srp_subTitle_value personList">
                                         {this.state.settleInfo_personArray.map( ( elem, index ) => {
-                                            return <div className="srp_personBox uncheck" key={index} id={ "personBox_"+index } >
+                                            return <div onClick={this.personNameBox_click}
+                                                        className={
+                                                            ( this.state.selectedPersonName_box === elem )
+                                                            ? "srp_personBox"
+                                                            : "srp_personBox uncheck"
+                                                        }
+                                                        key={index} id={ "personBox_"+index } >
                                                         {elem}
                                                    </div>
                                         })}
                                     </div>
                                 </div>
+                                <div id="selectedPerson_settleInfoLayout" style={selectedPerson_settleInfoLayout_style}>
+                                    {
+                                        (this.state.selectedPerson_settleInfoArray.length > 0)
+                                        ?
+                                            this.state.selectedPerson_settleInfoArray.map( (elem, index)=> {
+                                                return <div className="selectedPerson_infoLine" key={index}>
+                                                            <div className="selectedPerson_info meetcnt">{elem['meetcnt']}차</div>
+                                                            <div className="selectedPerson_info price">{elem['price'].toLocaleString()}원</div>
+                                                       </div>;
+                                            })
+                                        : ''
+                                    }
+                                    <div id="personSettle_sumPrice_layout">
+                                        {
+                                            (this.state.selectedPerson_settleInfoArray.length > 0) 
+                                            ? 
+                                                <div id="personSettle_sumPrice_box">
+                                                    <span><font className="bold">*</font>합계</span>
+                                                    <div id="personSettle_sumPrice_value">{this.state.selectedPerson_settleSumPrice.toLocaleString()}원</div>
+                                                </div>
+                                            : ''    
+                                        }
+                                    </div>
+                                </div>
+
                                 <div id="AccountCopySuccess_alertModal">계좌복사 완료</div>
                                 <SettleResultForm
+                                    selectedPersonName={this.state.selectedPersonName_box}
                                     settleFormInfo={this.state.settleInfo_formInfoObj}
                                 />
 

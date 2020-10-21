@@ -1,7 +1,7 @@
 @import 'extend';
 
 #SettleResultForm_layout{
-
+ margin-top:25px;
 }
 
 #srf_sliderLayout{
@@ -52,8 +52,12 @@
   font-size:13px;
   &.name{
     margin-left:10px;
+    color:silver;
     border-radius: initial; box-shadow: initial;
     display: inline-block;
+    &.active{
+      color:$main-line-color; font-weight: 600;
+    }
   }
   &.value{
     margin-right:10px;

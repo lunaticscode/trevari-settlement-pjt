@@ -57,7 +57,7 @@ float: left; width:20px; height:20px; margin-top:5px;
 .srp_subTitleBox{
   font-size:14px; margin-right:15px;
   background: #3E3C42; box-shadow: 1px 1px 5px black;
-  display: inline-block;
+  display: inline-block; color:silver;
   padding:3px 10px; border-radius: 10px;
 }
 .srp_subTitle_value{
@@ -89,6 +89,40 @@ float: left; width:20px; height:20px; margin-top:5px;
     font-weight: 200;
     color:gray; background: none; border: 1px solid gray;
   }
+}
+@keyframes slide-from-left3 { from{left:-50%; opacity: 0;} to{left:0px; opacity: 1;} }
+#selectedPerson_settleInfoLayout{
+  position: relative;
+  margin: -10px 0px 20px 0px; width:50%;
+  animation-name: slide-from-left3; animation-duration:500ms; animation-fill-mode: forwards;
+  opacity: 0;
+  background: $main-background2; box-shadow: 2px 2px 4px black; padding:10px 10px; border-radius: 5px;
+}
+.selectedPerson_infoLine{
+  font-weight: 300;
+  font-size:13px; color:silver;
+  & div{
+    display: inline-block;
+    &.meetcnt{
+      margin-left:5px;
+      margin-right: 25px;
+    }
+    &.price{
+       font-weight: 600;
+    }
+  }
+}
+
+#personSettle_sumPrice_layout{
+  margin-top:5px; margin-left:5px;
+  font-size:14px;
+}
+#personSettle_sumPrice_box{
+  //border-top:1px solid gray; padding-top:5px; margin-top:10px;
+}
+#personSettle_sumPrice_value{
+  display: inline-block; margin-left:35px;
+  color:white; font-weight: 600;
 }
 
 #AccountCopySuccess_alertModal{

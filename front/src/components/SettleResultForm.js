@@ -97,7 +97,7 @@ class SettleResultForm extends React.Component {
         let slideBtn_offsetY = 0;
         let settleFormCnt = Object.keys( this.props.settleFormInfo ).length;
         let next_formBtn_style = { display:  ( this.state.now_slideFormIndex + 1 ) === settleFormCnt ? 'none' : 'inline-block',
-                                   top: this.state.slideBtn_offsetY, };
+                                   top: (this.props.selectedPersonName.length > 0) ? this.state.slideBtn_offsetY + 50 : this.state.slideBtn_offsetY, };
         let prev_formBtn_style = { display: ( this.state.now_slideFormIndex === 0 ) ? 'none' : 'inline-block',
                                    top: this.state.slideBtn_offsetY, };
         return (
@@ -127,7 +127,11 @@ class SettleResultForm extends React.Component {
                                                 {
                                                     Object.keys(elem['settleValueInfo']).map( (inner_elem, inner_index) => {
                                                         return <div key={inner_index} className="settle_detail_box">
-                                                                    <div className="settle_detail_box name">
+                                                                    <div className={
+                                                                        ( this.props.selectedPersonName === inner_elem )
+                                                                        ? "settle_detail_box name active"
+                                                                        : "settle_detail_box name"
+                                                                        }>
                                                                         {inner_elem}
                                                                     </div>
                                                                     <div className="settle_detail_box value">
@@ -161,5 +165,6 @@ class SettleResultForm extends React.Component {
 
 SettleResultForm.defaultProps = {
     settleFormInfo: {},
+    selectedPersonName: '',
 };
 export default SettleResultForm;
