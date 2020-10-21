@@ -76,7 +76,7 @@ class SettleResultPage extends React.Component {
         });
 
         let selectedPerson_settleSumPrice = tmp_Array.reduce((acc, cur) => { return acc + parseInt( cur['price'] ); }, 0);
-        console.log(selectedPerson_settleSumPrice);
+        //console.log(selectedPerson_settleSumPrice);
         this.setState({selectedPersonName_box: selectedPersonName});
         this.setState({selectedPerson_settleInfoArray: tmp_Array});
         this.setState({selectedPerson_settleSumPrice: selectedPerson_settleSumPrice});
@@ -100,7 +100,7 @@ class SettleResultPage extends React.Component {
         if(keyInfo_splitArray[0] === 'nouser'){
 
             let access_key = this.state.settleKey_info;
-            console.log('nouser access_key : ', access_key);
+            //console.log('nouser access_key : ', access_key);
 
             Fetch.fetch_api('nousersettle/'+access_key, 'GET', null).then(res => {
                 //console.log(res);
@@ -171,7 +171,7 @@ class SettleResultPage extends React.Component {
             let get_param = access_key.split('&&')[1];
             let userName = access_key.split('&&')[0];
             this.setState({settleOwnerName: userName});
-            console.log(access_key);
+            //console.log(access_key);
             Fetch.fetch_api("settle/"+get_param, 'GET', null).then(res => {
 
                 if(res['result'].toString() === 'success'){
@@ -210,7 +210,7 @@ class SettleResultPage extends React.Component {
                         acc[cur['name']] = curValue;
                         return acc;
                     }, {});
-                    console.log(personSettleInfo_obj);
+                    //console.log(personSettleInfo_obj);
 
                     this.setState({
                         settleInfo_title: settleTitle,
@@ -254,9 +254,8 @@ class SettleResultPage extends React.Component {
                         ? <font className="bold"><font id="settleOwnerName">{this.state.settleOwnerName}<font id="settleOwnerConnecter"> 님의</font></font> 정산결과</font>
                         : <font className="bold">정산결과</font>
                     }
-
                 </div>
-
+                
                 <div id="SettleResultPage_content">
                     {
                         ( this.state.settleInfo_errorFlag )

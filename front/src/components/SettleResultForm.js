@@ -36,7 +36,7 @@ class SettleResultForm extends React.Component {
         let settleFormOffsetArray = this.state.init_settleFormOffsetArray;
         let passing_formIndex = 0;
 
-        console.log(now_scrollOffsetX);
+        //console.log(now_scrollOffsetX);
         if(parseInt( now_scrollOffsetX ) === 0 ) {
             this.setState({now_slideFormIndex: 0});
             return;
@@ -68,7 +68,7 @@ class SettleResultForm extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         if(prevProps.settleFormInfo !== this.props.settleFormInfo){
             let now_settleFormInfo = this.props.settleFormInfo;
-            console.log(now_settleFormInfo);
+            //console.log(now_settleFormInfo);
 
             //* 사용자가 직접 스크롤하는 이벤트에 대응하기 위해, 각 정산폼의 초기 위치 state로 저장.
             let settleForm_elems = document.getElementById("srf_sliderLayout").children;
@@ -85,7 +85,7 @@ class SettleResultForm extends React.Component {
 
             //* 슬라이드 버튼 위치 조정을 위한, 슬라이더 레이아웃 위치 값 획득.
             let slideForm_layout_offsetY = document.getElementById("srf_sliderLayout").offsetTop;
-            console.log('slideForm_offsetY ', slideForm_layout_offsetY);
+            //console.log('slideForm_offsetY ', slideForm_layout_offsetY);
             this.setState({slideBtn_offsetY: slideForm_layout_offsetY + 160});
 
         }
