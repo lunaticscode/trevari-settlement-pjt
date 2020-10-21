@@ -118,10 +118,12 @@ float: left; width:20px; height:20px; margin-top:5px;
   font-size:14px;
 }
 #personSettle_sumPrice_box{
+  padding-top: 5px; margin-top:10px; border-top: 1px solid gray;
+  text-align: right;
   //border-top:1px solid gray; padding-top:5px; margin-top:10px;
 }
 #personSettle_sumPrice_value{
-  display: inline-block; margin-left:35px;
+  display: inline-block; margin-left:15px;
   color:white; font-weight: 600;
 }
 

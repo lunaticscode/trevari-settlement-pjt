@@ -95,11 +95,12 @@ class SettleResultForm extends React.Component {
     }
     render() {
         let slideBtn_offsetY = 0;
+        let personSettle_resultLayout = document.getElementById("selectedPerson_settleInfoLayout");
         let settleFormCnt = Object.keys( this.props.settleFormInfo ).length;
         let next_formBtn_style = { display:  ( this.state.now_slideFormIndex + 1 ) === settleFormCnt ? 'none' : 'inline-block',
-                                   top: (this.props.selectedPersonName.length > 0) ? this.state.slideBtn_offsetY + 50 : this.state.slideBtn_offsetY, };
+                                   top: (this.props.selectedPersonName.length > 0) ? this.state.slideBtn_offsetY + 70 : this.state.slideBtn_offsetY, };
         let prev_formBtn_style = { display: ( this.state.now_slideFormIndex === 0 ) ? 'none' : 'inline-block',
-                                   top: this.state.slideBtn_offsetY, };
+                                   top: (this.props.selectedPersonName.length > 0) ? this.state.slideBtn_offsetY + 70 : this.state.slideBtn_offsetY, };
         return (
             <div id="SettleResultForm_layout">
                 <div id="next_form_btn_layout" onClick={this.slideBtnClick} style={next_formBtn_style}>
