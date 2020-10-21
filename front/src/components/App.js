@@ -37,7 +37,7 @@ class App extends React.Component {
             userSocketId : '',
 
             movingTouch_direction : null,
-
+            swipeNoti_pageRealname: '',
         };
         //location.href= this.state.pageStack[0];
 
@@ -116,18 +116,41 @@ class App extends React.Component {
             let movingTouch_x = e.touches[0].clientX;
             this.setState({movingTouch_X : movingTouch_x});
 
-            let movingTouch_direction = ( this.state.startTouch_X > movingTouch_x ) ? 'left' : 'right';
+            let now_PageStackArray = ( localStorage.getItem("PageStack") )
+                ? localStorage.getItem("PageStack").split(',') : ['/', '/settle', '/history', '/account'];
+            //let pageRealName_Array = ['홈', '정산하기', '히스토리', '계좌관리'];
+                let movingTouch_direction = ( this.state.startTouch_X > movingTouch_x ) ? 'left' : 'right';
             if( Math.abs( this.state.startTouch_X - movingTouch_x ) > ( window.innerWidth / 4 ) ) {
-                console.log('Ready to visible slide noti layout', '\ndirection : ',movingTouch_direction);
+                //console.log('Ready to visible slide noti layout', '\ndirection : ',movingTouch_direction);
                 //* 현재 터치 방향이 왼쪽일 경우 ---> 오른쪽 방향의 페이지로 넘어감
                 this.setState({ movingTouch_direction: movingTouch_direction });
-                if(movingTouch_direction === 'left'){
-                    //* Right-side-noti Layout visible
+                let Page_pathname = '';
+                if( movingTouch_direction === 'left' ){
+                    //* Right-side-noti visible, next-page pathname
+                    Page_pathname = now_PageStackArray[1];
                 }
-                if(movingTouch_direction === 'right'){
-                    //* Left-side-noti Layout visible
+                if( movingTouch_direction === 'right' ){
+                    //* Left-side-noti visible, prev-page pathname
+                    Page_pathname = now_PageStackArray[now_PageStackArray.length - 1];
+                }
 
+                switch (Page_pathname) {
+                    case "/":
+                        this.setState({swipeNoti_pageRealname: "홈"});
+                        return;
+                    case "/settle":
+                        this.setState({swipeNoti_pageRealname: "정산하기"});
+                        return;
+                    case "/history":
+                        this.setState({swipeNoti_pageRealname: "히스토리"});
+                        return;
+                    case "/account":
+                        this.setState({swipeNoti_pageRealname: "계좌관리"});
+                        return;
+                    default:
+                        return false;
                 }
+
             }
         }
     }
@@ -136,7 +159,8 @@ class App extends React.Component {
     render() {
         let sliderNotiLayout_style = {height: window.innerHeight+pageYOffset,
                                       display: (this.state.movingTouch_direction) ? 'block' : 'none'};
-        let sliderNotiImg_style = {top: ( window.innerHeight+pageYOffset ) / 2 }
+        let sliderNotiImg_style = {top: ( window.innerHeight+pageYOffset ) / 2 - 10 };
+        let sliderNotiPathname_style = {top: ( window.innerHeight+pageYOffset ) / 2 + 5};
         return (
             <Router>
                 <div id="AppLayout"
@@ -158,7 +182,9 @@ class App extends React.Component {
                             }
                              style={sliderNotiImg_style}
                         />
-                        <div id="SliderNoti_pagePath"></div>
+                        <div id="SliderNoti_pathRealname" style={sliderNotiPathname_style}>
+                            {this.state.swipeNoti_pageRealname}
+                        </div>
                     </div>
 
                     <PageStack/>

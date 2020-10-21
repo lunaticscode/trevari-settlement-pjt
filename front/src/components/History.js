@@ -51,7 +51,7 @@ class History extends React.Component {
         Cookie.set_cookie("saved_historyDetailPageIndex", save_nowPageIndex+'&&'+this.state.limitContentCnt );
 
         //this.props.maskOpen();
-        console.log(selected_settleInfo);
+        //console.log(selected_settleInfo);
 
         if( Cookie.get_cookie('UserName') && Cookie.get_cookie("AccessToken") ){
             let userName = Cookie.get_cookie("UserName");
@@ -111,7 +111,7 @@ class History extends React.Component {
     }
 
     componentDidMount() {
-        console.log('asd');
+        //console.log('asd');
         let now_path = window.location.pathname;
         let loginFlag = ( Cookie.get_cookie("UserName") && Cookie.get_cookie("AccessToken") ) ? true : false;
         this.setState({loginFlag: loginFlag});
@@ -169,7 +169,7 @@ class History extends React.Component {
 
                 //-----------------------------------//
                 let now_settleInfoList = this.state.settleInfoList.sort( ( a, b ) => b[ 'id' ] - a[ 'id' ] );
-                console.log(now_settleInfoList);
+                //console.log(now_settleInfoList);
 
                 let tmp_array = now_settleInfoList.map( ( elem, index ) => {
                     let date_value = elem['si_regdate'].toString().substr( 0, 8 );
@@ -186,7 +186,7 @@ class History extends React.Component {
                 });
                 this.setState( { settleChild_detailList_slice: tmp_array } );
                 this.setState( { settleChild_detailList: tmp_array.slice(0, limitContentCnt) } );
-                console.log( tmp_array );
+                //console.log( tmp_array );
                 //-----------------------------------//
                 if(Cookie.get_cookie("saved_historyDetailPageIndex")){
                     Sleep.sleep_func(500).then(()=> {
@@ -240,12 +240,12 @@ class History extends React.Component {
                     change_pagingBox_array.push(i);
                 }
                 this.setState({ pagingBox_array: change_pagingBox_array });
-                console.log(change_pagingBox_array);
+                //console.log(change_pagingBox_array);
                 let change_settleChild_detailList = this.state.settleChild_detailList_slice.slice();
                 change_settleChild_detailList
                     = change_settleChild_detailList
                         .slice( ( now_pageIndex * this.state.limitContentCnt ) , ( now_pageIndex * this.state.limitContentCnt + this.state.limitContentCnt ) );
-                console.log(change_settleChild_detailList);
+                //console.log(change_settleChild_detailList);
                 this.setState({settleChild_detailList: change_settleChild_detailList});
         }
     }
