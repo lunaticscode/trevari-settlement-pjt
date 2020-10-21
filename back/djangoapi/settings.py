@@ -85,7 +85,7 @@ CORS_ORIGIN_WHITELIST = (
     'http://localhost:9500',
     'http://0.0.0.0:9500',
     'http://humanwater.insoo:9500',
-    'http://ec2-13-209-91-209.ap-northeast-2.compute.amazonaws.com/',
+    'http://ec2-13-209-91-209.ap-northeast-2.compute.amazonaws.com:9500',
 )
 
 
