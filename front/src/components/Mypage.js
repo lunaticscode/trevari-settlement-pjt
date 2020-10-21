@@ -58,7 +58,6 @@ class Mypage extends React.Component {
         //* 이전페이지에서 클릭되어진 탭 메뉴(폰트, 보더라인) 색상 gray로 변환.
         let clickedTab_elem = document.getElementsByClassName("tabMenu clicked")[0];
         clickedTab_elem.classList.add("off");
-
     }
 
     componentWillUnmount(){
@@ -71,7 +70,6 @@ class Mypage extends React.Component {
         //* 이전페이지에서 클릭되어진 탭 메뉴(폰트, 보더라인) 색상 다시 원래대로 반환.
         let clickedTab_elem = document.getElementsByClassName("tabMenu clicked")[0];
         clickedTab_elem.classList.remove("off");
-
     }
 
     render() {

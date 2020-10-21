@@ -38,6 +38,7 @@ class Header extends React.Component {
             let nowTabIndex = this.state.tabPathArray.indexOf(this.props.appMoveInfo['nowPage']);
             document.getElementById("tab_"+prevTabIndex).classList.remove('clicked');
             document.getElementById("tabBorder_"+prevTabIndex).classList.remove("clickedBorder");
+            document.getElementById("tab_"+prevTabIndex).classList.remove("off");
             document.getElementById("tab_"+nowTabIndex).classList.add('clicked');
             document.getElementById("tabBorder_"+nowTabIndex).classList.add('clickedBorder');
         }
