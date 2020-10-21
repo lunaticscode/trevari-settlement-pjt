@@ -49,8 +49,31 @@ class Mypage extends React.Component {
     }
 
     componentDidMount() {
+        console.log('mypage component did mount');
+        let mypageBtn_elem = document.getElementById("ActionBtn");
+        mypageBtn_elem.style.borderColor = "rgb(70, 236, 231)";
+        mypageBtn_elem.style.color = "rgb(70, 236, 231)";
+        mypageBtn_elem.style.boxShadow = "0px 0px 3px rgb(70, 236, 231)";
+
+        //* 이전페이지에서 클릭되어진 탭 메뉴(폰트, 보더라인) 색상 gray로 변환.
+        let clickedTab_elem = document.getElementsByClassName("tabMenu clicked")[0];
+        clickedTab_elem.classList.add("off");
 
     }
+
+    componentWillUnmount(){
+        console.log('mypage component unmounted');
+        let mypageBtn_elem = document.getElementById("ActionBtn");
+        mypageBtn_elem.style.border = "2px solid silver";
+        mypageBtn_elem.style.color = "silver";
+        mypageBtn_elem.style.boxShadow = "none";
+
+        //* 이전페이지에서 클릭되어진 탭 메뉴(폰트, 보더라인) 색상 다시 원래대로 반환.
+        let clickedTab_elem = document.getElementsByClassName("tabMenu clicked")[0];
+        clickedTab_elem.classList.remove("off");
+
+    }
+
     render() {
         let MypageLayout_style = {
             height: window.innerHeight,

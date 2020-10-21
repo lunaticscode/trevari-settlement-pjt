@@ -51,6 +51,7 @@
   color:gray; font-weight: 600;
   width:auto; padding:4px 5px;
   //border-bottom: 0px solid none;
+
 }
 
 //@keyframes border-expanding {
@@ -62,7 +63,9 @@
 //  height:2px;
 //}
 
-.clicked{ color:$main-line-color; border-bottom: 3px solid $main-line-color; }
+.clicked{ color:$main-line-color; border-bottom: 3px solid $main-line-color;
+  &.off{ color: gray; border-bottom-color: gray; }
+}
 
 //.clickedBorder{
 //  animation-name: border-expanding;

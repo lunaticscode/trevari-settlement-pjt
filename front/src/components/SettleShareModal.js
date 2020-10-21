@@ -42,7 +42,6 @@ class SettleShareModal extends React.Component {
             settleSite_param = crypto.base64_enc(settleSite_param);
             let now_host_addr = window.location.protocol + '//' + window.location.hostname + ':9500/';
             this.setState({linkUrl: now_host_addr+'settleResult/'+settleSite_param});
-            //* Clipboard origin(?) props ===> type={} style={} component={} className={} options={}
 
             if(this.props.settleShare_loginFlag){
                 console.log('회원 유저, 정산정보 저정완료 모달 오픈');
@@ -50,16 +49,17 @@ class SettleShareModal extends React.Component {
             }
             //* 비회원 유저 정산정보 저장 api 호출
             else{
-
                 console.log('비회원 유저, 정산정보 저장 api 호출 준비');
                 let settleResultSite_param = this.props.settleShareSite_key;
                 let settleInfo = this.props.settleShare_Info;
                 console.log(settleInfo);
 
-                let nouserSettle_key = settleResultSite_param.split('&&')[1] + settleResultSite_param.split('&&')[2];
+                //let nouserSettle_key = settleResultSite_param.split('&&')[1] + settleResultSite_param.split('&&')[2];
+                let nouserSettle_key = settleResultSite_param;
 
                 console.log(nouserSettle_key);
-                nouserSettle_key = crypto.encrypt_account(nouserSettle_key);
+                //nouserSettle_key = crypto.encrypt_account(nouserSettle_key);
+
                 console.log(nouserSettle_key);
 
                 let submitData = {

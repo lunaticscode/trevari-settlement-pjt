@@ -22,7 +22,7 @@ export default class CryptoUtil {
     }
 
     static base64_enc(text){
-        let enc_text = Buffer.from(text).toString('base64');
+        let enc_text = Buffer.from(text, 'utf-8').toString('base64');
         return enc_text;
     }
     static base64_denc(text){

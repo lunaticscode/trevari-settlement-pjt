@@ -167,6 +167,78 @@ class Account extends React.Component {
 
     addMyAccount_registBtnClick(e){
 
+        let regist_availFlag = this.state.accountGrant_flag;
+
+        if(regist_availFlag) {
+
+            let now_myAccountList = this.state.myAccountList;
+            let add_AccountNum = this.state.nowEdit_bankInfo['bank_num'];
+            let dupleFlag = now_myAccountList.some(elem => {
+                return elem['bank_num'] === add_AccountNum;
+            });
+
+            if(dupleFlag){
+                let alertModal_text = '(!)이미 등록된 계좌입니다. 다시 확인해주세요.';
+                this.props.alertModal_open(alertModal_text, window.innerHeight);
+                this.setState({accountGrant_flag: false});
+                Sleep.sleep_func(1500).then(()=> {this.props.alertModal_close()});
+                return;
+            }
+            else{
+                console.log(now_myAccountList);
+                let nowEdit_grantedBankInfo = new Array(1).fill( this.state.nowEdit_bankInfo );
+                console.log(nowEdit_grantedBankInfo);
+                let add_result_myAccountArray = now_myAccountList.concat(nowEdit_grantedBankInfo);
+
+                let result_obj = {};
+                add_result_myAccountArray.forEach( (elem, index) => {
+                    result_obj[index + 1] = {
+                        bank_code: elem['bank_code'],
+                        bank_num: crypto.encrypt_account(elem['bank_num'].toString()),
+                    };
+                });
+                console.log(result_obj);
+
+                if( Cookie.get_cookie("UserName") && Cookie.get_cookie("AccessToken") ){
+
+                    let now_username = Cookie.get_cookie("UserName");
+
+                    Cookie.get_cookie('UserName');
+                    let submitData = { username: now_username, account_info: result_obj };
+
+                    Fetch.fetch_api('account', 'POST', submitData).then(res => {
+
+                         if(res.toString().trim().indexOf('Error') !== -1) {
+                             console.log(res);
+                             let alertModal_text = '(!) 서버 에러 발생, 관리자에게 문의해주세요.';
+                             this.props.alertModal_open(alertModal_text, window.innerHeight - 30);
+                             Sleep.sleep_func(1000).then( () => { this.props.alertModal_close() } );
+                            return;
+                         }
+
+                         if( res['result'].toString().trim() === 'success' ) { location.href='/account'; }
+
+                        if( res['result'].toString().trim() === 'revoke' ) {
+                            console.log('(!) API Error ', '\n', res);
+                            let alertModal_text = '(!) API 요청 오류. 로그아웃 후, 다시 시도해주세요.';
+                            this.props.alertModal_open(alertModal_text, window.innerHeight - 30);
+                            Sleep.sleep_func(1000).then( () => { this.props.alertModal_close() } );
+                            return;
+                        }
+
+
+                    });
+
+                }
+
+
+
+
+
+            }
+
+
+        }
     }
 
     deleteMyAccount(e){
@@ -229,36 +301,40 @@ class Account extends React.Component {
                }
 
                if(res['result'].toString().trim() === 'success'){
-
                    //console.log(res['account_list']);
 
                    //* 회원 유저임에도 불구하고, 관리중인 계좌 목록이 하나도 없을 경우, 빈 배열로 설정;
                    let myAccount_list = (res['account_list']) ? JSON.parse( res[ 'account_list' ].toString().replace( /'/g,  '\"' ) ) : [];
+                   //console.log(myAccount_list, typeof(myAccount_list), myAccount_list.length);
+                   let tmp_accountArray = [];
 
+                       for( let key in myAccount_list ){
+                            let tmp_obj = {
+                                bank_code: myAccount_list[ key ][ 'bank_code' ],
 
-                   let tmp_account_array = [];
-                   for( let key in myAccount_list ){
-                        let tmp_obj = {
-                            bank_code: myAccount_list[ key ][ 'bank_code' ],
+                                bank_name:
+                                    this.state.bankInfo_valueArray[
+                                            this.state.bankInfo_valueArray.findIndex( ( b_elem ) => b_elem['code'] === myAccount_list[ key ] [ 'bank_code' ] )
+                                        ]['name'],
 
-                            bank_name:
-                                this.state.bankInfo_valueArray[
-                                        this.state.bankInfo_valueArray.findIndex( ( b_elem ) => b_elem['code'] === myAccount_list[ key ][ 'bank_code' ] )
-                                    ].name,
+                                bank_num: crypto.decrypt_account( myAccount_list[ key ][ 'bank_num' ] ),
+                            };
+                            tmp_accountArray.push( tmp_obj );
+                       }
 
-                            bank_num: crypto.decrypt_account( myAccount_list[ key ][ 'bank_num' ] ),
-                        };
-                        tmp_account_array.push( tmp_obj );
-                   }
-                   this.setState( { myAccountList: tmp_account_array } );
+                   //console.log(tmp_accountArray);
+
+                   //let tmp_accountArray = [];
+
+                   this.setState( { myAccountList: tmp_accountArray } );
                    let empty_cardInfo_obj = {
                             bank_code: 0, bank_name: null, bank_num: null,
                    };
 
                         //* 관리가능 계좌 최대 5개,
                         //* 5개 미만일 경우, [ + 추가 ] 기능있는 빈 계좌 obj 추가.
-                        if(tmp_account_array.length < 5){
-                            let tmp_slideAccount_list = tmp_account_array.concat(empty_cardInfo_obj);
+                        if(tmp_accountArray.length < 5){
+                            let tmp_slideAccount_list = tmp_accountArray.concat(empty_cardInfo_obj);
                             this.setState({slideAccountList: tmp_slideAccount_list});
                         }
 

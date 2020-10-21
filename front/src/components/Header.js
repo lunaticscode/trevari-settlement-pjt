@@ -52,7 +52,6 @@ class Header extends React.Component {
         if(this.state.nowPath !== window.location.pathname && this.state.tabPathArray.indexOf(window.location.pathname) !== -1 ){
             this.props.clickLink(window.location.pathname);
         }
-
     }
 
     render() {
@@ -67,6 +66,7 @@ class Header extends React.Component {
         });
 
         let actionBtn_class = (this.props.LoginUserName) ? 'mypage' : ' ';
+
         return (
             <div id="HeaderLayout">
                 <div id="TopSection">
@@ -75,18 +75,19 @@ class Header extends React.Component {
                         <div id="AppLogo_text">모두의 정산</div>
                     </div>
                     <Link to={ (this.props.LoginUserName) ?  "/mypage"  : "/login"}>
-                        <div id="ActionBtn" className={actionBtn_class}>{ (this.props.LoginUserName) ? '내 정보' : '로그인' }</div>
+                        <div id="ActionBtn" className={actionBtn_class}>
+                            { (this.props.LoginUserName) ? '내 정보' : '로그인' }
+                        </div>
                     </Link>
                 </div>
 
-                <div id="tabMenuSection">
+                <div id="tabMenuSection" >
                     {this.state.tabMenuArray.map((elem, index) => {
                         return <Link key={index} to={this.state.tabPathArray[index]}>
                                     <div id={"tab_"+index} onClick={this.tabMenuClick} className="tabMenu">
                                         {elem}
                                         <div id={"tabBorder_"+index}  className="tabMenuBorder"></div>
                                     </div>
-
                                </Link>
                     })}
                </div>

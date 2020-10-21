@@ -14,6 +14,7 @@ class SettleResultPage extends React.Component {
         const { params } = this.props.match;
         let settleResult_key_denc = crypto.base64_denc(params.id);
         settleResult_key_denc = crypto.decrypt_account(settleResult_key_denc);
+
         this.state={
 
             bankInfo_obj: {
@@ -47,29 +48,29 @@ class SettleResultPage extends React.Component {
         };
         console.log(params);
     }
-    //AppLogoBtn_click(){ document.getElementById("Link_goIndexPage").click(); }
+
     AccountCopySuccess(){
         document.getElementById("AccountCopySuccess_alertModal").style.display = 'block';
         Sleep.sleep_func(1000).then( () => {
             document.getElementById("AccountCopySuccess_alertModal").style.display = 'none';
         });
-        console.log('asd');
+        //console.log('asd');
     }
     componentDidMount(){
         window.scroll(0, 0);
         let BackBtn_flag = ( this.props.appMoveInfo['nowPage'] === '/history' ) ? this.setState({backBtn_flag: true}) : this.setState({backBtn_flag: false});
-        console.log('BackBtn_flag : ', BackBtn_flag);
+        //console.log('BackBtn_flag : ', BackBtn_flag);
 
         let keyInfo_splitArray = this.state.settleKey_info.split('&&');
 
         //* 저장된 정산결과 내용이 비회원 유저가 작성한 경우,
         if(keyInfo_splitArray[0] === 'nouser'){
-            let access_key = keyInfo_splitArray[1] + keyInfo_splitArray[2];
-            access_key = crypto.encrypt_account(access_key);
+
+            let access_key = this.state.settleKey_info;
             console.log('nouser access_key : ', access_key);
 
             Fetch.fetch_api('nousersettle/'+access_key, 'GET', null).then(res => {
-                console.log(res);
+                //console.log(res);
                 if(res.toString().trim().indexOf('Error') !== -1){
                     this.setState({settleInfo_errorFlag: true});
                     console.log("(!) 존재하지 않는 URL 파라미터");
@@ -79,9 +80,21 @@ class SettleResultPage extends React.Component {
                     this.setState({settleInfo_errorFlag: false});
 
                     let settleInfo_obj = res['settleInfo'];
+                    let settleBankInfo = settleInfo_obj['bank_info'];
+
+                    if(settleBankInfo){
+                        let bank_index = Object.values( this.state.bankInfo_obj ).findIndex(elem => elem['code'] === settleBankInfo['bank_code'] );
+                        let bank_name = Object.values ( this.state.bankInfo_obj )[bank_index]['name'];
+                        let tmp_obj = Object.assign(settleBankInfo, {
+                            bank_num: crypto.decrypt_account(settleBankInfo.bank_num),
+                            bank_name: bank_name,
+                        });
+                        this.setState({settleInfo_bank: tmp_obj});
+                    }
+
 
                     let settleInnerInfo = JSON.parse( res['settleInfo']['settle_info'] );
-                    console.log(settleInnerInfo);
+                    //console.log(settleInnerInfo);
 
                     let settleInnerForm_cnt = Object.keys(settleInnerInfo).length;
 
@@ -103,7 +116,7 @@ class SettleResultPage extends React.Component {
                             acc[cur['name']] = curValue;
                             return acc;
                         }, {});
-                    console.log(personSettleInfo_obj);
+                    //console.log(personSettleInfo_obj);
 
                     this.setState({
                                     settleInfo_title: settleTitle,
@@ -164,7 +177,7 @@ class SettleResultPage extends React.Component {
                         acc[cur['name']] = curValue;
                         return acc;
                     }, {});
-                    console.log(personSettleInfo_obj);
+                    //console.log(personSettleInfo_obj);
 
                     this.setState({
                         settleInfo_title: settleTitle,
@@ -201,7 +214,13 @@ class SettleResultPage extends React.Component {
                          </Link>
                          : ''
                     }
-                    <font className="bold"><font id="settleOwnerName">{(this.state.settleOwnerName) ? this.state.settleOwnerName : ''}<font id="settleOwnerConnecter"> 님의</font></font> 정산결과</font>
+
+                    {
+                        ( this.state.settleOwnerName )
+                        ? <font className="bold"><font id="settleOwnerName">{this.state.settleOwnerName}<font id="settleOwnerConnecter"> 님의</font></font> 정산결과</font>
+                        : <font className="bold">정산결과</font>
+                    }
+
                 </div>
 
                 <div id="SettleResultPage_content">
@@ -263,7 +282,7 @@ class SettleResultPage extends React.Component {
 
 const mapStateToProps = (state) => {
     //console.log('redux store - pageChangeInfo : ',state['pageChange']);
-    console.log(state['pageChange']);
+    //console.log(state['pageChange']);
     return{
         appMoveInfo : state['pageChange'],
     };

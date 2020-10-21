@@ -63,9 +63,6 @@ class App extends React.Component {
         this.AppTouchMove = this.AppTouchMove.bind(this);
     }
 
-    componentWillReceiveProps(props){
-
-    }
 
     componentDidUpdate(prevProps, prevState) {
 

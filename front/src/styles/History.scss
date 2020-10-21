@@ -7,6 +7,7 @@
 
 #HistoryLayout {
   //text-align: center;
+  height: auto; min-height: 400px;
   animation-name: fade-in-2; animation-fill-mode: forwards; animation-duration: 700ms;
 }
 #HistoryTitle{

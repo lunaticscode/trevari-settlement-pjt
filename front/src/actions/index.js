@@ -16,13 +16,13 @@ export const InfoModalOpen = 'InfoModalOpen';
 export const InfoModalClose = 'InfoModalClose';
 
 
+//* 경고모달( ==> AlertModal.js 컴포넌트 ) 액션.
 export function modal_open(text, topPosition) {
     return {
         type: ModalOpen,
         text, topPosition,
     };
 }
-
 export function modal_close() {
     return {
         type: ModalClose,
@@ -30,20 +30,19 @@ export function modal_close() {
 }
 
 
+//* 앱 스와이프(좌, 우), 탭 클릭( ==> PageStack.js 컴포넌트 ) 액션.
 export function left_swipe(nowPage) {
     return {
         type: LeftSwipe,
         nowPage,
     }
 }
-
 export function right_swipe(nowPage) {
     return {
         type: RightSwipe,
         nowPage,
     }
 }
-
 export function click_link(nowPage) {
     return {
         type: ClickLink,
@@ -51,6 +50,8 @@ export function click_link(nowPage) {
     }
 }
 
+
+//* 모달 생성 전 배경으로 깔리는 마스크( ==> Mask.js 컴포넌트 ) 액션.
 export function mask_open() {
     return {
         type: MaskOpen,
@@ -63,6 +64,7 @@ export function mask_close() {
 }
 
 
+//* 정보 제공용( ==> CommonModal.js 컴포넌트 ) 모달 액션.
 export function commonModal_open(title, text, subText, mood) {
     return{
         type: CommonModalOpen,
@@ -81,6 +83,7 @@ export function commonModal_action() {
 }
 
 
+//* 정산 세부내용( ==> SettleDetailModal.js 컴포넌트 ) 모달 액션.
 export function infomodal_open(info) {
     return {
         type: InfoModalOpen,
