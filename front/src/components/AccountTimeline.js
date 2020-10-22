@@ -169,12 +169,17 @@ class AccountTimeline extends React.Component {
                     //     </div>
                     // })
                 }
+                {
+                    ( this.props.accountInfo.length > 0 )
+                    ? <div id="AccountTimeline_moreViewBtn"
+                           className={ ( this.state.contentPage !== this.state.contentMaxPage ) ? "active" : "" }
+                           onClick={this.accountTimeline_moreView}>
 
-                <div id="AccountTimeline_moreViewBtn"
-                     className={ ( this.state.contentPage !== this.state.contentMaxPage ) ? "active" : "" }
-                     onClick={this.accountTimeline_moreView}>
-                    더보기<font> ( {this.state.contentPage + ' / ' + this.state.contentMaxPage} )</font>
-                </div>
+                            더보기<font> ( {this.state.contentPage + ' / ' + this.state.contentMaxPage} )</font>
+                        </div>
+                        : <div id="noneInfo_notify"><font className="bold">* </font>해당계좌의 정산정보가 없습니다.</div>
+                }
+
 
             </div>
         );

@@ -92,12 +92,18 @@ class Account extends React.Component {
                 else{
                     try{
                             let now_accountSettleInfo = ( now_accountNum ) ? this.state.settleInfo_byAccount_obj[now_accountNum] : null;
+                            console.log(now_accountNum);
+                            console.log(Object.keys(this.state.settleInfo_byAccount_obj));
+
+                            if(Object.keys(this.state.settleInfo_byAccount_obj).indexOf(now_accountNum) == -1){
+                                this.setState({now_lookingCardInfo_array: []});
+                                return;
+                            }
                             if(now_accountNum && this.state.settleInfo_byAccount_obj[now_accountNum].length > 0) {
+
                                 now_accountSettleInfo.sort( (a, b) => b['date'] - a['date']);
                                 this.setState({now_lookingCardInfo_array: now_accountSettleInfo});
                             }
-                            
-                            else{ this.setState({now_lookingCardInfo_array: []}); }
 
                     }catch(e){
                         console.log(e.toString());
