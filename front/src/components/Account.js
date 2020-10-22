@@ -92,8 +92,8 @@ class Account extends React.Component {
                 else{
                     try{
                             let now_accountSettleInfo = ( now_accountNum ) ? this.state.settleInfo_byAccount_obj[now_accountNum] : null;
-                            console.log(now_accountNum);
-                            console.log(Object.keys(this.state.settleInfo_byAccount_obj));
+                            //console.log(now_accountNum);
+                            //console.log(Object.keys(this.state.settleInfo_byAccount_obj));
 
                             if(Object.keys(this.state.settleInfo_byAccount_obj).indexOf(now_accountNum) == -1){
                                 this.setState({now_lookingCardInfo_array: []});
@@ -479,7 +479,7 @@ class Account extends React.Component {
                                  onScroll={this.AccountCardSliding} >
                                 {
                                         this.state.slideAccountList.map( ( elem, index ) => {
-                                            console.log(elem);
+                                            //console.log(elem);
                                             return <div className={ (this.state.now_lookingCardIndex === index) ? "myAccountCard_layout active" : "myAccountCard_layout"}
                                                         onTouchStart={this.AcconutCardSlider_touchStartMove}
                                                         onTouchMove={this.AcconutCardSlider_touchStartMove}
