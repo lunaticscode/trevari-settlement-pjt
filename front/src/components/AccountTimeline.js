@@ -29,20 +29,12 @@ class AccountTimeline extends React.Component {
                 this.setState({contentPage: now_contentPage + 1});
             }
     }
-    componentWillReceiveProps(props){
 
-    }
     componentDidUpdate( prevProps, prevState ) {
-        console.log(this.props);
         if(prevProps !== this.props) {
-        //console.log('AccountTimeline.js - Update');
-
-        if (prevProps.accountInfo !== this.props.accountInfo || prevProps.passingCardIndex !== this.props.passingCardIndex) {
-            //console.log('AccountTimeline.js [Props] - Update');
-            //console.log('init receive props ---> state ',this.props.accountInfo);
+        if (prevProps.accountInfo !== this.props.accountInfo || prevProps.passingCardIndex !== this.props.passingCardIndex || prevProps.accountInfo == this.props.accountInfo) {
             let receive_info_array = this.props.accountInfo;
             this.setState({nowAccountInfo: this.props.accountInfo});
-            //console.log('ria : ',receive_info_array);
             let processing_info_obj = receive_info_array.reduce((acc, cur) => {
                 let tmp_arrayElem = [{
                     sumprice: cur['sumprice'],
@@ -55,12 +47,9 @@ class AccountTimeline extends React.Component {
                 acc[date_value] = curValue;
                 return acc;
             }, {});
-            //console.log(processing_info_obj);
 
             this.setState({detailAccountInfo: processing_info_obj});
-            //console.log('receive_info_Array', receive_info_array);
             let test_sliceArray = receive_info_array.slice(0, this.state.contentLimitCnt);
-            //console.log(test_sliceArray);
             let test_info_array = test_sliceArray.reduce((acc, cur, index) => {
                 let tmp_arrayElem = {
                     date: cur['date'],
@@ -74,13 +63,10 @@ class AccountTimeline extends React.Component {
                 acc[index] = tmp_arrayElem;
                 return acc;
             }, []);
-            //console.log('test_inf_array', test_info_array);
 
             this.setState({detailAccountInfo2: test_info_array});
-            //console.log('test_info_Array : ', test_info_array);
 
             let init_infoCnt = this.props.accountInfo.length;
-            //console.log(init_infoCnt);
 
             let pageMaxCnt = Math.ceil(init_infoCnt / 10);
             this.setState({contentPage: 1, contentMaxPage: pageMaxCnt});
@@ -89,7 +75,6 @@ class AccountTimeline extends React.Component {
 
         //* 더보기 버튼
         if( prevState.contentPage !== this.state.contentPage ){
-            //console.log('content page change');
 
             let contentAllCnt = this.props.accountInfo.length;
             let nextContentCnt = ( ( this.state.contentPage ) * this.state.contentLimitCnt >= contentAllCnt )
@@ -97,7 +82,6 @@ class AccountTimeline extends React.Component {
 
             let receive_info_array = this.props.accountInfo;
             let test_sliceArray = receive_info_array.slice(0, nextContentCnt);
-            //console.log(test_sliceArray);
 
             let test_info_array = test_sliceArray.reduce( (acc, cur, index) => {
                 let tmp_arrayElem = {
@@ -112,16 +96,13 @@ class AccountTimeline extends React.Component {
                 acc[index] = tmp_arrayElem;
                 return acc;
             }, []);
-            //console.log('test_inf_array', test_info_array);
             this.setState({ detailAccountInfo2: test_info_array });
         }
 
     }
 
     componentDidMount() {
-            // Sleep.sleep_func(500).then(() => {
-            //
-            // });
+
     }
 
     render() {
