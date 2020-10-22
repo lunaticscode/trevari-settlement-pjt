@@ -58,12 +58,13 @@
   @include animation-slide-from-left;
   position: relative;
   left:15px;
-  font-size:25px; font-weight: 800;
+  font-size:8vw; font-weight: 800;
   opacity: 0;
-  &:nth-child(2){animation-delay: 500ms;}
-  &:nth-child(3){animation-delay: 1000ms}
+  &:nth-child(2){animation-delay: 500ms; }
+  &:nth-child(3){animation-delay: 1000ms; }
+
   &.title{
-    animation-delay: 1750ms; margin-top:20px; font-size:35px;
+    animation-delay: 1750ms; margin-top:20px; font-size:11vw;
     & img{
       margin-top:-7px; vertical-align: middle;
       width:22px; height: 22px; padding:5px; border:3px solid $main-line-color; border-radius: 5px; box-shadow: 0px 0px 3px $main-line-color;
