@@ -446,7 +446,7 @@ class Account extends React.Component {
 
     render() {
         let loginFlag = this.state.loginFlag;
-        let AccountLayout_style = {height: ( !loginFlag ) ? '500px' : window.innerHeight - 200};
+        let AccountLayout_style = {height: ( !loginFlag ) ? '500px' : window.innerHeight - 250};
         let CardSlider_style = {display: ( this.state.cardSliding_availFlag ) ? 'block': 'none' }
         let now_userName = ( loginFlag ) ? Cookie.get_cookie('UserName') : '';
         return (
