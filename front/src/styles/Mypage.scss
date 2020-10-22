@@ -44,3 +44,39 @@
 #passwordChange_btn{
 
 }
+
+#passwordChangeModal_closeBtn{
+  width:15px; height:15px; float: right;
+  margin-top:10px; margin-right:10px;
+}
+#passwordChangeModal{
+  position: absolute; z-index: 100001;
+  background: $main-background2; border-radius: 10px; box-shadow: 0px 0px 5px black;
+  width:90%; left:5%; height:180px;
+  & input{
+    color:white;
+    outline: none; border: none; border-bottom: 2px solid gray; width:80%; margin-left:10%; margin-top:25px; background: none;
+    &.active{ border-bottom-color: $main-line-color; }
+  }
+}
+
+#passwordChangeModal_title{
+  display: inline-block; margin-left:15px; margin-top:20px; font-weight: 700;
+}
+#passwordChangeModal_subTitle{
+  margin-left:15px; margin-top:5px;
+  color:gray; font-size:11px;
+}
+
+#passwordChangeAction_btn{
+  display: inline-block; width:90%; margin-left: 5%;
+  margin-top:25px; text-align: center;
+
+  background: none; border: 1px solid gray; color:gray;
+  &.active{
+    color:white; border-color: $main-line-color;
+    background: $main-background2; box-shadow: 0px 0px 5px $main-line-color;
+  }
+  border-radius: 5px;
+  padding:5px 0px;
+}

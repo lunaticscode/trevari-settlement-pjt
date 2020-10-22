@@ -106,13 +106,24 @@ class LoginView(APIView):
             return Response(content, status=status.HTTP_200_OK)
 
 
-# class PasswordChange(APIView):
-#        """
-#        PUT /api/users/changepassword
-#        """
-#        def put(self, request):
-#             token = request.data['token']
-#             userName = request.data['token']
+
+class PasswordChange(APIView):
+       """
+       POST /api/users/changepw
+       """
+       def post(self, request):
+            userName = request.data['user_name']
+            changePw = request.data['change_pw']
+            if User.objects.filter(name=userName):
+                user_instacne = User.objects.get(name=userName)
+                user_instacne.password = changePw
+                user_instacne.save()
+                content = {'result': 'success'}
+                return Response(content, status=status.HTTP_200_OK)
+
+            else:
+                content = {'result': 'fail'}
+                return Response(content, status=status.HTTP_200_OK)
 
 
 class TokenAuthView(APIView):
@@ -130,6 +141,9 @@ class TokenAuthView(APIView):
            else:
                content = {"auth_result": "revoke", "message": "(!) 다시 로그인해주세요."}
                return Response(content, status=status.HTTP_200_OK)
+
+
+
 
 
 imp_key = get_secret("IMP_KEY")

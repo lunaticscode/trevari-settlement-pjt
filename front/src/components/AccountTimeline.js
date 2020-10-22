@@ -56,6 +56,7 @@ class AccountTimeline extends React.Component {
             this.setState({detailAccountInfo: processing_info_obj});
 
             //let test_sliceArray = receive_info_array.slice(0, this.state.contentLimitCnt);
+
             let test_sliceArray = receive_info_array.slice();
             let test_info_array = test_sliceArray.reduce((acc, cur, index) => {
                 let tmp_arrayElem = {
@@ -81,37 +82,36 @@ class AccountTimeline extends React.Component {
         }
    }
 
-        //* 더보기 버튼
-        if( prevState.contentPage !== this.state.contentPage ){
-//             console.log('contentPage state change ');
-//             let contentAllCnt = this.props.accountInfo.length;
-//             let nextContentCnt = ( ( this.state.contentPage ) * this.state.contentLimitCnt >= contentAllCnt )
-//                 ? contentAllCnt : ( this.state.contentPage ) * this.state.contentLimitCnt;
-//
-//             let receive_info_array = this.props.accountInfo;
-//             console.log(receive_info_array);
-//
-// //            let test_sliceArray = receive_info_array.slice(0, nextContentCnt);
-//             let test_sliceArray = receive_info_array.slice(0, nextContentCnt);
-//
-//             let test_info_array = test_sliceArray.reduce( (acc, cur, index) => {
-//                 let tmp_arrayElem = {
-//                     date: cur['date'],
-//                     sumprice: cur['sumprice'],
-//                     meetcnt: Object.keys(cur['info']).length,
-//                     title: cur['title'],
-//                     borderFlag: null,
-//                 };
-//                 let borderFlag = ( index > 0 && acc[index-1]['date'].substr(0, 8) !== cur['date'].substr(0, 8) ) ? true : null;
-//                 tmp_arrayElem['borderFlag'] = borderFlag;
-//                 acc[index] = tmp_arrayElem;
-//                 return acc;
-//             }, []);
-//             this.setState({ detailAccountInfo2: test_info_array });
-        }
+            //* 더보기 버튼
+    //        if( prevState.contentPage !== this.state.contentPage ){
+    //             console.log('contentPage state change ');
+    //             let contentAllCnt = this.props.accountInfo.length;
+    //             let nextContentCnt = ( ( this.state.contentPage ) * this.state.contentLimitCnt >= contentAllCnt )
+    //                 ? contentAllCnt : ( this.state.contentPage ) * this.state.contentLimitCnt;
+    //
+    //             let receive_info_array = this.props.accountInfo;
+    //             console.log(receive_info_array);
+    //
+    // //            let test_sliceArray = receive_info_array.slice(0, nextContentCnt);
+    //             let test_sliceArray = receive_info_array.slice(0, nextContentCnt);
+    //
+    //             let test_info_array = test_sliceArray.reduce( (acc, cur, index) => {
+    //                 let tmp_arrayElem = {
+    //                     date: cur['date'],
+    //                     sumprice: cur['sumprice'],
+    //                     meetcnt: Object.keys(cur['info']).length,
+    //                     title: cur['title'],
+    //                     borderFlag: null,
+    //                 };
+    //                 let borderFlag = ( index > 0 && acc[index-1]['date'].substr(0, 8) !== cur['date'].substr(0, 8) ) ? true : null;
+    //                 tmp_arrayElem['borderFlag'] = borderFlag;
+    //                 acc[index] = tmp_arrayElem;
+    //                 return acc;
+    //             }, []);
+    //             this.setState({ detailAccountInfo2: test_info_array });
+    //        }
 
     }
-
     componentDidMount() {
 
     }
@@ -145,34 +145,6 @@ class AccountTimeline extends React.Component {
                                     </div>
                     })
 
-                    // Object.keys( this.state.detailAccountInfo ).sort( ( a, b ) => b - a ).map( ( k_elem, k_index ) => {
-                    //     return <div className="AccountTimeline_dateBorder" key={k_index} >
-                    //
-                    //                 {
-                    //                     Object.values(this.state.detailAccountInfo)[k_index].map((v_elem, v_index) => {
-                    //                         return <div className="AccountTimeline_content box" key={v_index} >
-                    //                                     <div>
-                    //                                         <div className="AccountTimeline_content date_value">
-                    //                                             {v_elem['date']}
-                    //                                         </div>
-                    //                                         <div className="AccountTimeline_content title_value">
-                    //                                             {v_elem['title']}
-                    //                                             {
-                    //                                                 ( parseInt( v_elem['meetcnt'] ) > 1 )
-                    //                                                 ?   <font> (총 {v_elem['meetcnt']}차)</font>
-                    //                                                     : ''
-                    //                                             }
-                    //
-                    //                                         </div>
-                    //                                     </div>
-                    //                                         <div className="AccountTimeline_content sum_value">
-                    //                                             {v_elem['sumprice'].toLocaleString() + "원"}
-                    //                                         </div>
-                    //                         </div>
-                    //                     })
-                    //                 }
-                    //     </div>
-                    // })
                 }
                 {
                     ( this.props.accountInfo.length > 0  )
@@ -196,6 +168,5 @@ AccountTimeline.defaultProps={
     accountInfo: [],
     passingCardIndex: 0,
     nowEmptyCardFlag: null,
-
 };
 export default AccountTimeline;

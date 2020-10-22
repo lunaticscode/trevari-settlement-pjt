@@ -2,19 +2,25 @@ import React from 'react';
 import Fetch from "../Fetch";
 import Cookie from "../Cookie";
 import "../styles/Mypage.scss";
+import Sleep from "../Sleep";
+import {modal_close, modal_open} from "../actions";
+import {connect} from "react-redux";
+import crypto from "../CryptoInfo";
 class Mypage extends React.Component {
     constructor(props) {
         super(props);
         this.state ={
             userName: '',
             userEmail: '',
+            passwordChangeModal_status: 'none',
+            editChangePassword_value : null,
+            editPassword_grantFlag: false,
+
         };
 
         let auth_data = { 'token': Cookie.get_cookie("AccessToken"), 'userName': Cookie.get_cookie("UserName") };
-        let LoginStatus = ( Cookie.get_cookie('AccessToken') ) ? true : false;
-
-        if(!LoginStatus) { location.href = '/'; return; }
-
+        let LoginStatus = ( Cookie.get_cookie('UserName') && Cookie.get_cookie('AccessToken') ) ? true : false;
+        if(!LoginStatus) { location.href = '/login'; return; }
         if(LoginStatus) {
             console.log('Ready to start Token-Auth work....');
             Fetch.fetch_api('token/auth', 'POST', auth_data)
@@ -36,6 +42,9 @@ class Mypage extends React.Component {
 
         this.PasswordChange = this.PasswordChange.bind(this);
         this.Logout = this.Logout.bind(this);
+        this.inputChangePassword= this.inputChangePassword.bind(this);
+        this.changePasswordSubmit = this.changePasswordSubmit.bind(this);
+        this.exitModal = this.exitModal.bind(this);
     }
 
     Logout() {
@@ -44,8 +53,57 @@ class Mypage extends React.Component {
        Cookie.delete_cookie('UserName');
        location.href = '/';
     }
-    PasswordChange(){
 
+    exitModal(){
+        document.getElementById("editChangePassword_input").value = '';
+        this.setState({
+            passwordChangeModal_status:'none', editChangePassword_value:null, editPassword_grantFlag:false,
+        })
+    }
+
+    PasswordChange(){
+        let userName = (Cookie.get_cookie('UserName') && Cookie.get_cookie("AccessToken")) ? Cookie.get_cookie("UserName") : null;
+        if(!userName){
+            let alertModal_text = '(!) 접근 권한 없음, 다시 로그인해주세요.';
+            this.props.alertModal_open(alertModal_text, window.innerHeight - 30);
+            Sleep.sleep_func(1000).then( () => { this.props.alertModal_close() } );
+            return;
+        }
+        else{
+            this.setState({passwordChangeModal_status: 'block'})
+        }
+    }
+
+    inputChangePassword(e){
+        let inputValue = e.target.value;
+        console.log(inputValue);
+        let regExp_password = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,16}/;
+        if(  regExp_password.test(inputValue)  ) {
+            this.setState({editPassword_grantFlag: true, editChangePassword_value : crypto.create_pw(inputValue, this.state.userEmail)});
+        }
+        else{
+            this.setState({editPassword_grantFlag: false, editChangePassword_value: null});
+        }
+    }
+
+    changePasswordSubmit(e){
+        let grantStatus = (e.target.classList.value === 'active' && this.state.editPassword_grantFlag ) ? true : false;
+        if(!grantStatus){ return; }
+        else{
+            let userName = (Cookie.get_cookie('UserName') && Cookie.get_cookie("AccessToken")) ? Cookie.get_cookie("UserName") : null;
+            if(!userName){
+                let alertModal_text = '(!) 접근 권한 없음, 다시 로그인해주세요.';
+                this.props.alertModal_open(alertModal_text, window.innerHeight - 30);
+                Sleep.sleep_func(1000).then( () => { this.props.alertModal_close() } );
+                return;
+            }else{
+                let submit_data = {'user_name': this.state.userName, 'change_pw' : this.state.editChangePassword_value};
+                console.log(submit_data);
+
+                //* Fetch 진행. (경로: /api/users/changepw )
+            }
+
+        }
     }
 
     componentDidMount() {
@@ -76,6 +134,7 @@ class Mypage extends React.Component {
         let MypageLayout_style = {
             height: window.innerHeight,
         };
+        let passwordChangeModal_style = {display:this.state.passwordChangeModal_status, };
         return (
             <div id="Mypage_layout" style={MypageLayout_style}>
                 <div id="MypageContent_layout">
@@ -86,11 +145,34 @@ class Mypage extends React.Component {
                         <div id="passwordChange_btn" className="ActionBtn" onClick={this.PasswordChange}>비밀번호 변경</div>
                     </div>
                 </div>
+
+                <div id="passwordChangeModal" style={passwordChangeModal_style}>
+                    <img id="passwordChangeModal_closeBtn" onClick={this.exitModal} src="/img/delete_icon_white.png" />
+                    <div id="passwordChangeModal_title">비밀번호 변경</div>
+                    <div id="passwordChangeModal_subTitle"><font className="bold">*</font> 영문,숫자,특수기호 하나를 포함한 8~16자입니다</div>
+                    <input id="editChangePassword_input"
+                           type="password"
+                           className={ ( this.state.editPassword_grantFlag ) ? "active" : "" }
+                           onChange={this.inputChangePassword} placeholder="변경할 비밀번호 입력"/>
+                    <div id="passwordChangeAction_btn"
+                         onClick={this.changePasswordSubmit}
+                         className={ (this.state.editPassword_grantFlag ) ? "active" : "" }>
+                        비밀번호 변경
+                    </div>
+                </div>
             </div>
         );
     }
 }
 
+let mapDispatchToProps = (dispatch) => {
+    return {
+        alertModal_open: (text, topPosition) => dispatch(modal_open(text, topPosition)),
+        alertModal_close: () => dispatch(modal_close())
+    }
+};
+
+Mypage = connect(undefined, mapDispatchToProps)(Mypage);
 
 
 export default Mypage;
