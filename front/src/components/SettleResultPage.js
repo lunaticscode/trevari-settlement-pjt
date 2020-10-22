@@ -255,7 +255,7 @@ class SettleResultPage extends React.Component {
                         : <font className="bold">정산결과</font>
                     }
                 </div>
-                
+
                 <div id="SettleResultPage_content">
                     {
                         ( this.state.settleInfo_errorFlag )
