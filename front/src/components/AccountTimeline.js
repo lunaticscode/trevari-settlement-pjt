@@ -18,41 +18,50 @@ class AccountTimeline extends React.Component {
 
     accountTimeline_moreView(e){
         let now_contentPage = this.state.contentPage;
-        if( now_contentPage >= this.state.contentMaxPage ){ return; }
-
-        let contentAllCnt = this.props.accountInfo.length;
-        let next_contentCnt =  ( now_contentPage + 1 ) * this.state.contentLimitCnt;
-        if( next_contentCnt >= contentAllCnt ){
-            next_contentCnt = contentAllCnt;
-        }
-        this.setState({contentPage: now_contentPage + 1});
-        //console.log(contentAllCnt, next_contentCnt);
+            if( now_contentPage >= this.state.contentMaxPage ){
+                return;
+            }else{
+                let contentAllCnt = this.props.accountInfo.length;
+                let next_contentCnt =  ( now_contentPage + 1 ) * this.state.contentLimitCnt;
+                if( next_contentCnt >= contentAllCnt ){
+                    next_contentCnt = contentAllCnt;
+                }
+                this.setState({contentPage: now_contentPage + 1});
+            }
     }
+    componentWillReceiveProps(props){
 
+    }
     componentDidUpdate( prevProps, prevState ) {
+        console.log(this.props);
+        if(prevProps !== this.props) {
+        //console.log('AccountTimeline.js - Update');
 
-        if(prevProps.accountInfo !== this.props.accountInfo) {
+        if (prevProps.accountInfo !== this.props.accountInfo || prevProps.passingCardIndex !== this.props.passingCardIndex) {
+            //console.log('AccountTimeline.js [Props] - Update');
             //console.log('init receive props ---> state ',this.props.accountInfo);
-            this.setState({nowAccountInfo: this.props.accountInfo});
             let receive_info_array = this.props.accountInfo;
+            this.setState({nowAccountInfo: this.props.accountInfo});
             //console.log('ria : ',receive_info_array);
-            let processing_info_obj =  receive_info_array.reduce((acc, cur) => {
-                let tmp_arrayElem = [ {sumprice: cur['sumprice'],
-                                       title: cur['title'],
-                                       date: cur['date'].toString().substr(0, 4)+'.'+cur['date'].toString().substr(4, 2)+'.'+cur['date'].toString().substr(6, 2),
-                                       meetcnt: Object.keys(cur['info']).length } ];
+            let processing_info_obj = receive_info_array.reduce((acc, cur) => {
+                let tmp_arrayElem = [{
+                    sumprice: cur['sumprice'],
+                    title: cur['title'],
+                    date: cur['date'].toString().substr(0, 4) + '.' + cur['date'].toString().substr(4, 2) + '.' + cur['date'].toString().substr(6, 2),
+                    meetcnt: Object.keys(cur['info']).length
+                }];
                 let date_value = cur['date'].toString().substr(0, 6);
-                let curValue = ( Object.keys(acc).indexOf(date_value) !== -1 ) ? acc[date_value].concat(tmp_arrayElem) : tmp_arrayElem;
+                let curValue = (Object.keys(acc).indexOf(date_value) !== -1) ? acc[date_value].concat(tmp_arrayElem) : tmp_arrayElem;
                 acc[date_value] = curValue;
                 return acc;
             }, {});
             //console.log(processing_info_obj);
 
-            this.setState({ detailAccountInfo: processing_info_obj });
-
+            this.setState({detailAccountInfo: processing_info_obj});
+            //console.log('receive_info_Array', receive_info_array);
             let test_sliceArray = receive_info_array.slice(0, this.state.contentLimitCnt);
             //console.log(test_sliceArray);
-            let test_info_array = test_sliceArray.reduce( (acc, cur, index) => {
+            let test_info_array = test_sliceArray.reduce((acc, cur, index) => {
                 let tmp_arrayElem = {
                     date: cur['date'],
                     sumprice: cur['sumprice'],
@@ -60,27 +69,31 @@ class AccountTimeline extends React.Component {
                     title: cur['title'],
                     borderFlag: null,
                 };
-                let borderFlag = ( index > 0 && acc[index-1]['date'].substr(0, 8) !== cur['date'].substr(0, 8) ) ? true : null;
+                let borderFlag = (index > 0 && acc[index - 1]['date'].substr(0, 8) !== cur['date'].substr(0, 8)) ? true : null;
                 tmp_arrayElem['borderFlag'] = borderFlag;
                 acc[index] = tmp_arrayElem;
                 return acc;
             }, []);
             //console.log('test_inf_array', test_info_array);
 
-            this.setState({ detailAccountInfo2: test_info_array });
+            this.setState({detailAccountInfo2: test_info_array});
+            //console.log('test_info_Array : ', test_info_array);
+
             let init_infoCnt = this.props.accountInfo.length;
             //console.log(init_infoCnt);
 
             let pageMaxCnt = Math.ceil(init_infoCnt / 10);
             this.setState({contentPage: 1, contentMaxPage: pageMaxCnt});
         }
+    }
 
+        //* 더보기 버튼
         if( prevState.contentPage !== this.state.contentPage ){
             //console.log('content page change');
 
             let contentAllCnt = this.props.accountInfo.length;
             let nextContentCnt = ( ( this.state.contentPage ) * this.state.contentLimitCnt >= contentAllCnt )
-                                    ? contentAllCnt : ( this.state.contentPage ) * this.state.contentLimitCnt;
+                ? contentAllCnt : ( this.state.contentPage ) * this.state.contentLimitCnt;
 
             let receive_info_array = this.props.accountInfo;
             let test_sliceArray = receive_info_array.slice(0, nextContentCnt);
@@ -101,8 +114,8 @@ class AccountTimeline extends React.Component {
             }, []);
             //console.log('test_inf_array', test_info_array);
             this.setState({ detailAccountInfo2: test_info_array });
-
         }
+
     }
 
     componentDidMount() {
@@ -170,11 +183,10 @@ class AccountTimeline extends React.Component {
                     // })
                 }
                 {
-                    ( this.props.accountInfo.length > 0 )
+                    ( this.props.accountInfo.length > 0  )
                     ? <div id="AccountTimeline_moreViewBtn"
                            className={ ( this.state.contentPage !== this.state.contentMaxPage ) ? "active" : "" }
                            onClick={this.accountTimeline_moreView}>
-
                             더보기<font> ( {this.state.contentPage + ' / ' + this.state.contentMaxPage} )</font>
                         </div>
                         : <div id="noneInfo_notify"><font className="bold">* </font>해당계좌의 정산정보가 없습니다.</div>
@@ -188,5 +200,8 @@ class AccountTimeline extends React.Component {
 
 AccountTimeline.defaultProps={
     accountInfo: [],
+    passingCardIndex: 0,
+    nowEmptyCardFlag: null,
+
 };
 export default AccountTimeline;

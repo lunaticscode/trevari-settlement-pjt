@@ -252,7 +252,7 @@ class Settle extends React.Component {
                         }
                     });
                 }
-                else if(this.props.modalConfirm_title === 'notify restSettleForm'){
+                else if( this.props.modalConfirm_title === 'notify restSettleForm' ){
                     //* 남은 정산정보 불러오는 경우, 작성완료된 정산정보 폼 개수 취합.
                     let savedSettleForm_cnt = Object.keys(localStorage).filter( elem => elem.toString().indexOf('savedSettle_') !== -1).length;
                     console.log('savedSettleForm_cnt :', savedSettleForm_cnt);

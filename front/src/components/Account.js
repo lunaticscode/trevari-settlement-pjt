@@ -49,7 +49,8 @@ class Account extends React.Component {
             nowEdit_bankInfo: {bank_code: null, bank_num: null},
             accountGrant_flag: false,
 
-            cardSliding_availFlag: false,
+            cardSliding_availFlag: true,
+            now_lookingCardIsEmpty: false,
         };
 
         this.AccountCardSliding = this.AccountCardSliding.bind(this);
@@ -80,29 +81,26 @@ class Account extends React.Component {
                 let now_slider_offsetX = ( e.target.scrollLeft == 0 ) ? 1 : e.target.scrollLeft;
                 this.setState({now_sliderOffsetX : now_slider_offsetX});
                 let passing_index = Math.floor( now_slider_offsetX / cardWidth );
+                //console.log(passing_index, this.state.now_lookingCardInfo_array);
 
-                this.setState({now_lookingCardIndex: passing_index});
-
+                this.setState({now_lookingCardIndex: passing_index,});
                 let now_accountNum = (this.state.myAccountList[passing_index] ) ? this.state.myAccountList[passing_index]['bank_num'] : null;
+
+
                 if( !this.state.settleInfo_byAccount_obj || !now_accountNum  ){
                     console.log('empty card section');
-
                     this.setState({now_lookingCardInfo_array: null});
                 }
                 else{
                     try{
                             let now_accountSettleInfo = ( now_accountNum ) ? this.state.settleInfo_byAccount_obj[now_accountNum] : null;
-                            //console.log(now_accountNum);
-                            //console.log(Object.keys(this.state.settleInfo_byAccount_obj));
-
                             if(Object.keys(this.state.settleInfo_byAccount_obj).indexOf(now_accountNum) == -1){
                                 this.setState({now_lookingCardInfo_array: []});
                                 return;
                             }
                             if(now_accountNum && this.state.settleInfo_byAccount_obj[now_accountNum].length > 0) {
-
-                                now_accountSettleInfo.sort( (a, b) => b['date'] - a['date']);
-                                this.setState({now_lookingCardInfo_array: now_accountSettleInfo});
+                                let tmp_accountSettleInfo_Array = now_accountSettleInfo.sort( (a, b) => b['date'] - a['date'] );
+                                this.setState({now_lookingCardInfo_array: tmp_accountSettleInfo_Array});
                             }
 
                     }catch(e){
@@ -116,7 +114,6 @@ class Account extends React.Component {
 
     addMyAccount() {
         this.setState({nowEdit_addMyAccount: true});
-        console.log('Ready to add account');
     }
 
     addMyAccount_selectBank(e){
@@ -242,10 +239,6 @@ class Account extends React.Component {
                     });
 
                 }
-
-
-
-
 
             }
 
@@ -453,7 +446,7 @@ class Account extends React.Component {
 
     render() {
         let loginFlag = this.state.loginFlag;
-        let AccountLayout_style = {height: ( !loginFlag ) ? '500px' : window.innerHeight - 50};
+        let AccountLayout_style = {height: ( !loginFlag ) ? '500px' : window.innerHeight - 200};
         let CardSlider_style = {display: ( this.state.cardSliding_availFlag ) ? 'block': 'none' }
         let now_userName = ( loginFlag ) ? Cookie.get_cookie('UserName') : '';
         return (
@@ -547,6 +540,7 @@ class Account extends React.Component {
                                             </div>
 
                                             <AccountTimeline
+                                                passingCardIndex={this.state.now_lookingCardIndex}
                                                 accountInfo={this.state.now_lookingCardInfo_array}
                                             />
 
