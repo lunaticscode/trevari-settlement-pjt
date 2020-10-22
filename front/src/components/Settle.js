@@ -83,6 +83,9 @@ class Settle extends React.Component {
                         settleFormTitle: '',
                         selectedMeetCnt: 0,
                      });
+
+        let savedSettleFormInfo = Object.keys( localStorage ).filter( elem => elem.toString().indexOf('savedSettle_') !== -1 );
+        savedSettleFormInfo.forEach(elem => localStorage.removeItem(elem.toString()));
         localStorage.removeItem("formInfo");
     }
 
