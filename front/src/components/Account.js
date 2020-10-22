@@ -382,15 +382,13 @@ class Account extends React.Component {
                                Sleep.sleep_func(2000).then(()=> this.props.modalClose());
                                return;
                            }
-                           //console.log(res);
 
 
                            //* 현재 관리중인 계좌가 하나도 없는 유저일 경우,
                            if(res['result'].toString().trim() === 'fail'){
-                               this.setState({now_lookingCardInfo_array: null});
+                               this.setState({now_lookingCardInfo_array: null, cardSliding_availFlag: true});
                                return;
                            }
-
 
                            //console.log(res['settleInfo_List']);
                            let result_settleInfo = res['settleInfo_List'];
@@ -406,7 +404,7 @@ class Account extends React.Component {
                            //console.log(result_settleInfo);
 
                            if(result_settleInfo.length === 0) {
-                               this.setState({now_lookingCardInfo_array: null});
+                               this.setState({now_lookingCardInfo_array: null, });
                                return;
                            }
                            else{
@@ -445,9 +443,7 @@ class Account extends React.Component {
                    this.props.alertModal_open(alertModal_text, window.innerHeight - 30);
                    Sleep.sleep_func(1000).then( () => { this.props.alertModal_close() } );
                };
-
             }); // ---> 카드리스트 Fetch ----> 해당 계좌 정산정보 Fetch ----> 종료 지점.
-
         }
 
         //* 비회원일 접속일 경우,
@@ -483,6 +479,7 @@ class Account extends React.Component {
                                  onScroll={this.AccountCardSliding} >
                                 {
                                         this.state.slideAccountList.map( ( elem, index ) => {
+                                            console.log(elem);
                                             return <div className={ (this.state.now_lookingCardIndex === index) ? "myAccountCard_layout active" : "myAccountCard_layout"}
                                                         onTouchStart={this.AcconutCardSlider_touchStartMove}
                                                         onTouchMove={this.AcconutCardSlider_touchStartMove}

@@ -157,7 +157,6 @@ class JoinModal extends React.Component {
         }
     }
 
-
     regist() {
         let joinIndexArray = ['이메일', '닉네임', '비밀번호', '비밀번호 확인'];
         let revokeIndex_title = -1;
@@ -191,7 +190,6 @@ class JoinModal extends React.Component {
                 if(res['message'] !== 'success') {
                     revoke_index = res['dupleKey'];
                 }
-
                 //* 회원가입 완료.
                 else{
                     location.href = '/login';
