@@ -86,15 +86,19 @@ class Account extends React.Component {
                 let now_accountNum = (this.state.myAccountList[passing_index] ) ? this.state.myAccountList[passing_index]['bank_num'] : null;
                 if( !this.state.settleInfo_byAccount_obj || !now_accountNum  ){
                     console.log('empty card section');
+
                     this.setState({now_lookingCardInfo_array: null});
                 }
                 else{
                     try{
                             let now_accountSettleInfo = ( now_accountNum ) ? this.state.settleInfo_byAccount_obj[now_accountNum] : null;
-                            if(now_accountNum) {
+                            if(now_accountNum && this.state.settleInfo_byAccount_obj[now_accountNum].length > 0) {
                                 now_accountSettleInfo.sort( (a, b) => b['date'] - a['date']);
                                 this.setState({now_lookingCardInfo_array: now_accountSettleInfo});
                             }
+                            
+                            else{ this.setState({now_lookingCardInfo_array: []}); }
+
                     }catch(e){
                         console.log(e.toString());
                     }
