@@ -17,11 +17,8 @@ class Home extends React.Component {
         };
     }
 
-    loginUser_directToLink(e) {
-        let direction = ( e.target.classList.value.toString().indexOf('history') !== -1 ) ? "tab_2" : "tab_3";
-        document.getElementById(direction).click();
-    }
-
+    loginUser_directToHistory(){ document.getElementById("tab_2").click()}
+    loginUser_directToAccount() { document.getElementById("tab_3").click()}
     Settle_directBtnClick(){ document.getElementById("tab_1").click(); }
 
     componentDidUpdate(prevProps, prevState) {
@@ -73,9 +70,10 @@ class Home extends React.Component {
                 }
 
                 if( res['result'].toString().trim() === 'fail' ){
-                    let alertModal_text = '(!)정산정보를 불러올 수 없습니다. 다시 로그인해주세요.';
-                    this.props.alertModal_open(alertModal_text, window.innerHeight+window.pageYOffset);
-                    Sleep.sleep_func(1000).then( () => { this.props.alertModal_close(); } );
+                    console.log('정산정보 없음.');
+                    // let alertModal_text = '(!)정산정보를 불러올 수 없습니다. 다시 로그인해주세요.';
+                    // this.props.alertModal_open(alertModal_text, window.innerHeight+window.pageYOffset);
+                    // Sleep.sleep_func(1000).then( () => { this.props.alertModal_close(); } );
                     return;
                 }
 
@@ -103,7 +101,6 @@ class Home extends React.Component {
 
                     (!userName)
                         ? <div id="Home_nouserContentLayout">
-
                             <div className="nouser_welcomeMent">쉽고 <font className="bold">,</font></div>
                             <div className="nouser_welcomeMent">빠르고 <font className="bold">,</font></div>
                             <div className="nouser_welcomeMent">정확하게 <font className="bold">.</font></div>
@@ -113,8 +110,7 @@ class Home extends React.Component {
                                     정산 바로가기
                                     <img src="/img/arrow_icon.png"/>
                                 </div>
-
-                        </div>
+                          </div>
 
                         :
                         <div id="Home_loginUserLayout">
@@ -122,11 +118,11 @@ class Home extends React.Component {
                                 <div id="loginuser_welcomeMent">안녕하세요<font className="bold"> ,</font></div>
                                 <div id="loginuser_name">{userName}</div>
                                 <div id="loginuser_infoBox_layout">
-                                    <div className="loginuser_infoBox history" onClick={this.loginUser_directToLink}>
+                                    <div className="loginuser_infoBox history" onClick={this. loginUser_directToHistory}>
                                         <div className="lui_title">총 정산횟수</div>
                                         <div  className="lui_value"><font className="bold">{this.state.login_userSettleInfoCnt}</font> 회</div>
                                     </div>
-                                    <div className="loginuser_infoBox account" onClick={this.loginUser_directToLink}>
+                                    <div className="loginuser_infoBox account" onClick={this. loginUser_directToAccount}>
                                         <div className="lui_title">등록계좌 수</div>
                                         <div className="lui_value"><font className="bold">{this.state.login_userAccountCnt}</font> / 5개</div>
 
