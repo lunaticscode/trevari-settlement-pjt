@@ -35,6 +35,8 @@ class Settle extends React.Component {
         this.personName_pop = this.personName_pop.bind(this);
         this.settleFinalSubmit = this.settleFinalSubmit.bind(this);
         this.accountModal_close = this.accountModal_close.bind(this);
+
+        this.init_SettleForm = this.init_SettleForm.bind(this);
     }
 
     inputFormTitle(e) {
@@ -68,6 +70,20 @@ class Settle extends React.Component {
         });
         this.setState({ selectedMeetCnt: selectedMeetCntIndex, settleFormInfo :  now_settleFormInfo });
         localStorage.setItem("formInfo", JSON.stringify(this.state.settleFormInfo));
+    }
+
+    init_SettleForm(){
+        document.getElementById("inputTitle_editForm").value = '';
+        let meetCnt_select = document.getElementById("MeetCnt_select");
+        let meetCnt_select_options = meetCnt_select.children;
+        meetCnt_select_options[0].setAttribute("selected", '');
+        this.setState({
+                        settleContent_people_Array: [],
+                        settleFormInfo: { title: '', formCnt: 0, personList: [], },
+                        settleFormTitle: '',
+                        selectedMeetCnt: 0,
+                     });
+        localStorage.removeItem("formInfo");
     }
 
     inputPersonName_change(e) {
@@ -221,7 +237,6 @@ class Settle extends React.Component {
                     localStorage.setItem("formInfo", JSON.stringify(this.state.settleFormInfo));
 
                     //* LocalStorage에 저장된 savedSettle_{index}의 ['settleValueInfo'] 수정.
-                    // (!) 복잡도 O(n^2) 부분 => array * for
                     Object.keys(localStorage).forEach( (elem, index) => {
                         if(elem.indexOf('savedSettle_') !== -1
                             && Object.keys( JSON.parse(localStorage.getItem(elem))['settleValueInfo'] ).indexOf(delete_target) !== -1 ) {
@@ -359,6 +374,7 @@ class Settle extends React.Component {
                      <div>
                          <div className="inputTitle">모임 이름</div>
                          <input  placeholder="15자 이내"
+                                 id="inputTitle_editForm"
                                  onChange={this.inputFormTitle}
                                  className="inputForm_title name"
                                  defaultValue={ ( localStorage.getItem("formInfo" ) )? JSON.parse( localStorage.getItem("formInfo") ).title : '' }
@@ -391,6 +407,7 @@ class Settle extends React.Component {
                              <option>1차</option><option>2차</option><option>3차</option>
                              <option>4차</option><option>5차</option><option>6차</option>
                          </select>
+                         <div id="settleForms_initBtn" onClick={this.init_SettleForm}>초기화</div>
                      </div>
                  </div>
               </div>

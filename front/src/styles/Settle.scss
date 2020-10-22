@@ -91,6 +91,13 @@
   }
 }
 
+#settleForms_initBtn{
+  display: inline-block; float: right; margin-right:10px; margin-top:4px;
+  padding:3px 5px; background: $main-background2; box-shadow: 0px 0px 5px black;
+  border-radius: 5px;
+  font-size:13px; color: silver;
+}
+
 @media screen and (min-width: 601px){
   #SettleDetailForm_layout{
     width:98%;
