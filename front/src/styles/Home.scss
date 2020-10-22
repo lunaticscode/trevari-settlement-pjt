@@ -22,27 +22,7 @@
 #HomeLayout{
   height:100%;
 }
-#welcomeContent{
-  text-indent: 10px;
-  padding-top:10px;
-  animation-name: expanding; animation-duration: 500ms; animation-fill-mode: forwards;
-  background: #eeeeee;
-  width:100%; height:100px; border-radius: 10px;
-  opacity: 0.9;
-  color: #3E3C42; font-weight: 600;
-}
 
-#welcomeText{
-  animation-name: fade-in;
-  animation-fill-mode: backwards;
-  animation-duration: 1s; animation-delay: 500ms;
-}
-
-#userNameBox{
-  display: inline-block;
-  margin-left:-10px;
-  color:black; font-weight: 800;
-}
 
 
 #Home_nouserContentLayout{
@@ -87,6 +67,41 @@
   }
 }
 
+
+@keyframes ment-slide-from-left5 { from{left:-50%; opacity: 0;} to{left:0px; opacity: 1;} }
+@keyframes ment-slide-from-right5 { from{right:-150%; opacity: 0;} to{right:0px; opacity: 1;} }
+@mixin ment-animation{ animation-duration: 750ms; animation-fill-mode: forwards; }
+#loginuser_welcomeLayout{
+  margin:0px 10px;
+}
+#loginuser_welcomeMent{
+  animation-name:ment-slide-from-left5; @include ment-animation;
+  opacity: 0;
+  position: relative;
+  color:gray;
+  font-size:6vw; font-weight: 500;
+}
+#loginuser_name{
+  animation-name:ment-slide-from-right5; animation-delay: 250ms; @include ment-animation;
+  opacity: 0;
+  position: relative;
+  color:white;
+  font-size:8.5vw; font-weight: 800;
+}
+
+#loginuser_infoBox_layout{
+  animation-name:fade-in-2; animation-duration: 500ms; animation-delay: 1s; animation-fill-mode: forwards;
+  margin-top:30px; opacity: 0;
+  .loginuser_infoBox{
+    background: $main-background2; border-radius: 10px; padding:10px 0px; box-shadow: 0px 0px 5px black;
+    display: inline-block;
+    width:40%; margin:0px 4%;
+    text-align: center;
+  }
+}
+
+.lui_title{ font-size:4.5vw; color:silver; font-weight: 600; }
+.lui_value{ font-size:4vw; color:gray; }
 
 
 
