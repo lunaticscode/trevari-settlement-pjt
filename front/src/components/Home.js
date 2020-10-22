@@ -45,7 +45,7 @@ export default class Home extends React.Component {
                             <div className="nouser_welcomeMent">쉽고 <font className="bold">,</font></div>
                             <div className="nouser_welcomeMent">빠르고 <font className="bold">,</font></div>
                             <div className="nouser_welcomeMent">정확하게 <font className="bold">.</font></div>
-                            <div className="nouser_welcomeMent title"><font className="bold">#</font> 모두의정산</div>
+                            <div className="nouser_welcomeMent title"><img src="/img/app-logo-color.png"/> 모두의정산</div>
 
                                 <div id="Settle_directGoBtn" onClick={this.Settle_directBtnClick} style={nouserDirectBtn_style}>
                                     정산 바로가기
