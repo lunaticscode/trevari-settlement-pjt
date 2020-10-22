@@ -145,9 +145,6 @@ class History extends React.Component {
                     return;
                 }
 
-                //* 등록시간 기준으로 내림차순 정렬.
-                res['settleInfo_List'].sort( (a,b) => b['si_regdate'] - a['si_regdate'] );
-                
                 //* 회원유저 정산 내역 정보 가공.
                 this.setState({
                     settleInfoList: res['settleInfo_List'],
@@ -172,6 +169,7 @@ class History extends React.Component {
 
                 //-----------------------------------//
                 let now_settleInfoList = this.state.settleInfoList.sort( ( a, b ) => b[ 'id' ] - a[ 'id' ] );
+                now_settleInfoList.sort( ( a, b ) => b['si_regdate'] - a['si_regdate'] );
                 //console.log(now_settleInfoList);
 
                 let tmp_array = now_settleInfoList.map( ( elem, index ) => {
