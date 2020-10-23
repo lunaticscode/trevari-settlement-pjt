@@ -37,6 +37,7 @@ class Settle extends React.Component {
         this.accountModal_close = this.accountModal_close.bind(this);
 
         this.init_SettleForm = this.init_SettleForm.bind(this);
+        this.personName_addBtnClick = this.personName_addBtnClick.bind(this);
     }
 
     inputFormTitle(e) {
@@ -119,6 +120,30 @@ class Settle extends React.Component {
                     localStorage.setItem("formInfo", JSON.stringify(this.state.settleFormInfo));
                 }
             }
+    }
+
+    //* (+) 아이콘 버튼 클릭 이벤트.
+    personName_addBtnClick() {
+
+        let edited_personName = this.state.settleContent_personName_Text
+        let saved_personNameArray = this.state.settleContent_people_Array;
+        if(edited_personName.toString().trim().length == 0){return;}
+
+        if(saved_personNameArray.indexOf(edited_personName) !== -1) {
+            return;
+        }else{
+
+            let tmp_obj = Object.assign(this.state.settleFormInfo, {
+                personList: saved_personNameArray.concat(edited_personName.toString().trim()),
+            });
+            this.setState({
+                settleContent_people_Array: saved_personNameArray.concat(edited_personName.toString().trim()),
+                settleContent_personName_Text: '',
+                settleFormInfo: tmp_obj,
+            });
+            let input_personName_elem = document.getElementById("personName_input");
+            input_personName_elem.value = '';
+        }
     }
 
     personName_pop(e) {
@@ -388,7 +413,8 @@ class Settle extends React.Component {
                      <br/>
                      <div>
                          <div className="inputTitle">참석자 이름</div>
-                         <input className="inputForm_personName" onChange={this.inputPersonName_change} onKeyUp={this.inputPersonName_keyup} placeholder="이름 입력 후 Enter" />
+                         <input id="personName_input" className="inputForm_personName" onChange={this.inputPersonName_change} onKeyUp={this.inputPersonName_keyup} placeholder="이름 입력 후 Enter" />
+                         <img onClick={this.personName_addBtnClick} id="personName_plusIcon" src="/img/plus_account.png"/>
                          <br/>
                          <div id="personName_Layout">
                              {
