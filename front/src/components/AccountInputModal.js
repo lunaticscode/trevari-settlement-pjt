@@ -368,7 +368,6 @@ class AccountInputModal extends React.Component {
                         console.log(res);
                         if(res['result'] === 'success') {
                             this.setState({savedAccountText: ''});
-
                             this.setState({tmp_savedAccountText: '', tmp_savedBankCode: ''});
                             console.log( finalSubmit_data );
                             console.log( settleShareSite_key );
@@ -388,7 +387,13 @@ class AccountInputModal extends React.Component {
             else if(this.props.modalConfirm_result === 'revoke') {
                     console.log('Do not save accountInfo');
                   this.setState({savedAccountText: ''});
-
+                    console.log('Ready to Open Settle-Share-Modal.');
+                    this.setState({
+                        settleShareSite_key: settleShareSite_key,
+                        settleShare_info: finalSubmit_data,
+                        settleShare_loginFlag: true,
+                    });
+                    this.setState({ settleShareModal_display: 'block'});
             }
 
         }
