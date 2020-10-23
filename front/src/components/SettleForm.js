@@ -31,12 +31,9 @@ class SettleForm extends Component {
         this.setState({nowEditIndex : settleFormIndex});
     }
 
-    componentDidUpdate(prevProps, prevState){
-        //console.log('props change', prevProps, this.props);
-    }
-
     viewSettleInfo(e) {
         let settle_index = e.target.getAttribute("value");
+        console.log(settle_index, e.target);
         //console.log(settle_index, typeof(settle_index));
         window.scroll(0, 0); document.body.style.overflow = 'hidden';
         document.getElementById("Mask_layout").style.height = window.innerHeight +'px';
@@ -44,6 +41,13 @@ class SettleForm extends Component {
         console.log(JSON.parse( localStorage.getItem("savedSettle_"+settle_index) ));
         Sleep.sleep_func(250).then(() => this.props.infomodalOpen( JSON.parse( localStorage.getItem("savedSettle_"+settle_index) ) ) );
     }
+
+
+    componentDidUpdate(prevProps, prevState){
+        //console.log('props change', prevProps, this.props);
+    }
+
+
 
     componentDidMount() {
         //this.setState({formCnt : this.props.FormInfo['formCnt']});
@@ -59,18 +63,19 @@ class SettleForm extends Component {
             <div>
                 {/*<div>{this.props.TestProps + '/' + this.props.TestProps2 + '/' + this.props.TestProps3}</div>*/}
                 {formInfo_array.map((elem, index) => {
-                    return <div  key={"innerForm_"+index} className="settleInputForm">
+                    return <div key={"innerForm_"+index} className="settleInputForm">
                                 <div className="innerFormContent">
 
                                     <div className="innerForm_title">
-                                        <div className="innerForm_indexBox"><font className="bold">#</font> {index+1}차</div>{elem['title']}
+                                        <div className="innerForm_indexBox"><font className="bold">#</font> {index+1}차</div>
+                                        <div className="innerForm_titleValue">{elem['title']}</div>
                                             <Link key={index} to={ (localStorage.getItem("savedSettle_"+ (index+1) ) ) ?  "/settle"
                                                                     : ( elem['personList'].length === 0 || elem['title'].toString().length === 0 ) ?
                                                                             "/settle" : "/settleEdit/"+index }>
 
                                                 {
                                                     (localStorage.getItem("savedSettle_"+ (index+1) ) )
-                                                    ? <div className="settleCom_noti" value={index+1} onClick={this.viewSettleInfo}>작성완료</div>
+                                                    ? <div className="settleCom_noti" value={index+1} onClick={this.viewSettleInfo}>작성내용 확인</div>
                                                     : <img className="settle_icon" id={index} onClick={this.settleEdit} src="/img/settle_edit_icon.png" />
                                                 }
                                             </Link>

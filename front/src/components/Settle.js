@@ -124,8 +124,7 @@ class Settle extends React.Component {
 
     //* (+) 아이콘 버튼 클릭 이벤트.
     personName_addBtnClick() {
-
-        let edited_personName = this.state.settleContent_personName_Text
+        let edited_personName = this.state.settleContent_personName_Text;
         let saved_personNameArray = this.state.settleContent_people_Array;
         if(edited_personName.toString().trim().length == 0){return;}
 
