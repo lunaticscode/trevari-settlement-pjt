@@ -72,6 +72,7 @@ class Settle extends React.Component {
         localStorage.setItem("formInfo", JSON.stringify(this.state.settleFormInfo));
     }
 
+    //* 정산폼(+하위 정산폼) 모두 삭제.
     init_SettleForm(){
         document.getElementById("inputTitle_editForm").value = '';
         let meetCnt_select = document.getElementById("MeetCnt_select");

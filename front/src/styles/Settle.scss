@@ -125,11 +125,13 @@
   display: inline-flex; flex-direction: row; justify-content: left; flex-wrap: wrap;
 }
 .personName_box{
-  background: linear-gradient(90deg, rgba(33,33,33,1) 0%, rgba(71,71,71,1) 55%);
-  box-shadow: 3px 3px 5px black; font-weight: 300;
+  background: linear-gradient(90deg, rgba(44, 44, 44, 1) 5%, rgba(90, 88, 88,1) 75%);
+  //background: $main-background2;
+  box-shadow: 3px 3px 5px black;
   margin-right:5px; margin-bottom:5px;
+  font-size:15px; font-weight: 800;
   display: inline-block; border-radius: 5px; ;
-   color:white; text-align: center; padding:3px 6px;
+   color:#eeeeee; text-align: center; padding:3px 6px;
 }
 .personName_box_small{
   @extend .personName_box;
