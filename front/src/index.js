@@ -10,11 +10,21 @@ import {createStore} from "redux";
 const store = createStore(counterApp);
 
 //store.subscribe(handleChange);
-const rootElement = document.getElementById("root");
+
+const rootElement =  document.getElementById("root");
+
+
+let now_windowWidth = window.innerWidth;
+console.log('init_width : ', now_windowWidth);
+window.addEventListener("resize", () => {
+    now_windowWidth = window.innerWidth;
+});
+
 console.log(window.history);
 ReactDOM.render(
+
     <Provider store={store}>
-         <App/>
+         <App app_nowWidth={now_windowWidth}/>
     </Provider>
     , rootElement);
 

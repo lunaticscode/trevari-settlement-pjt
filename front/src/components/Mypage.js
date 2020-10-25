@@ -3,7 +3,7 @@ import Fetch from "../Fetch";
 import Cookie from "../Cookie";
 import "../styles/Mypage.scss";
 import Sleep from "../Sleep";
-import {modal_close, modal_open} from "../actions";
+import {mask_close, mask_open, modal_close, modal_open} from "../actions";
 import {connect} from "react-redux";
 import crypto from "../CryptoInfo";
 class Mypage extends React.Component {
@@ -15,7 +15,7 @@ class Mypage extends React.Component {
             passwordChangeModal_status: 'none',
             editChangePassword_value : null,
             editPassword_grantFlag: false,
-
+            pwChangeBtn_clickFlag: false,
         };
 
         let auth_data = { 'token': Cookie.get_cookie("AccessToken"), 'userName': Cookie.get_cookie("UserName") };
@@ -58,7 +58,9 @@ class Mypage extends React.Component {
         document.getElementById("editChangePassword_input").value = '';
         this.setState({
             passwordChangeModal_status:'none', editChangePassword_value:null, editPassword_grantFlag:false,
-        })
+        });
+        this.props.maskClose();
+        document.body.style.overflow = 'auto';
     }
 
     PasswordChange(){
@@ -70,13 +72,14 @@ class Mypage extends React.Component {
             return;
         }
         else{
+            this.props.maskOpen();
             this.setState({passwordChangeModal_status: 'block'})
+            document.body.style.overflow = 'hidden';
         }
     }
 
     inputChangePassword(e){
         let inputValue = e.target.value;
-        console.log(inputValue);
         let regExp_password = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,16}/;
         if(  regExp_password.test(inputValue)  ) {
             this.setState({editPassword_grantFlag: true, editChangePassword_value : crypto.create_pw(inputValue, this.state.userEmail)});
@@ -87,6 +90,9 @@ class Mypage extends React.Component {
     }
 
     changePasswordSubmit(e){
+        if( this.state.pwChangeBtn_clickFlag ) {
+            return;
+        }
         let grantStatus = (e.target.classList.value === 'active' && this.state.editPassword_grantFlag ) ? true : false;
         if(!grantStatus){ return; }
         else{
@@ -100,7 +106,33 @@ class Mypage extends React.Component {
                 let submit_data = {'user_name': this.state.userName, 'change_pw' : this.state.editChangePassword_value};
                 console.log(submit_data);
 
+                this.setState({pwChangeBtn_clickFlag: true});
+
                 //* Fetch 진행. (경로: /api/users/changepw )
+                Fetch.fetch_api("users/changepw", "POST", submit_data).then(res => {
+                    if( res.toString().toLowerCase().trim().indexOf('error') !== -1 ) {
+                        console.log('(!) Server Error');
+                        console.log(res);
+                        let alertModal_text = '(!) 서버 에러, 관리자에게 문의해주세요.';
+                        this.props.alertModal_open(alertModal_text, window.innerHeight - 30);
+                        Sleep.sleep_func(1000).then( () => { this.props.alertModal_close() } );
+                        return;
+                    }
+
+                    if( res['result'].toString().trim() === 'success' ){
+                        console.log('비밀번호 변경 완료');
+                        console.log(res);
+                    }
+
+                    if( res['result'].toString().trim() === 'fail' ){
+                        let alertModal_text = '(!) 유저 정보를 확인할 수 없습니다. 로그아웃 후 다시 진행해주세요.';
+                        this.props.alertModal_open(alertModal_text, window.innerHeight - 30);
+                        Sleep.sleep_func(1000).then( () => { this.props.alertModal_close() } );
+                        return;
+                    }
+
+                    this.setState({pwChangeBtn_clickFlag: false});
+                });
             }
 
         }
@@ -131,10 +163,8 @@ class Mypage extends React.Component {
     }
 
     render() {
-        let MypageLayout_style = {
-            height: window.innerHeight,
-        };
-        let passwordChangeModal_style = {display:this.state.passwordChangeModal_status, };
+        let MypageLayout_style = { height: window.innerHeight, };
+        let passwordChangeModal_style = { display: this.state.passwordChangeModal_status, top: ( ( window.innerHeight - 180 ) / 2 ) + 30 };
         return (
             <div id="Mypage_layout" style={MypageLayout_style}>
                 <div id="MypageContent_layout">
@@ -165,10 +195,13 @@ class Mypage extends React.Component {
     }
 }
 
+
 let mapDispatchToProps = (dispatch) => {
     return {
         alertModal_open: (text, topPosition) => dispatch(modal_open(text, topPosition)),
-        alertModal_close: () => dispatch(modal_close())
+        alertModal_close: () => dispatch(modal_close()),
+        maskOpen: () => dispatch(mask_open()),
+        maskClose: () => dispatch(mask_close()),
     }
 };
 

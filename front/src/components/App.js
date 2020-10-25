@@ -12,7 +12,7 @@ import AlertModal from './AlertModal';
 import Cookie from "../Cookie";
 import Fetch from "../Fetch";
 import Mypage from "./Mypage";
-import {left_swipe, modal_close, modal_open, right_swipe} from "../actions";
+import {commonModal_open, left_swipe, mask_close, mask_open, modal_close, modal_open, right_swipe} from "../actions";
 import {connect} from "react-redux";
 import PageStack from "./PageStack";
 import SettleEdit from "./SettleEdit";
@@ -30,7 +30,7 @@ class App extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            appWidth: window.innerWidth,
+
             userName: '',
             movingTouch_X : -1,
             startTouch_X : -1, endTouch_X : -1,
@@ -38,8 +38,16 @@ class App extends React.Component {
 
             movingTouch_direction : null,
             swipeNoti_pageRealname: '',
+
+            accessPlatform: '',
+            accessPlatform_displayStatus: '',
+            alertModal_cookieCheckStatus: false,
+
+            appWidth: window.innerWidth,
+            app_pc_version_displayStatus: 'none',
         };
         //location.href= this.state.pageStack[0];
+
 
         let LoginStatus = ( Cookie.get_cookie('AccessToken') ) ? true : false;
         if(LoginStatus) {
@@ -61,15 +69,57 @@ class App extends React.Component {
         this.AppTouchStart = this.AppTouchStart.bind(this);
         this.AppTouchEnd = this.AppTouchEnd.bind(this);
         this.AppTouchMove = this.AppTouchMove.bind(this);
+        this.accessPlatform_modalClose = this.accessPlatform_modalClose.bind(this);
+        this.alertModal_cookieBtnClick = this.alertModal_cookieBtnClick.bind(this);
+        this.windowResize = this.windowResize.bind(this);
     }
 
+    windowResize(){ this.setState({appWidth: window.innerWidth}); }
+
+
+    accessPlatform_modalClose() {
+        let cookieBtn_checkStatus = this.state.alertModal_cookieCheckStatus;
+        if(cookieBtn_checkStatus){
+            Cookie.set_cookie("platform_alertModal", true, 3);
+        }
+        this.setState({accessPlatform_displayStatus: ''});
+        this.props.maskClose();
+        document.body.style.overflow = 'auto';
+    }
+
+    alertModal_cookieBtnClick(e){
+      let checkStatus =  e.target.checked;
+      if(checkStatus){
+          this.setState({alertModal_cookieCheckStatus: true});
+      }
+      else{
+          this.setState({alertModal_cookieCheckStatus: false})
+      }
+    }
 
     componentDidUpdate(prevProps, prevState) {
+        if(prevState.accessPlatform !== this.state.accessPlatform){
+            if(this.state.accessPlatform === 'pc'){
+                if( Cookie.get_cookie("platform_alertModal") ) {return;}
+                else{
+                    this.props.maskOpen();
+                    document.body.style.overflow = 'hidden';
+                }
+            }
+        }
 
     }
 
     componentDidMount() {
-
+        let platformFilter = "win16|win32|win64|mac";
+        let accessPlatform = navigator.platform;
+        if(platformFilter.indexOf(accessPlatform.toLowerCase()) == -1) {
+            this.setState({accessPlatform: 'mobile'});
+        }else{
+            this.setState({accessPlatform: 'pc'});
+            if( Cookie.get_cookie("platform_alertModal") ){ return; }
+            else{ this.setState({accessPlatform_displayStatus: 'visible'}); }
+        }
     }
 
     AppTouchStart(e) {
@@ -155,14 +205,27 @@ class App extends React.Component {
         }
     }
 
-
     render() {
         let sliderNotiLayout_style = {height: window.innerHeight+pageYOffset,
                                       display: (this.state.movingTouch_direction) ? 'block' : 'none'};
         let sliderNotiImg_style = {top: ( window.innerHeight+pageYOffset ) / 2 - 10 };
         let sliderNotiPathname_style = {top: ( window.innerHeight+pageYOffset ) / 2 + 5};
+        let AccessPlatform_alertModal_style = {display: (this.state.accessPlatform_displayStatus === 'visible') ? 'block' : 'none', top: ( window.innerHeight - 300 ) / 2 };
+
+        window.addEventListener('resize', this.windowResize);
+        let App_pc_version_style = {display:  ( this.state.appWidth > 600 ) ? 'block' : 'none' };
         return (
             <Router>
+
+                <div id="App_pc_version_layout" style={App_pc_version_style}>
+                    <div class="pcversion_mainText">
+                        <img src="/img/AppLogo2-neon.png"/><font className="bold">모두의 정산</font> 서비스는 모바일 사이즈에 최적화되어있습니다.
+                    </div>
+                    <div className="pcversion_subText">
+                        <font className="bold">* </font>모바일로 접속 혹은, 현재 브라우저의 크기(600px 이하)를 줄여주세요.
+                    </div>
+                    <div className="pcversion_nowWidth">현재 {this.state.appWidth + 'px'}</div>
+                </div>
                 <div id="AppLayout"
                      onTouchStart={this.AppTouchStart}
                      onTouchEnd={this.AppTouchEnd}
@@ -185,6 +248,18 @@ class App extends React.Component {
                         <div id="SliderNoti_pathRealname" style={sliderNotiPathname_style}>
                             {this.state.swipeNoti_pageRealname}
                         </div>
+                    </div>
+
+                    <div id="AccessPlatform_alertModal" style={AccessPlatform_alertModal_style}>
+                        <img src="/img/mobileIcon.png"/>
+                        <div className="mainText">모바일에 최적화된 서비스 입니다.</div>
+                        <div className="subText"><font className="bold">* </font> 원활한 사용을 위해, 모바일로 접속해주세요.</div>
+                        <div className="cookieBtnLayout">
+                        <label htmlFor="alertModal_cookieBtn">3일 동안 다시 보지 않기</label><input onChange={this.alertModal_cookieBtnClick} type="checkbox" id="alertModal_cookieBtn" />
+                        </div>
+                        <div className="confirmBtn"
+                             onClick={this.accessPlatform_modalClose}>
+                            확인</div>
                     </div>
 
                     <PageStack/>
@@ -220,10 +295,16 @@ let mapDispatchToProps = (dispatch) => {
         rightSwipe: (nowPage) => dispatch(right_swipe(nowPage)),
         alertModalOpen: (text, position) => dispatch(modal_open(text, position)),
         alertModalClose: () => dispatch(modal_close()),
+        maskOpen: () => dispatch(mask_open()),
+        maskClose: () => dispatch(mask_close()),
     }
 };
 
 App = connect(undefined, mapDispatchToProps)(App);
+
+App.defaultProps = {
+    app_nowWidth: window.innerWidth,
+};
 
 export default App;
 

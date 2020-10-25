@@ -46,12 +46,12 @@
 }
 
 #passwordChangeModal_closeBtn{
-  width:15px; height:15px; float: right;
+  width:13px; height:13px; float: right;
   margin-top:10px; margin-right:10px;
 }
 #passwordChangeModal{
   position: absolute; z-index: 100001;
-  background: $main-background2; border-radius: 10px; box-shadow: 0px 0px 5px black;
+  background: $main-background2; border-radius: 10px; box-shadow: 0px 0px 5px $main-line-color;
   width:90%; left:5%; height:180px;
   & input{
     color:white;
@@ -70,10 +70,12 @@
 
 #passwordChangeAction_btn{
   display: inline-block; width:90%; margin-left: 5%;
+  font-size:14px;
   margin-top:25px; text-align: center;
-
+  opacity: 0.5;
   background: none; border: 1px solid gray; color:gray;
   &.active{
+    opacity: 1; font-weight: 600;
     color:white; border-color: $main-line-color;
     background: $main-background2; box-shadow: 0px 0px 5px $main-line-color;
   }
