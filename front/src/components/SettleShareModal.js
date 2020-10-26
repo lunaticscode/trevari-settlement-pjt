@@ -19,7 +19,7 @@ class SettleShareModal extends React.Component {
     }
 
     copySuccess() {
-        console.log(this.state.linkUrl);
+        //console.log(this.state.linkUrl);
         this.setState({copySuccessAlertModal_display: 'block'});
         Sleep.sleep_func(1000).then( () => { this.setState({ copySuccessAlertModal_display: 'none' }) });
     }
@@ -33,35 +33,28 @@ class SettleShareModal extends React.Component {
         //* 마운트 후, 실제 현재 컴포넌트 레이아웃이 visible 상태일 때,
         if( prevProps.settleShareModal_displayStatus !== this.props.settleShareModal_displayStatus
             && prevProps.settleShare_Info !== this.props.settleShare_Info ) {
-            console.log('Start to save SettleInfo');
+            //console.log('Start to save SettleInfo');
             let tmp_param = this.props.settleShareSite_key;
             let settleSite_param = crypto.encrypt_account(tmp_param);
-            console.log(settleSite_param);
-            console.log(crypto.decrypt_account(settleSite_param));
+            //console.log(settleSite_param);
+            //console.log(crypto.decrypt_account(settleSite_param));
 
             settleSite_param = crypto.base64_enc(settleSite_param);
             let now_host_addr = window.location.protocol + '//' + window.location.hostname + ':9500/';
             this.setState({linkUrl: now_host_addr+'settleResult/'+settleSite_param});
 
             if(this.props.settleShare_loginFlag){
-                console.log('회원 유저, 정산정보 저정완료 모달 오픈');
+                //console.log('회원 유저, 정산정보 저정완료 모달 오픈');
 
             }
             //* 비회원 유저 정산정보 저장 api 호출
             else{
-                console.log('비회원 유저, 정산정보 저장 api 호출 준비');
+                //console.log('비회원 유저, 정산정보 저장 api 호출 준비');
                 let settleResultSite_param = this.props.settleShareSite_key;
                 let settleInfo = this.props.settleShare_Info;
-                console.log(settleInfo);
+                //console.log(settleInfo);
 
-                //let nouserSettle_key = settleResultSite_param.split('&&')[1] + settleResultSite_param.split('&&')[2];
                 let nouserSettle_key = settleResultSite_param;
-
-                console.log(nouserSettle_key);
-                //nouserSettle_key = crypto.encrypt_account(nouserSettle_key);
-
-                console.log(nouserSettle_key);
-
                 let submitData = {
                     nsi_owner_key: nouserSettle_key,
                     nsi_regdate: settleInfo['si_regdate'],
@@ -88,11 +81,11 @@ class SettleShareModal extends React.Component {
             this.kakaoLinkCreate(now_host_addr+'settleResult/'+settleSite_param);
         }
         if(prevProps.settleShare_loginFlag !== this.props.settleShare_loginFlag && Cookie.get_cookie('UserName') ) {
-            console.log('회원 유저 정산정보 저장 완료 모달 오픈');
+            //console.log('회원 유저 정산정보 저장 완료 모달 오픈');
             let tmp_param = this.props.settleShareSite_key;
             let settleSite_param = crypto.encrypt_account(tmp_param);
-            console.log(settleSite_param);
-            console.log(crypto.decrypt_account(settleSite_param));
+            // console.log(settleSite_param);
+            // console.log(crypto.decrypt_account(settleSite_param));
 
             settleSite_param = crypto.base64_enc(settleSite_param);
             let now_host_addr = window.location.protocol + '//' + window.location.hostname + ':9500/';
@@ -100,11 +93,11 @@ class SettleShareModal extends React.Component {
             this.kakaoLinkCreate(now_host_addr+'settleResult/'+settleSite_param);
         }
 
-        console.log('param url ',this.state.linkUrl);
+        // console.log('param url ',this.state.linkUrl);
     }
 
     kakaoLinkCreate(link_value) {
-        console.log(link_value);
+        //console.log(link_value);
         console.log('ready to start kakao-link create ');
         //* Kakao.init() 중복 초기화 오류 방지.
         if(!window.Kakao.isInitialized()){

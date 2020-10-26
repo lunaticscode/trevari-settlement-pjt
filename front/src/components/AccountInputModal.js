@@ -116,7 +116,7 @@ class AccountInputModal extends React.Component {
     authAccount(e){
         if( e.target.getAttribute('value').toString().trim() === 'true' && !this.state.accountAuth_status ){
             let submit_data = this.state.bankAuthInfo;
-            console.log(submit_data);
+            //console.log(submit_data);
             this.setState({accountAuth_status: 'exec'});
             Fetch.fetch_api("banking/accountAuth", "POST", submit_data).then(res=>{
 
@@ -170,7 +170,7 @@ class AccountInputModal extends React.Component {
 
                 this.setState({tmp_savedAccountText: encrypted_account});
                 this.setState({tmp_savedBankCode: this.state.bankAuthInfo['bank_code']});
-                console.log(finalSubmit_data);
+                //console.log(finalSubmit_data);
 
                 Fetch.fetch_api('settle', 'POST', finalSubmit_data)
                     .then(res => {
@@ -180,9 +180,9 @@ class AccountInputModal extends React.Component {
                         }
 
                         if(res['result'] === 'success'){
-                            console.log(res);
+                            //console.log(res);
                             let saved_settleInfoId = res['savedIndex'];
-                            console.log('saved_settleIndex : ',saved_settleInfoId);
+                            //console.log('saved_settleIndex : ',saved_settleInfoId);
                             //* 작성된 모든 값 초기화.
                             this.setState({ bankAuthInfo: {}, bank_realname: '', realnameFlag: false, registAccount_flag: false, accountAuth_status: null, });
                             let bank_selectElem = document.getElementById("AccountInputModal_selectBank");
@@ -201,7 +201,7 @@ class AccountInputModal extends React.Component {
                             if( Cookie.get_cookie('UserName') ){
                                 let myAccountInfo_arrayLength =  ( this.state.myAccountInfo_array ) ? this.state.myAccountInfo_array.length : 0;
                                 let now_savedAccountNum = crypto.decrypt_account(this.state.tmp_savedAccountText);
-                                console.log('now_savedAccountNum ', now_savedAccountNum);
+                                //console.log('now_savedAccountNum ', now_savedAccountNum);
 
                                 //let settleShareSite_key = Cookie.get_cookie('UserName') + '&&' + saved_settleInfoId + '&&' + finalSubmit_data.si_regdate;
                                 let settleShareSite_key = Cookie.get_cookie('UserName') + '&&' + saved_settleInfoId;
@@ -213,8 +213,8 @@ class AccountInputModal extends React.Component {
                                   )
                                     {
                                     this.setState({tmp_savedAccountText: '', tmp_savedBankCode: ''});
-                                    console.log( finalSubmit_data );
-                                    console.log( settleShareSite_key );
+                                    // console.log( finalSubmit_data );
+                                    // console.log( settleShareSite_key );
                                     console.log('Ready to Open Settle-Share-Modal.');
                                         this.setState({
                                             settleShareSite_key: settleShareSite_key,
@@ -249,7 +249,7 @@ class AccountInputModal extends React.Component {
 
                         }
                         else{
-                            console.log(res);
+                            //console.log(res);
                         }
                     });
             }
@@ -266,8 +266,8 @@ class AccountInputModal extends React.Component {
                 let random_key = Math.random().toString(36).slice(2);
                 let settleShareSite_key = 'nouser&&' + random_key + '&&' + Date.now();
                 console.log('Ready to Open Settle-Share-Modal.');
-                console.log( finalSubmit_data );
-                console.log( settleShareSite_key );
+                // console.log( finalSubmit_data );
+                // console.log( settleShareSite_key );
                 this.setState({ settleShareSite_key: settleShareSite_key, settleShare_info: finalSubmit_data, settleShare_loginFlag: false });
                 this.setState({ settleShareModal_display: 'block'});
             }
@@ -301,7 +301,7 @@ class AccountInputModal extends React.Component {
                 if( res['result'] === 'success' ) {
 
                     let tmp_array = ( res['account_list'] ) ? Object.values( JSON.parse( res['account_list'].replace( /'/g, "\"" ) ) ) : [];
-                    console.log(tmp_array);
+                    //console.log(tmp_array);
 
                     let myAccountInfo_array = [];
                     let bankInfoObj_valueArray = Object.values( this.state.bankInfo_obj );
@@ -318,7 +318,7 @@ class AccountInputModal extends React.Component {
                             myAccountInfo_array.push(tmp_obj);
                         });
                     }
-                    console.log(myAccountInfo_array);
+                    //console.log(myAccountInfo_array);
                     this.setState({myAccountInfo_array : myAccountInfo_array});
                     this.setState({
                         userAccountList : ( res['account_list'] )
@@ -341,7 +341,7 @@ class AccountInputModal extends React.Component {
 
             let finalSubmit_data = this.state.tmp_finalSubmitData;
             let settleShareSite_key = this.state.tmp_settleShareSite_key;
-            console.log('Now accountAdd_Modal Open..... ',finalSubmit_data, settleShareSite_key);
+            //console.log('Now accountAdd_Modal Open..... ',finalSubmit_data, settleShareSite_key);
 
             //* 모달에서 [확인] 버튼 클릭 시,
             if(this.props.modalConfirm_result === 'exec') {
@@ -350,8 +350,8 @@ class AccountInputModal extends React.Component {
                     && ( !this.state.userAccountList || Object.keys(this.state.userAccountList).length < 5 ) ) {
                     let savedUserAccountList_cnt = ( this.state.userAccountList ) ? Object.keys(this.state.userAccountList).length : 0;
 
-                    console.log(this.state.tmp_savedAccountText, this.state.tmp_savedBankCode);
-                    console.log(' ===>  save into user_db to [' + Cookie.get_cookie('UserName') +']');
+                    // console.log(this.state.tmp_savedAccountText, this.state.tmp_savedBankCode);
+                    // console.log(' ===>  save into user_db to [' + Cookie.get_cookie('UserName') +']');
 
                     if(this.state.userAccountList === null) { this.state.userAccountList = {}; }
                     let save_accountInfo_obj = Object.assign(this.state.userAccountList, {
@@ -360,17 +360,17 @@ class AccountInputModal extends React.Component {
                             bank_num: this.state.tmp_savedAccountText,
                         }
                     });
-                    console.log(save_accountInfo_obj);
+                    //console.log(save_accountInfo_obj);
 
                     let now_username = Cookie.get_cookie('UserName');
                     let submitData = { username: now_username, account_info: save_accountInfo_obj };
                     Fetch.fetch_api('account', 'POST', submitData).then(res => {
-                        console.log(res);
+                        //console.log(res);
                         if(res['result'] === 'success') {
                             this.setState({savedAccountText: ''});
                             this.setState({tmp_savedAccountText: '', tmp_savedBankCode: ''});
-                            console.log( finalSubmit_data );
-                            console.log( settleShareSite_key );
+                            // console.log( finalSubmit_data );
+                            // console.log( settleShareSite_key );
                             console.log('Ready to Open Settle-Share-Modal.');
                             this.setState({
                                 settleShareSite_key: settleShareSite_key,
@@ -385,7 +385,7 @@ class AccountInputModal extends React.Component {
             }
             //* 계좌리스트 추가 모달에서 [취소] 버튼 클릭 시,
             else if(this.props.modalConfirm_result === 'revoke') {
-                    console.log('Do not save accountInfo');
+                    //console.log('Do not save accountInfo');
                   this.setState({savedAccountText: ''});
                     console.log('Ready to Open Settle-Share-Modal.');
                     this.setState({
@@ -401,7 +401,7 @@ class AccountInputModal extends React.Component {
     }
 
     componentDidMount(){
-        console.log(this.props.finalSubmitData);
+        //console.log(this.props.finalSubmitData);
     }
 
     render() {
