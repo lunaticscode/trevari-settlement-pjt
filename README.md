@@ -5,7 +5,9 @@
 
 서비스 링크  
 http://13.209.91.209/  
-  
+
+![모두의정산_홈화면](https://user-images.githubusercontent.com/42178661/97228837-cea3f500-181a-11eb-8665-a786ed1f4fdf.gif)
+
 ##    
 > ## 개발 환경
 
