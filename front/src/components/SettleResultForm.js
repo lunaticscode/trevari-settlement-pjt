@@ -94,31 +94,24 @@ class SettleResultForm extends React.Component {
             container: '#kakao-link',
             objectType: 'feed',
             content: {
-                title: '디저트 사진',
-                description: '아메리카노, 빵, 케익',
-                imageUrl:
-                    'http://mud-kage.kakao.co.kr/dn/NTmhS/btqfEUdFAUf/FjKzkZsnoeE4o19klTOVI1/openlink_640x640s.jpg',
+                title: '모두의정산',
+                description: '정산결과 공유',
                 link: {
-                    mobileWebUrl: 'https://developers.kakao.com',
+                    mobileWebUrl: window.location.href,
                     androidExecParams: 'test',
                 },
-            },
-            social: {
-                likeCount: 10,
-                commentCount: 20,
-                sharedCount: 30,
             },
             buttons: [
                 {
                     title: '웹으로 이동',
                     link: {
-                        mobileWebUrl: 'https://developers.kakao.com',
+                        mobileWebUrl: window.location.href,
                     },
                 },
                 {
                     title: '앱으로 이동',
                     link: {
-                        mobileWebUrl: 'https://developers.kakao.com',
+                        mobileWebUrl: window.location.href,
                     },
                 },
             ]
