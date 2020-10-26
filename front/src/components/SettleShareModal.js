@@ -85,7 +85,7 @@ class SettleShareModal extends React.Component {
                 });
 
             }
-
+            this.kakaoLinkCreate(now_host_addr+'settleResult/'+settleSite_param);
         }
         if(prevProps.settleShare_loginFlag !== this.props.settleShare_loginFlag && Cookie.get_cookie('UserName') ) {
             console.log('회원 유저 정산정보 저장 완료 모달 오픈');
@@ -97,11 +97,15 @@ class SettleShareModal extends React.Component {
             settleSite_param = crypto.base64_enc(settleSite_param);
             let now_host_addr = window.location.protocol + '//' + window.location.hostname + ':9500/';
             this.setState({linkUrl: now_host_addr+'settleResult/'+settleSite_param});
+            this.kakaoLinkCreate(now_host_addr+'settleResult/'+settleSite_param);
         }
 
+        console.log('param url ',this.state.linkUrl);
     }
 
-    componentDidMount() {
+    kakaoLinkCreate(link_value) {
+        console.log(link_value);
+        console.log('ready to start kakao-link create ');
         //* Kakao.init() 중복 초기화 오류 방지.
         if(!window.Kakao.isInitialized()){
             window.Kakao.init('43b8c6cdeb67e860c94b30ba2385b42c');
@@ -115,7 +119,7 @@ class SettleShareModal extends React.Component {
                 imageUrl:
                 document.images[0].src,
                 link: {
-                    mobileWebUrl: this.state.linkUrl,
+                    mobileWebUrl: link_value,
                     androidExecParams: 'test',
                 },
             },
@@ -123,17 +127,21 @@ class SettleShareModal extends React.Component {
                 {
                     title: '웹으로 이동',
                     link: {
-                        mobileWebUrl: this.state.linkUrl,
+                        mobileWebUrl: link_value,
                     },
                 },
                 {
                     title: '앱으로 이동',
                     link: {
-                        mobileWebUrl: this.state.linkUrl,
+                        mobileWebUrl: link_value,
                     },
                 },
             ]
         });
+    }
+
+    componentDidMount() {
+
     }
 
     render() {
