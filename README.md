@@ -62,7 +62,8 @@ http://13.209.91.209/
  - 각 정산 상세내역 확인
  
  ![모두의정산_히스토리(1)](https://user-images.githubusercontent.com/42178661/97235029-5abb1a00-1825-11eb-9c11-ef0faf5cf55c.gif)
- 
+ ![모두의정산_히스토리(2)](https://user-images.githubusercontent.com/42178661/97235502-5a6f4e80-1826-11eb-8288-3559607f9434.gif)
+
  
 ### **#3** 계좌관리 - (회원 전용)
  - 관리중인 정산 계좌별로 간략 내용 확인 ( 날짜, 모임명, 정산금액 )  
