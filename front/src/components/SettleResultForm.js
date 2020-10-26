@@ -60,10 +60,6 @@ class SettleResultForm extends React.Component {
             });
     }
 
-    kakaoLink_click(){
-
-    }
-
 
     componentDidUpdate(prevProps, prevState) {
         if(prevProps.settleFormInfo !== this.props.settleFormInfo){
@@ -91,9 +87,45 @@ class SettleResultForm extends React.Component {
         }
     }
     componentDidMount() {
-
+        ////<![CDATA[
+        window.Kakao.init('43b8c6cdeb67e860c94b30ba2385b42c');
+        console.log(window.Kakao);
+        window.Kakao.Link.createDefaultButton({
+            container: '#kakao-link',
+            objectType: 'feed',
+            content: {
+                title: '디저트 사진',
+                description: '아메리카노, 빵, 케익',
+                imageUrl:
+                    'http://mud-kage.kakao.co.kr/dn/NTmhS/btqfEUdFAUf/FjKzkZsnoeE4o19klTOVI1/openlink_640x640s.jpg',
+                link: {
+                    mobileWebUrl: 'https://developers.kakao.com',
+                    androidExecParams: 'test',
+                },
+            },
+            social: {
+                likeCount: 10,
+                commentCount: 20,
+                sharedCount: 30,
+            },
+            buttons: [
+                {
+                    title: '웹으로 이동',
+                    link: {
+                        mobileWebUrl: 'https://developers.kakao.com',
+                    },
+                },
+                {
+                    title: '앱으로 이동',
+                    link: {
+                        mobileWebUrl: 'https://developers.kakao.com',
+                    },
+                },
+            ]
+        });
     }
     render() {
+
         let slideBtn_offsetY = 0;
         let personSettle_resultLayout = document.getElementById("selectedPerson_settleInfoLayout");
         let settleFormCnt = Object.keys( this.props.settleFormInfo ).length;
@@ -153,8 +185,8 @@ class SettleResultForm extends React.Component {
                         정산결과 링크복사
                     </ClipboardButton>
                 </div>
-                <div onClick={this.kakaoLink_click} id="SettleResultForm_kakaoLinkBtn">
-                    <img id="kakaoLinkIcon" src="/img/kakao-talk-link-icon.png" />카카오톡 공유
+                <div id="SettleResultForm_kakaoLinkBtn">
+                    <a id="kakao-link"><img id="kakaoLinkIcon" src="/img/kakao-talk-link-icon.png" />카카오톡 공유</a>
                 </div>
                 <div id="LinkCopySuccess_alertModal">링크복사 완료</div>
 
