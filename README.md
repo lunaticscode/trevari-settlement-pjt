@@ -13,7 +13,7 @@ http://13.209.91.209/
  - AWS - EC2
 
 #### Web Server
- - Nginx ( Proxy ), Express ( Node.js ) 
+ - Nginx ( Proxy )
 
 #### Front
  - HTML, CSS ( SCSS ), Javascript ( ES6 )
