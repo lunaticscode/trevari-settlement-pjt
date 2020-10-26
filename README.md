@@ -6,8 +6,7 @@
 서비스 링크  
 http://13.209.91.209/  
 
-![모두의정산_홈화면](https://user-images.githubusercontent.com/42178661/97228837-cea3f500-181a-11eb-8665-a786ed1f4fdf.gif)
-![모두의정산_홈화면(회원전용)](https://user-images.githubusercontent.com/42178661/97229041-19257180-181b-11eb-96ff-c942580a443d.gif)
+
 
 ##    
 > ## 개발 환경
@@ -35,6 +34,13 @@ http://13.209.91.209/
      
 ## 
 > ## 서비스 주요기능
+
+### **#0** 메인(홈)
+
+ ![모두의정산_홈화면](https://user-images.githubusercontent.com/42178661/97228837-cea3f500-181a-11eb-8665-a786ed1f4fdf.gif)
+ ![모두의정산_홈화면(회원전용)](https://user-images.githubusercontent.com/42178661/97229041-19257180-181b-11eb-96ff-c942580a443d.gif)
+
+
 ### **#1** 정산 
  - 모임 명, 모임 장소, 모임 인원 설정, 모임 차수 설정 ( 최대 6차 )
  - 정산 비용 및 정산방법 설정 ( N/1, 직접 정산 )
