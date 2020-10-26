@@ -87,6 +87,7 @@ class SettleResultForm extends React.Component {
         }
     }
     componentDidMount() {
+        console.log(document.images[0].src);
         ////<![CDATA[
         window.Kakao.init('43b8c6cdeb67e860c94b30ba2385b42c');
         console.log(window.Kakao);
@@ -96,6 +97,8 @@ class SettleResultForm extends React.Component {
             content: {
                 title: '모두의정산',
                 description: '정산결과 공유',
+                imageUrl:
+                    document.images[0].src,
                 link: {
                     mobileWebUrl: window.location.href,
                     androidExecParams: 'test',
