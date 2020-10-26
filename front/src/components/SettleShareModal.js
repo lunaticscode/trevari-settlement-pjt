@@ -115,7 +115,7 @@ class SettleShareModal extends React.Component {
                 imageUrl:
                 document.images[0].src,
                 link: {
-                    mobileWebUrl: window.location.href,
+                    mobileWebUrl: this.state.linkUrl,
                     androidExecParams: 'test',
                 },
             },
@@ -123,13 +123,13 @@ class SettleShareModal extends React.Component {
                 {
                     title: '웹으로 이동',
                     link: {
-                        mobileWebUrl: window.location.href,
+                        mobileWebUrl: this.state.linkUrl,
                     },
                 },
                 {
                     title: '앱으로 이동',
                     link: {
-                        mobileWebUrl: window.location.href,
+                        mobileWebUrl: this.state.linkUrl,
                     },
                 },
             ]
