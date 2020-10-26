@@ -45,6 +45,8 @@ http://13.209.91.209/
  
  ![모두의정산_정산폼작성](https://user-images.githubusercontent.com/42178661/97230326-175cad80-181d-11eb-898a-35c722306cb9.gif)
  ![모두의정산_정산폼작성(2)](https://user-images.githubusercontent.com/42178661/97231276-9c949200-181e-11eb-900c-c65b8fd52eda.gif)
+ ![모두의정산_정산폼작성(3)](https://user-images.githubusercontent.com/42178661/97232091-e631ac80-181f-11eb-824c-7d1ed38b69b7.gif)
+
  
 #### #2 히스토리 - (회원 전용)
  - 정산 내역( 페이징 처리, 게시물 단위 5개 혹은 10개 설정 )
