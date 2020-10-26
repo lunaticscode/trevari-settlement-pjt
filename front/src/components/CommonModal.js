@@ -34,7 +34,12 @@ class CommonModal extends React.Component {
                 <div id="CommonModal_mask"></div>
                 <div id="CommonModal_text">{this.props.text}
                     <br/><br/>
-                    <font className="bold" style={emphasys_style}>*</font><div id="CommonModal_subText">{this.props.subText}</div>
+                    {
+                        ( this.props.subText )
+                        ?   <div><font className="bold" style={emphasys_style}>*</font><div id="CommonModal_subText">{this.props.subText}</div></div>
+                            : ''
+                    }
+
                 </div>
 
                 <div id="CommonModal_actionBtn_layout">

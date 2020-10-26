@@ -3,7 +3,7 @@ import Fetch from "../Fetch";
 import Cookie from "../Cookie";
 import "../styles/Mypage.scss";
 import Sleep from "../Sleep";
-import {mask_close, mask_open, modal_close, modal_open} from "../actions";
+import {commonModal_open, mask_close, mask_open, modal_close, modal_open} from "../actions";
 import {connect} from "react-redux";
 import crypto from "../CryptoInfo";
 class Mypage extends React.Component {
@@ -104,8 +104,7 @@ class Mypage extends React.Component {
                 return;
             }else{
                 let submit_data = {'user_name': this.state.userName, 'change_pw' : this.state.editChangePassword_value};
-                console.log(submit_data);
-
+                //console.log(submit_data);
                 this.setState({pwChangeBtn_clickFlag: true});
 
                 //* Fetch 진행. (경로: /api/users/changepw )
@@ -122,6 +121,8 @@ class Mypage extends React.Component {
                     if( res['result'].toString().trim() === 'success' ){
                         console.log('비밀번호 변경 완료');
                         console.log(res);
+                        this.setState({passwordChangeModal_status: 'none'});
+                        this.props.commonModalOpen('pwchange', '비밀번호 변경이 완료되었습니다.', '', '');
                     }
 
                     if( res['result'].toString().trim() === 'fail' ){
@@ -202,6 +203,7 @@ let mapDispatchToProps = (dispatch) => {
         alertModal_close: () => dispatch(modal_close()),
         maskOpen: () => dispatch(mask_open()),
         maskClose: () => dispatch(mask_close()),
+        commonModalOpen: (title, text, subText, mood) => dispatch(commonModal_open(title, text, subText, mood))
     }
 };
 

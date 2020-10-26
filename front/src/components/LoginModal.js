@@ -129,9 +129,7 @@ class LoginModal extends React.Component {
                         <input className="LoginInput" onChange={this.InputEmail} placeholder="Email" style={InputEmail_style} id="input_Email"/>
                         <input className="LoginInput" onChange={this.InputPassword} placeholder="Password" style={InputPassword_style} type="password" id="input_PW"/>
                     </div>
-                    <div id="findPassword">
-                        <font className="bold">*</font>아이디 / 비밀번호를 잊어버리셨나요?
-                    </div>
+
                     <br/><br/><br/><br/>
 
                     <div id="actionBtnLayout">

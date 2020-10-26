@@ -327,10 +327,6 @@ class Account extends React.Component {
                             tmp_accountArray.push( tmp_obj );
                        }
 
-                   //console.log(tmp_accountArray);
-
-                   //let tmp_accountArray = [];
-
                    this.setState( { myAccountList: tmp_accountArray } );
                    let empty_cardInfo_obj = {
                             bank_code: 0, bank_name: null, bank_num: null,
@@ -359,7 +355,6 @@ class Account extends React.Component {
                                 }
                             });
                         }
-
 
                    //* 현재 유저 정산기록 호출
                    let submit_data = {user_name : userName,};

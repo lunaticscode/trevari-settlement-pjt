@@ -5,6 +5,8 @@ import {MaskOpen, MaskClose} from "../actions"
 import {CommonModalOpen, CommonModalClose, CommonModalAction} from "../actions";
 import {InfoModalOpen, InfoModalClose} from "../actions";
 
+//* 각 리듀서 연결 컴포넌트는 actions/index.js 에서 확인.
+
 import { combineReducers } from 'redux';
 
 const counterInitialState = {
