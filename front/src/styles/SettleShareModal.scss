@@ -60,3 +60,25 @@ $tmp_copyBtn_back: linear-gradient(90deg, rgba(12,204,166,1) 0%, rgba(118,222,19
   background: $logo-background2; width: 100%; height:40px; line-height: 40px;
   border-bottom-left-radius: 5px; border-bottom-right-radius: 5px;
 }
+
+
+#SettleShareModal_kakaoLinkBtn{
+  display: inline-block;
+  text-align: center;
+  font-size:12px;
+  background: #FEE533; padding:4px 20px; border-radius: 5px;
+  box-shadow: 2px 2px 5px black;
+  font-weight: 600;
+  color: #3e2109; vertical-align: top;
+  position: relative; top:15px;
+  margin-bottom:50px;
+  margin-top:-10px;
+  & img{
+    vertical-align: middle; margin-right: 5px; margin-bottom:2px;
+    display: inline-block;
+    width:20px; height:20px;
+  }
+  & a{
+    color: #3e2109;
+  }
+}

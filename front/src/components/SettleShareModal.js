@@ -100,6 +100,42 @@ class SettleShareModal extends React.Component {
         }
 
     }
+
+    componentDidMount() {
+        //* Kakao.init() 중복 초기화 오류 방지.
+        if(!window.Kakao.isInitialized()){
+            window.Kakao.init('43b8c6cdeb67e860c94b30ba2385b42c');
+        }
+        window.Kakao.Link.createDefaultButton({
+            container: '#kakao-link',
+            objectType: 'feed',
+            content: {
+                title: '모두의정산',
+                description: '정산결과 공유',
+                imageUrl:
+                document.images[0].src,
+                link: {
+                    mobileWebUrl: window.location.href,
+                    androidExecParams: 'test',
+                },
+            },
+            buttons: [
+                {
+                    title: '웹으로 이동',
+                    link: {
+                        mobileWebUrl: window.location.href,
+                    },
+                },
+                {
+                    title: '앱으로 이동',
+                    link: {
+                        mobileWebUrl: window.location.href,
+                    },
+                },
+            ]
+        });
+    }
+
     render() {
         let layout_style = {display: this.props.settleShareModal_displayStatus, };
         let copySuccessAlertModal_layout = { display: this.state.copySuccessAlertModal_display, };
@@ -125,6 +161,10 @@ class SettleShareModal extends React.Component {
                             정산결과 링크복사
                         </ClipboardButton>
                     </div>
+                    <div id="SettleShareModal_kakaoLinkBtn">
+                        <a id="kakao-link"><img id="kakaoLinkIcon" src="/img/kakao-talk-link-icon.png" />카카오톡 공유</a>
+                    </div>
+
                 </div>
 
                 <div id="copySuccessAlertModal" style={copySuccessAlertModal_layout}>

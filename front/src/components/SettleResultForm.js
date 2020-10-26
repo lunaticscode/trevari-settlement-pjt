@@ -87,10 +87,10 @@ class SettleResultForm extends React.Component {
         }
     }
     componentDidMount() {
-        console.log(document.images[0].src);
-        ////<![CDATA[
-        window.Kakao.init('43b8c6cdeb67e860c94b30ba2385b42c');
-        console.log(window.Kakao);
+        if(!window.Kakao.isInitialized()){
+            window.Kakao.init('43b8c6cdeb67e860c94b30ba2385b42c');
+        }
+
         window.Kakao.Link.createDefaultButton({
             container: '#kakao-link',
             objectType: 'feed',
@@ -119,6 +119,7 @@ class SettleResultForm extends React.Component {
                 },
             ]
         });
+
     }
     render() {
 
@@ -181,6 +182,7 @@ class SettleResultForm extends React.Component {
                         정산결과 링크복사
                     </ClipboardButton>
                 </div>
+
                 <div id="SettleResultForm_kakaoLinkBtn">
                     <a id="kakao-link"><img id="kakaoLinkIcon" src="/img/kakao-talk-link-icon.png" />카카오톡 공유</a>
                 </div>
