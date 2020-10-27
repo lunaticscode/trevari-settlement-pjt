@@ -42,10 +42,12 @@ http://13.209.91.209/
  
  ![모두의정산_홈화면](https://user-images.githubusercontent.com/42178661/97228837-cea3f500-181a-11eb-8665-a786ed1f4fdf.gif)
  ![모두의정산_홈화면(회원전용)](https://user-images.githubusercontent.com/42178661/97229041-19257180-181b-11eb-96ff-c942580a443d.gif)
+ ![모두의정산_페이지스택](https://user-images.githubusercontent.com/42178661/97298113-51b66100-1896-11eb-9869-56c6d3758de1.gif)
  
- >>** 로그인: Django에서 JWT(JSON Web Token) 발행 후, 성공 시 Front에서 Cookie로 저장(회원 관련 주요기능 사용 때 마다 유효성 검사 진행)  
- >>** 회원가입 시 비밀번호 저장: 개인정보보호법, 정보통신망법에 따른 해시암호(단방향) 저장.
-
+ >>* 로그인: Django에서 JWT(JSON Web Token) 발행 후, 성공 시 Front에서 Cookie로 저장(회원 관련 주요기능 사용 때 마다 유효성 검사 진행)  
+ >>* 회원가입 시 비밀번호 저장: 개인정보보호법, 정보통신망법에 따른 해시암호(단방향) 저장.
+ >>* 앱 화면 좌우 스와이프 효과: App.js 에서 일어난 터치이벤트를 Redudx를 통해 PageStack.js로 전달, 스와이프 방향(actions)에 따른 Routing으로 페이지 이동.
+ 
 ### **#1** 정산 
  - 모임 명, 모임 장소, 모임 인원 설정, 모임 차수 설정 ( 최대 6차 )
  - 정산 비용 및 정산방법 설정 ( N/1, 직접 정산 )
