@@ -20,15 +20,15 @@ http://13.209.91.209/
 #### Web Server
  - Nginx ( Proxy )
 
-#### Front
+#### Front (port 9500)
  - HTML, CSS ( SCSS ), Javascript ( ES6 )
  - React.js
  - Redux
  
-#### Back
+#### Back (port 9501)
  - Python, Django ( REST-API )
 
-#### DB
+#### DB (port 3306)
  - MySQL
 
 #### 오픈 API 사용현황
