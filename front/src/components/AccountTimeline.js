@@ -77,8 +77,6 @@ class AccountTimeline extends React.Component {
             let pageMaxCnt = Math.ceil(init_infoCnt / 10);
             this.setState({contentPage: 1, contentMaxPage: pageMaxCnt});
 
-
-
         }
    }
 
@@ -157,7 +155,6 @@ class AccountTimeline extends React.Component {
                         //                     //</div>
                         : <div id="noneInfo_notify"><font className="bold">* </font>해당계좌의 정산정보가 없습니다.</div>
                 }
-
 
             </div>
         );

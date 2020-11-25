@@ -15,6 +15,10 @@ export const CommonModalAction = "CommonModalAction";
 export const InfoModalOpen = 'InfoModalOpen';
 export const InfoModalClose = 'InfoModalClose';
 
+export const UpdateCardSliderIndex = "UpdateCardSliderIndex";
+
+
+
 
 //* 경고모달( ==> AlertModal.js 컴포넌트 ) 액션.
 export function modal_open(text, topPosition) {
@@ -92,5 +96,12 @@ export function infomodal_open(info) {
 export function infomodal_close() {
     return {
         type: InfoModalClose,
+    }
+}
+
+export function updateCardSliderIndex(index) {
+    return {
+        type: UpdateCardSliderIndex,
+        index,
     }
 }

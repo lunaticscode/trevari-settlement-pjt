@@ -94,6 +94,7 @@ class SettleShareModal extends React.Component {
         }
 
         // console.log('param url ',this.state.linkUrl);
+
     }
 
     kakaoLinkCreate(link_value) {

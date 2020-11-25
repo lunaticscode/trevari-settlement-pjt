@@ -4,6 +4,8 @@ import { LeftSwipe, RightSwipe } from "../actions";
 import {MaskOpen, MaskClose} from "../actions"
 import {CommonModalOpen, CommonModalClose, CommonModalAction} from "../actions";
 import {InfoModalOpen, InfoModalClose} from "../actions";
+import {UpdateCardSliderIndex} from "../actions"
+
 
 //* 각 리듀서 연결 컴포넌트는 actions/index.js 에서 확인.
 
@@ -37,6 +39,10 @@ const commonModalInitialState = {
 const infoModalInitialState = {
     displayStatus: 'none',
     modalInfo: {},
+};
+
+const updateCardSliderIndexState = {
+    index: 0,
 };
 
 const modal = (state = counterInitialState, action) => {
@@ -139,9 +145,21 @@ const infomodal = (state = infoModalInitialState, action) => {
     }
 };
 
+const updateCardSliderIndex = (state = updateCardSliderIndexState, action) => {
+    switch (action.type) {
+        case UpdateCardSliderIndex:
+            return Object.assign({}, state, {
+                index: action.index
+            });
+        default:
+            return state;
+    }
+};
+
+
 const counterApp = combineReducers({
     modal, pageChange,
-    mask, infomodal, commonModal,
+    mask, infomodal, commonModal, updateCardSliderIndex,
 });
 
 export default counterApp;

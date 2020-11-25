@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect, lazy, Suspense} from 'react';
 import '../styles/Account.scss';
 import Cookie from "../Cookie";
 import Fetch from "../Fetch";
@@ -7,6 +7,10 @@ import {modal_close, modal_open} from "../actions";
 import {connect} from "react-redux";
 import crypto from "../CryptoInfo";
 import AccountTimeline from "./AccountTimeline";
+import AccountCardSlider from "./AccountCardSlider";
+import AcconutCardHistory from "./AccountCardHistory";
+import AccountCardSliderContainer from "./AccountCardSliderContainer";
+import AccountCardHistoryContainer from "./AccountCardHistoryContainer";
 
 class Account extends React.Component {
 
@@ -51,11 +55,8 @@ class Account extends React.Component {
 
             cardSliding_availFlag: true,
             now_lookingCardIsEmpty: false,
-        };
 
-        this.AccountCardSliding = this.AccountCardSliding.bind(this);
-        this.AcconutCardSlider_touchStartMove = this.AcconutCardSlider_touchStartMove.bind(this);
-        this.AcconutCardSlider_touchEnd = this.AcconutCardSlider_touchEnd.bind(this);
+        };
 
         this.addMyAccount = this.addMyAccount.bind(this);
         this.addMyAccount_selectBank = this.addMyAccount_selectBank.bind(this);
@@ -64,53 +65,9 @@ class Account extends React.Component {
         this.addMyAccount_registBtnClick = this.addMyAccount_registBtnClick.bind(this);
 
         this.deleteMyAccount = this.deleteMyAccount.bind(this);
-
-
     }
 
-    AcconutCardSlider_touchStartMove(e){
-        Cookie.set_cookie("mac_slider_Scrolling", 'true');
-    }
-    AcconutCardSlider_touchEnd(e){
-        setTimeout(() => { Cookie.set_cookie('mac_slider_Scrolling', 'false'); }, 1000);
-    }
 
-    AccountCardSliding(e) {
-            if(this.state.cardSliding_availFlag){
-                let cardWidth = document.getElementById("myAccountCard_0").offsetWidth;
-                let now_slider_offsetX = ( e.target.scrollLeft == 0 ) ? 1 : e.target.scrollLeft;
-                this.setState({now_sliderOffsetX : now_slider_offsetX});
-                let passing_index = Math.floor( now_slider_offsetX / cardWidth );
-                //console.log(passing_index, this.state.now_lookingCardInfo_array);
-
-                this.setState({now_lookingCardIndex: passing_index,});
-                let now_accountNum = (this.state.myAccountList[passing_index] ) ? this.state.myAccountList[passing_index]['bank_num'] : null;
-
-
-                if( !this.state.settleInfo_byAccount_obj || !now_accountNum  ){
-                    console.log('empty card section');
-                    this.setState({now_lookingCardInfo_array: null});
-                }
-                else{
-                    try{
-                            let now_accountSettleInfo = ( now_accountNum ) ? this.state.settleInfo_byAccount_obj[now_accountNum] : null;
-                            if(Object.keys(this.state.settleInfo_byAccount_obj).indexOf(now_accountNum) == -1){
-                                this.setState({now_lookingCardInfo_array: []});
-                                return;
-                            }
-                            if(now_accountNum && this.state.settleInfo_byAccount_obj[now_accountNum].length > 0) {
-                                let tmp_accountSettleInfo_Array = now_accountSettleInfo.sort( (a, b) => b['date'] - a['date'] );
-                                this.setState({now_lookingCardInfo_array: tmp_accountSettleInfo_Array});
-                            }
-
-                    }catch(e){
-                        console.log(e.toString());
-                    }
-                }
-            }
-
-
-    }
 
     addMyAccount() {
         this.setState({nowEdit_addMyAccount: true});
@@ -171,7 +128,7 @@ class Account extends React.Component {
                 }
 
             });
-        }
+          }
         }
 
     addMyAccount_registBtnClick(e){
@@ -242,8 +199,8 @@ class Account extends React.Component {
 
             }
 
-
         }
+
     }
 
     deleteMyAccount(e){
@@ -336,6 +293,7 @@ class Account extends React.Component {
                         //* 5개 미만일 경우, [ + 추가 ] 기능있는 빈 계좌 obj 추가.
                         if(tmp_accountArray.length < 5){
                             let tmp_slideAccount_list = tmp_accountArray.concat(empty_cardInfo_obj);
+                            console.log(tmp_slideAccount_list);
                             this.setState({slideAccountList: tmp_slideAccount_list});
                         }
 
@@ -436,16 +394,17 @@ class Account extends React.Component {
 
         //* 비회원일 접속일 경우,
         else{ }
-
     }
 
     render() {
+        console.log('rendering~!!!!');
         let loginFlag = this.state.loginFlag;
         let AccountLayout_style = {height: ( !loginFlag ) ? '500px' : window.innerHeight - 250};
-        let CardSlider_style = {display: ( this.state.cardSliding_availFlag ) ? 'block': 'none' }
+        let CardSlider_style = {display: ( this.state.cardSliding_availFlag ) ? 'block': 'none' };
         let now_userName = ( loginFlag ) ? Cookie.get_cookie('UserName') : '';
         return (
             <div id="AccountLayout" style={AccountLayout_style}>
+
                 {
                     ( loginFlag )
                     ? ''
@@ -459,141 +418,26 @@ class Account extends React.Component {
                         ?
                         <div id="AccountContent_layout">
 
-                            <div id="AccountCard_slider"
-                                 style={CardSlider_style}
-                                 onTouchStart={this.AcconutCardSlider_touchStartMove}
-                                 onTouchMove={this.AcconutCardSlider_touchStartMove}
-                                 onTouchEnd={this.AcconutCardSlider_touchEnd}
-                                 onScroll={this.AccountCardSliding} >
-                                {
-                                        this.state.slideAccountList.map( ( elem, index ) => {
-                                            //console.log(elem);
-                                            return <div className={ (this.state.now_lookingCardIndex === index) ? "myAccountCard_layout active" : "myAccountCard_layout"}
-                                                        onTouchStart={this.AcconutCardSlider_touchStartMove}
-                                                        onTouchMove={this.AcconutCardSlider_touchStartMove}
-                                                        onTouchEnd={this.AcconutCardSlider_touchEnd}
-                                                        id={"myAccountCard_"+index} key={index} >
-                                                        {
-                                                            ( this.state.myAccountList.length !== 5 && ( index ) === this.state.myAccountList.length )
-                                                            ?  ''
-                                                                : <div className="mac_deleteBtn" onClick={this.deleteMyAccount} value={index} >
-                                                                    <img src="/img/delete_icon.png" value={index}/>
-                                                                </div>
-                                                        }
+                            <AccountCardSliderContainer
+                                        addMyAccount={this.addMyAccount}
+                                        deleteMyAccount={this.deleteMyAccount}
+                                        onTouchStart={this.AcconutCardSlider_touchStartMove}
+                                        onTouchMove={this.AcconutCardSlider_touchStartMove}
+                                        onTouchEnd={this.AcconutCardSlider_touchEnd}
+                                        onScroll={this.AccountCardSliding}
+                                        settleInfo_byAccount_obj={this.state.settleInfo_byAccount_obj}
+                                        loginFlag={this.state.loginFlag}
+                                        cardSliding_availFlag={this.state.cardSliding_availFlag}
+                                        slideAccountList={this.state.slideAccountList}
+                                        now_lookingCardIndex={this.state.now_lookingCardIndex}
+                                        myAccountList={this.state.myAccountList}
+                            />
 
+                            <AccountCardHistoryContainer
+                                settleInfo_byAccount_obj={this.state.settleInfo_byAccount_obj}
+                                now_lookingCardInfo_array={this.state.now_lookingCardInfo_array}
+                            />
 
-                                                        <div className="mac owner_name">{now_userName}</div>
-                                                        <div className="mac bank_name">{
-                                                            ( elem['bank_name'] )
-                                                                ? ( elem['bank_name'] )
-                                                                : <img id="plusAccount_icon" onClick={this.addMyAccount} src="/img/plus_account.png"/>
-                                                        }</div>
-                                                        <div className="mac bank_num">{elem['bank_num']}</div>
-                                                        <div className="mac chipIcon_layout">
-                                                            {
-                                                                ( elem['bank_name'] )
-                                                                ? <img className="mac chip_icon" src="/img/sim-card.png" />
-                                                                : ''
-                                                            }
-
-                                                        </div>
-                                                    </div>
-                                        })
-                                }
-                            </div>
-                            <div id="mac_slider_counter_layout">
-                                {
-                                    this.state.myAccountList.map( (elem, index) => {
-                                    return <span className={ (this.state.now_lookingCardIndex === index ) ? "mac_slide_counter active" : 'mac_slide_counter ' }
-                                                 key={index} id={"mac_slide_cnt_"+index}></span>
-                                    })
-                                }
-                            </div>
-                            <div id="mac_info_infoLayout">
-                                {
-                                    ( this.state.now_lookingCardInfo_array )
-                                    ?
-                                        <div>
-                                            <div id="mac_info_box_layout">
-                                                <div id="mac_info_settleCnt_box">
-                                                    <div className="mac_info title">정산 횟수</div>
-                                                    <div className="mac_info value">
-                                                        { this.state.now_lookingCardInfo_array.length + " 회"}
-                                                    </div>
-                                                </div>
-
-                                                <div id="mac_info_settleSumPrice_box">
-                                                    <div className="mac_info title">정산 금액</div>
-                                                    <div className="mac_info value">
-                                                        {
-                                                            this.state.now_lookingCardInfo_array.reduce( ( acc, cur ) => {
-                                                                return acc + cur['sumprice'];
-                                                            }, 0).toLocaleString()+" 원"
-                                                        }
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <AccountTimeline
-                                                passingCardIndex={this.state.now_lookingCardIndex}
-                                                accountInfo={this.state.now_lookingCardInfo_array}
-                                            />
-
-                                        </div>
-
-                                    :  ( this.state.nowEdit_addMyAccount )
-                                        ? <div>
-                                                <div id="addMyAccount_layout">
-                                                    <select id="addMyAccount_bankName_select" onChange={this.addMyAccount_selectBank}>
-                                                        {
-                                                            Object.values( this.state.bankInfo_obj ).map( (elem, index) => {
-                                                                return <option key={index} value={elem['code']}
-                                                                               className="addMyAccount_bankName_option">
-                                                                        {elem['name']}
-                                                                       </option>
-                                                            })
-                                                        }
-                                                    </select>
-                                                    <div>
-                                                        <input id="addMyAccount_input_accountNum" type="number"
-                                                               className={
-                                                                   ( this.state.nowEdit_bankInfo['num']
-                                                                       && ( this.state.nowEdit_bankInfo['num'] ).toString().length > 0 )
-                                                                   ? "active" : ''
-                                                               }
-                                                               onChange={this.addMyAccount_inputNumber}
-                                                               placeholder="계좌번호 입력" />
-
-                                                        <div id="addMyAccount_authBtn"
-                                                             onClick={this.addMyAccount_authBtnClick}
-                                                             className={
-                                                                 ( Object.values(this.state.nowEdit_bankInfo).every(elem => elem !== null && elem.toString().length>0 ) )
-                                                                 ? "grant" : ""
-                                                             }
-                                                                >계좌인증
-                                                        </div>
-                                                        <div id="addMyAccount_realName_layout"
-                                                             className={
-                                                                 (this.state.accountGrant_flag)
-                                                                 ? 'active' : ''
-                                                             }>
-                                                            예금주
-                                                            <div id="addMyAccount_realName"></div>
-                                                        </div>
-                                                        <div id="addMyAccount_registBtn"
-                                                             onClick={this.addMyAccount_registBtnClick}
-                                                             className={
-                                                                 (this.state.accountGrant_flag )
-                                                                 ? 'grant' : ''
-                                                                }>
-                                                            계좌 등록</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        : ''
-                                }
-
-                            </div>
                         </div>
 
                         : ''
@@ -612,7 +456,8 @@ let mapDispatchToProps = (dispatch) => {
     }
 };
 
+
 Account = connect(undefined, mapDispatchToProps)(Account);
 
-export default Account;
+export default React.memo(Account);
 
